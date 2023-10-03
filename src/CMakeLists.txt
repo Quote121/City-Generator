@@ -6,21 +6,24 @@ message(STATUS "Name set as ${EXECUTABLE_NAME}")
 set(EXECUTABLE_DIR "${CMAKE_SOURCE_DIR}/bin")
 message(STATUS "Dir set as ${EXECUTABLE_DIR}")
 
-set(IMGUILIB_DIR "${CMAKE_SOURCE_DIR}/libs/imgui")
-message(STATUS "Name imgui dir as ${IMGUILIB_DIR}")
-
-
-file(GLOB SOURCES "*.cpp" "*.c")
-add_executable(${EXECUTABLE_NAME} ${SOURCES})
-
+set(CITYLIBS_DIR "${CMAKE_SOURCE_DIR}/libs/city_gen")
+message(STATUS "Name imgui dir as ${CITYLIBS_DIR}")
 
 ## Include folder below
 add_subdirectory(imgui)
+add_subdirectory(renderer)
 
+message(WARNING "${RENDERER_SOURCES}")
+
+file(GLOB SRC_SOURCES "*.cpp" "*.c")
+add_executable(${EXECUTABLE_NAME}            
+            ${SRC_SOURCES}
+            ${RENDERER_SOURCES}
+)
 
 ## Set RPATH for loader to find the imgui library
 set_target_properties(${EXECUTABLE_NAME} PROPERTIES
-    INSTALL_RPATH "${IMGUILIB_DIR}"
+    INSTALL_RPATH "${CITYLIBS_DIR}"
 )
 
 
@@ -36,7 +39,6 @@ target_link_libraries(${EXECUTABLE_NAME} PRIVATE
 
 message(STATUS "Install directory: ${CMAKE_SOURCE_DIR}/bin")
 
-
 ## Check if directories exist
 ## If they dont, create them
 if (EXISTS "${EXECUTABLE_DIR}")
@@ -46,18 +48,18 @@ else()
     file(MAKE_DIRECTORY ${EXECUTABLE_DIR})
 endif()
 
-if (EXISTS "${IMGUILIB_DIR}")
-    message("Folder '${IMGUILIB_DIR}' exists.")
+if (EXISTS "${CITYLIBS_DIR}")
+    message("Folder '${CITYLIBS_DIR}' exists.")
 else()
-    message("Folder '${IMGUILIB_DIR}' does not exist. Creating...")
-    file(MAKE_DIRECTORY ${IMGUILIB_DIR})
+    message("Folder '${CITYLIBS_DIR}' does not exist. Creating...")
+    file(MAKE_DIRECTORY ${CITYLIBS_DIR})
 endif()
 
 
 ## Install the executable and library
 INSTALL(TARGETS ${EXECUTABLE_NAME} city_imgui.a
     DESTINATION ${EXECUTABLE_DIR}
-    LIBRARY DESTINATION ${IMGUILIB_DIR}
+    LIBRARY DESTINATION ${CITYLIBS_DIR}
 )
 
 

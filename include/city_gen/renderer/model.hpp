@@ -12,9 +12,7 @@
 
 /*
     Model class holds a vector of mesh objects.
-
     This is the class where we directly pass the model file to import into our project
-
 */
 class Model
 {
