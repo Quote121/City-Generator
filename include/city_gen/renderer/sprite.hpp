@@ -30,6 +30,12 @@ public:
 
     // constructor for texture
     Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in);
+    
+    ~Sprite()
+    {
+        // Sprite shader is allocated memory in sprite_object.hpp, needs to be freed
+        delete(spriteShader);
+    }
 
     // For shader hotswapping
     void SetSpriteShader(Shader* spriteShader_in);

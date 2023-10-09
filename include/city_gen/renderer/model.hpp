@@ -16,6 +16,8 @@
 class Model
 {
 private:
+    Shader* modelShader = nullptr;
+
     // model data
     std::vector<Mesh> meshes;
     std::string directory;
@@ -30,10 +32,9 @@ private:
     unsigned int TextureFromFile(const char *path, const std::string &directory = ".", bool gamma = false);
     
 public:
-    void Draw(Shader &shader);
+    void Draw();
 
-    // TODO write definition
-    void DrawWithTexture(Shader &shader, std::string &path);
+    Shader* GetModelShader();
 
-    Model(const std::string& path);
+    Model(Shader* modelShader_in, const std::string& path);
 };

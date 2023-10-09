@@ -34,7 +34,8 @@ protected:
         
     }
 
-    virtual void Draw(glm::mat4 view, glm::mat4 projection);
+    // No definition just a virtual function for derived objects
+    virtual void Draw(glm::mat4 view, glm::mat4 projection) {};
 
 
     /* get mat4 from 3 angles */
@@ -42,5 +43,6 @@ protected:
     glm::mat4 getPositionMat4(glm::vec3 position);
     
     glm::mat4 getScaleMat4(glm::vec3 scale);
+    glm::mat4 getScaleMat4(glm::vec2 scale); // For sprites
     glm::mat4 getScaleMat4(float scale);
 };
