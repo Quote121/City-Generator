@@ -34,3 +34,4 @@
 ## For cmake not to be uploaded
 bin
 build
+.vscode
