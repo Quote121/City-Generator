@@ -13,8 +13,6 @@ message(STATUS "Name imgui dir as ${CITYLIBS_DIR}")
 add_subdirectory(imgui)
 add_subdirectory(renderer)
 
-message(WARNING "${RENDERER_SOURCES}")
-
 file(GLOB SRC_SOURCES "*.cpp" "*.c")
 add_executable(${EXECUTABLE_NAME}            
             ${SRC_SOURCES}

@@ -154,6 +154,9 @@ void Model::Draw(Shader &shader)
 
 // Use for only 1 mesh objects to load a custom texture
 // Should be used by models with no mtl
+//
+// UNUSED
+//
 void Model::DrawWithTexture(Shader &shader, std::string &path)
 {
     // Clear loaded textures
@@ -172,6 +175,7 @@ void Model::DrawWithTexture(Shader &shader, std::string &path)
         meshes[i].Draw(shader);
 }
 
+// TODO gamma unused and to be moved to common as a few use this method
 unsigned int Model::TextureFromFile(const char *path, const std::string &directory, bool gamma)
 {
     std::string filename = std::string(path);
@@ -186,6 +190,7 @@ unsigned int Model::TextureFromFile(const char *path, const std::string &directo
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
+        // Channels in file then we set the format
         GLenum format;
         if (nrComponents == 1)
             format = GL_RED;
@@ -193,6 +198,8 @@ unsigned int Model::TextureFromFile(const char *path, const std::string &directo
             format = GL_RGB;
         else if (nrComponents == 4)
             format = GL_RGBA;
+        else {}
+            //TODO | log statement for what component is
 
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);

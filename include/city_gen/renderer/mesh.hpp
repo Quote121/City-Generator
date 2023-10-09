@@ -1,5 +1,4 @@
-#ifndef MESH_H
-#define MESH_H
+#pragma once
 
 #include <glm/glm.hpp> // opengl mathematics
 #include <glm/gtc/matrix_transform.hpp>
@@ -39,7 +38,4 @@ class Mesh{
         Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> textures);
         void Draw(Shader &shader);
 
-
 };
-
-#endif // MESH_H

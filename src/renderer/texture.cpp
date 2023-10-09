@@ -1,5 +1,10 @@
 #include "texture.hpp"
 
+// this is all unused and already somewhere else
+
+//
+// UNUSED
+//
 void TextureLoader::loadTexture(const char *path, unsigned int &textureID, GLenum format)
 {
     // no of textures, gens id
@@ -34,6 +39,7 @@ void TextureLoader::loadTexture(const char *path, unsigned int &textureID, GLenu
     stbi_image_free(data);
 }
 
+// unused
 void TextureLoader::activateTexture(unsigned int texture, unsigned int id)
 {
     // GL_TEXTURE0 + id // acts as a offset from GL_TEXTURE0

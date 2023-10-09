@@ -1,5 +1,4 @@
-#ifndef MODEL_H
-#define MODEL_H
+#pragma once
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -38,6 +37,3 @@ public:
 
     Model(const std::string& path);
 };
-
-
-#endif // MODEL_H
