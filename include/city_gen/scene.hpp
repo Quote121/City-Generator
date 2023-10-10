@@ -8,23 +8,23 @@
 // as currently there is no need for multiple scene classes.
 //
 //
-//  todo future - thread safe access
-//
+//  TODO thread safe access
 //
 ////////////////
-#ifndef SCENE_HPP
-#define SCENE_HPP
+#pragma once
 
 #include <vector>
 #include <memory>
 #include <algorithm>
 
-#include "object.hpp"
+#include "config.hpp"
+#include "objects/all.hpp"
+
 
 class Scene
 {
 private:
-    std::vector<std::unique_ptr<Object>> scene_objects;
+    std::vector<BaseObject*> scene_objects;
 
     Scene() {}
 
@@ -36,30 +36,87 @@ private:
     static Scene* pinstance_;
 
 public:
-    
+    // Singleton setup //  
     Scene(Scene &other) = delete;
     void operator=(const Scene &) = delete;
     static Scene* getInstance();
+    /////////////////////
+
+    // Object adding
+    // When we create from a derived class, we downcast to base when storing
+    void addObject(BaseObject* object_in) const;
+
+    void addModel(const ModelObject& modelObject);
+    void addModel(std::string& modelPath_in,                          
+                  Shader *shader_in,                                   
+                  float isVisible_in = true,
+                  glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},      
+                  glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},       
+                  glm::vec3 scl_in = glm::vec3{1.0f, 1.0f, 1.0f});
+
+    void addSprite(const SpriteObject& spriteObject);
+    void addSprite(std::string& spriteTexture_in,
+                 Shader *shader_in,
+                 float isVisible_in = true,
+                 bool isBillboard_in = false,
+                 glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},      // Starting pos of the object, defualt origin
+                 glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},      // 
+                 glm::vec2 scl_in = glm::vec2{1.0f, 1.0f});
+
+    // Light
+    // Particle
+    // Line
 
     void addObject(const std::string &objectPath, Shader &shader, glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3 scale_in = glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3 colour_in = glm::vec3{0.0f, 0.0f, 0.0f});
 
-    // Returns true is found and removed
-    // false otherwise
-    bool removeObject(std::unique_ptr<Object> &obj);
-    bool removeObject(Object &obj);
+    // Returns true is found and removed, false otherwise
+    bool removeObject(BaseObject &obj);
+    bool removeModel(ModelObject& obj);
+    bool removeSprite(SpriteObject& obj);
 
-    std::vector<std::unique_ptr<Object>> const& getObjects() const
+    // Light
+    // particle
+    // light
+
+    std::vector<BaseObject*> const& getObjects()
     {
         return scene_objects;
     }
 
-    void drawObjects(glm::mat4 view, glm::mat4 projection, glm::vec4 colour = glm::vec4{0.0f, 0.0f, 0.0f, 1.0f})
+    // Casts each of the objects into their respected derived class to then call their respected draw functions
+    void drawSceneObjects(glm::mat4 view, glm::mat4 projection)
     {
-        for (auto& obj : scene_objects)
+        for (BaseObject* sceneObj : scene_objects)
         {
-            obj->Draw(view, projection, colour);
+            if (ModelObject* object = dynamic_cast<ModelObject*>(sceneObj))
+            {
+                object->Draw(view, projection);
+            }
+            else if (SpriteObject* object = dynamic_cast<SpriteObject*>(sceneObj))
+            {
+                object->Draw(view, projection);
+            }
+            // Line
+            else if (LineObject* object = dynamic_cast<LineObject*>(sceneObj))
+            {
+                LOG(ERROR, "Line object not yet implemented");
+            }
+            // Lught
+            else if (LightObject* object = dynamic_cast<LightObject*>(sceneObj))
+            {
+                LOG(ERROR, "Light object not yet implemented");
+
+            }
+            // Particle
+            else if (ParticleObject* object = dynamic_cast<ParticleObject*>(sceneObj))
+            {
+                LOG(ERROR, "Particle object not yet implemented");
+            }
+            // Error
+            else
+            {
+                LOG(ERROR, "Unrecognized object");
+            }
         }
     }
 };
-
-#endif // SCENE_HPP

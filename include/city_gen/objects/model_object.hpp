@@ -1,12 +1,11 @@
 #pragma once
 
 #include "base_object.hpp"
-#include "object.hpp"
 
 #include "config.hpp"
 
 // 3D object
-class Object : public BaseObject
+class ModelObject : public BaseObject
 {
 private:
     glm::vec3 scale = {1.0f, 1.0f, 1.0f};
@@ -16,13 +15,13 @@ private:
 
 public:
     // Derived constructor
-    Object(std::string& modelPath_in,                           // Path to obj file for model
-           Shader *shader_in,                                   // Shader to associate with the draw of this object
-           float isVisible_in = true,
-           glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},      // Starting pos of the object, defualt origin
-           glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},      // 
-           glm::vec3 scl_in = glm::vec3{1.0f, 1.0f, 1.0f}) :                         // if the object is visible
-           
+    ModelObject(std::string& modelPath_in,   // Path to .obj
+           Shader *shader_in,                                   
+           float isVisible_in,
+           glm::vec3 pos_in,      // No defaults as the scene should deal with that, this is just the model nothing else
+           glm::vec3 rot_in,      // 
+           glm::vec3 scl_in) :                        
+
            BaseObject(pos_in, rot_in, isVisible_in), // Base constructor
            scale(scl_in)                                        // initalizer list
     {
@@ -41,7 +40,7 @@ public:
         model = new Model(shader, modelPath_in);
     }
 
-    ~Object()
+    ~ModelObject()
     {
         delete(model);
     }

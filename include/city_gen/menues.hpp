@@ -17,9 +17,7 @@
 // this needs to be put on a new branch 
 //
 ///////////////
-
-#ifndef MENUES_HPP
-#define MENUES_HPP
+#pragma once
 
 // IMGUI
 #include <imgui/imgui.h>
@@ -27,14 +25,12 @@
 #include <imgui/imgui_impl_opengl3.h>
 
 #include "scene.hpp"
-#include "object.hpp"
 #include "camera.hpp"
 
 class Menues
 {
 
 public:
+    // TODO, maybe instead of passing as arg we go off the singleton instance?
     static void display(Camera* cam);
 };
-
-#endif // MENUES_HPP

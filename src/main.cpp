@@ -1,20 +1,3 @@
-///////////////////////////////
-//// Definitions
-//
-// Fragment - in openGL a fragment is all the data required to render a single pixel
-//
-// Fragment shader - a shader to calculate the final colour of a pixel eg lights shadows colour of the light etc
-// 
-// Normalized device coords - -1 to 1 values relative to the window
-// 
-// VBO - vertex buffer objects (They can store a large number of verticies in the GPU's memory
-//
-// VAO - Vertex Array objects
-// 
-// EBO - Element buffer object
-// 
-///////////////////////////////
-
 // Glad has to be before glfw as it contains certain headers that will clash otherwise
 // Glad/GLFW
 #include <glad/glad.h>
@@ -41,7 +24,6 @@
 #include "shader.hpp" // Custom shader header
 #include "stb_image/stb_image.h" // Image imports
 #include "camera.hpp" // Camera class
-#include "texture.hpp"
 #include "inputHandler.hpp"
 
 #include "menues.hpp"
@@ -203,6 +185,7 @@ int main() {
         /////////////
         // FPS Count
         /////////////
+        // TODO move this to an appropriate area
         static int fpsSampCount = 0;
         static float fpsSum = 0;
         // Print fps and coords

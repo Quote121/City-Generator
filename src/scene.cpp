@@ -1,5 +1,6 @@
 #include "scene.hpp"
 
+
 Scene* Scene::pinstance_{nullptr};
 
 Scene* Scene::getInstance()
@@ -10,6 +11,22 @@ Scene* Scene::getInstance()
     }
     return pinstance_; 
 }
+
+
+void Scene::addModel(std::string& modelPath_in,                          
+                Shader *shader_in,                                   
+                float isVisible_in = true,
+                glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},      
+                glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},       
+                glm::vec3 scl_in = glm::vec3{1.0f, 1.0f, 1.0f})
+{
+    // Create model and allocate memory for it, and add it to the scene
+    ModelObject* model = new ModelObject(
+        modelPath_in, shader_in, isVisible_in, pos_in, rot_in, scl_in
+    );
+    scene_objects.push_back(dynamic_cast<BaseObject*>(model));
+}
+
 
 void Scene::addObject(const std::string &objectPath, Shader &shader, glm::vec3 pos_in, glm::vec3 scale_in, glm::vec3 colour_in)
 {

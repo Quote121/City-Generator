@@ -44,11 +44,11 @@ public:
     // *shader_in can be NULL
     SpriteObject(std::string& spriteTexture_in,
                  Shader *shader_in,
-                 float isVisible_in = true,
-                 bool isBillboard_in = false,
-                 glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},      // Starting pos of the object, defualt origin
-                 glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},      // 
-                 glm::vec2 scl_in = glm::vec2{1.0f, 1.0f}) : 
+                 float isVisible_in,
+                 bool isBillboard_in,
+                 glm::vec3 pos_in,      // Starting pos of the object, defualt origin
+                 glm::vec3 rot_in,      // 
+                 glm::vec2 scl_in) : 
                  
                  BaseObject(pos_in, rot_in, isVisible_in),
                  isBillboard{isBillboard_in}
