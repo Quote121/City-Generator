@@ -28,7 +28,7 @@ protected:
 
     BaseObject(glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},
                glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},
-               float isVisible_in = true) :
+               bool isVisible_in = true) :
                position{pos_in}, rotation{rot_in}, isVisible{isVisible_in}
     {
         

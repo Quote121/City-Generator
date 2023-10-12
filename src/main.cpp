@@ -133,18 +133,25 @@ int main() {
 
     // Removes the backfaces of faces
     // however the cubes in the current state are not correct, normals wrong way
-    glEnable(GL_CULL_FACE);
+    
+    // TODO , temp disable
+    // glEnable(GL_CULL_FACE);
 
 
     Scene* scene = Scene::getInstance();
-    scene->addObject("../assets/models/Box/cube.obj", missing);
 
-    // scene->addObject("assets/models/ShippingContainer/container.obj", backpackShader);
-    scene->addObject("../assets/models/Backpack/backpack.obj", backpackShader);
-    // scene->addObject("assets/models/Rat/rat.obj", ratShader);
-    // scene->addObject("assets/models/ShippingContainer/container.obj", backpackShader);
+    std::string modelPath = "../assets/models/Box/cube.obj";
+    std::string backPackPath = "../assets/models/Backpack/backpack.obj";
+    std::string spritePath = "../assets/textures/missing.jpg";
+    std::string gordon = "../assets/textures/gordon_gosling.png";
+    std::string nighthawks = "../assets/textures/nighthawks.png";
+    std::string grass = "../assets/textures/grass.png";
+    std::string grass2 = "../assets/textures/grass2.png";
 
-
+    scene->addModel(backPackPath, nullptr, true, glm::vec3{0, 0, -15});
+    scene->addSprite(gordon, nullptr, true, false, glm::vec3{-3, 0, -3});
+    scene->addSprite(grass2, nullptr);
+    scene->addModel(modelPath, nullptr, true, glm::vec3{1, 0, -10});
 
     // IMGUI test
     IMGUI_CHECKVERSION();
@@ -210,7 +217,7 @@ int main() {
         
         Menues::display(camera);
         // Menues::test();
-        scene->drawObjects(view, projection);
+        scene->drawSceneObjects(view, projection);
 
 
         // own scope for imgui idk why, lookinto it 

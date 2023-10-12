@@ -1,6 +1,8 @@
 #include "sprite.hpp"
 #include "stb_image/stb_image.h"
 
+#include "config.hpp"
+
 Sprite::Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in) : texturePath{spriteTexturePath_in}
 {
     
@@ -37,6 +39,7 @@ Sprite::Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    
     }
     else
     {
@@ -44,16 +47,34 @@ Sprite::Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in)
     }
     stbi_image_free(data);
 
-    // // 
-    // float vertices[] = {
-    // // positions           // texture coords
-    //      0.5f,  0.5f, 0.0f,   1.0f, 1.0f,   // top right
-    //      0.5f, -0.5f, 0.0f,   1.0f, 0.0f,   // bottom right
-    //     -0.5f, -0.5f, 0.0f,   0.0f, 0.0f,   // bottom left
-    //     -0.5f,  0.5f, 0.0f,   0.0f, 1.0f    // top left 
-    // };
-
     float x, y;
+
+    unsigned int indices[] = {  
+        0, 1, 3, // first triangle
+        1, 2, 3  // second triangle
+    };
+
+    float fHeight, fWidth;
+    fHeight = static_cast<float>(height);
+    fWidth = static_cast<float>(width);
+
+    // here we get the ratio of width and height of the texture
+    // so the texture isnt strange
+    if (width > height)
+    {
+        x = 1.0f;
+        y = (fHeight/fWidth);
+    }
+    else if (fHeight > fWidth)
+    {
+        x = (fWidth/fHeight);
+        y = 1.0f;
+    }
+    else // width == height
+    {
+        x = 1.0f; y = 1.0f;
+    }
+
     float vertices[] = {
     // positions           // texture coords
          x,  y, 0.0f,   1.0f, 1.0f,   // top right
@@ -62,65 +83,60 @@ Sprite::Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in)
         -x,  y, 0.0f,   0.0f, 1.0f    // top left 
     };
 
-    // here we get the ratio of width and height of the texture
-    // so the texture isnt strange
-    if (width > height)
-    {
-        x = 1;
-        y = (height/width);
-    }
-    else if (height > width)
-    {
-        x = (width/height);
-        y = 1;
-    }
-    else // width == height
-    {
-        x = 1; y = 1;
-    }
-
     // textureID to be stored
     spriteTextureID = textureID;
     // shader to be stored
     spriteShader = spriteShader_in;
 
-    SetupSprite(vertices);
-
+    SetupSprite(vertices, indices);
 }
 
 // Setup vertex and buffer arrays
-void Sprite::SetupSprite(float vertices[])
+void Sprite::SetupSprite(float vertices[], unsigned int indices[])
 {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 20 * sizeof(float), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(float), indices, GL_STATIC_DRAW);
 
     // Position attributes
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
     // texture coordinates attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+
+    glBindVertexArray(0); // Unbind
 }
 
 // Make the OpenGL draw call
 void Sprite::Draw()
 {
-    // Here we do the openGL draw calls
+
+    glActiveTexture(GL_TEXTURE0); // Associate the texture to GL_TEXTURE0 texture unit
     glBindTexture(GL_TEXTURE_2D, spriteTextureID);
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    spriteShader->setInt("texture1", 0);
+    
+    glBindVertexArray(VAO); // Bind the vertex object
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0); // Once drawn we unbind the vertex object
+    
+    glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
+    
 }
 
 
 // Sprite Shader getters and setters
 void Sprite::SetSpriteShader(Shader* spriteShader_in) 
     { spriteShader = spriteShader_in; }
-Shader* Sprite::GetSpriteShader() 
-    { return spriteShader; }
+// Shader* Sprite::GetSpriteShader() 
+    
 

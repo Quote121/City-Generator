@@ -16,7 +16,7 @@
 class Sprite
 {
 private:
-    unsigned int VAO, VBO;
+    unsigned int VAO, VBO, EBO;
 
     Shader* spriteShader = nullptr;
 
@@ -24,7 +24,7 @@ private:
     unsigned int spriteTextureID;
 
     // Binding VAO's etc.
-    void SetupSprite(float vertices[]);
+    void SetupSprite(float vertices[], unsigned int indices[]);
     
 public:
 
@@ -39,8 +39,16 @@ public:
 
     // For shader hotswapping
     void SetSpriteShader(Shader* spriteShader_in);
+    
+    // Inline methods are defined where they are defined as inline
+    inline Shader* GetSpriteShader()
+        { return spriteShader; }
 
-    inline Shader* GetSpriteShader();
+    inline unsigned int GetTextureId()
+        { return spriteTextureID; }
+
+    inline std::string GetTexturePath()
+        { return texturePath; }
 
     // Draw call for sprite
     void Draw();

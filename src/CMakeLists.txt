@@ -12,11 +12,14 @@ message(STATUS "Name imgui dir as ${CITYLIBS_DIR}")
 ## Include folder below
 add_subdirectory(imgui)
 add_subdirectory(renderer)
+add_subdirectory(objects)
+
 
 file(GLOB SRC_SOURCES "*.cpp" "*.c")
 add_executable(${EXECUTABLE_NAME}            
             ${SRC_SOURCES}
             ${RENDERER_SOURCES}
+            ${OBJECTS_SOURCES}
 )
 
 ## Set RPATH for loader to find the imgui library

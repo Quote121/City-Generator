@@ -7,6 +7,8 @@ message(STATUS "including directory: ${CMAKE_SOURCE_DIR}/include")
 include_directories(${CMAKE_SOURCE_DIR}/include)
 include_directories(${CMAKE_SOURCE_DIR}/include/city_gen)
 include_directories(${CMAKE_SOURCE_DIR}/include/city_gen/renderer)
+include_directories(${CMAKE_SOURCE_DIR}/include/city_gen/objects)
+
 
 
 ## Set debug

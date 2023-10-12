@@ -19,6 +19,9 @@ class SpriteObject : public BaseObject
 {
 private:
     
+    // TODO add alias based on texture name e.g. wall_01 or grass_03
+
+
     bool isBillboard = false;                   // Billboard sprite always looking at player
     glm::vec2 scale = {1.0f, 1.0f};             // only scaled in X-axis and Y-axis 
     float scaleScalar = 1.0f; // for proportional scaling in x and y
@@ -44,7 +47,7 @@ public:
     // *shader_in can be NULL
     SpriteObject(std::string& spriteTexture_in,
                  Shader *shader_in,
-                 float isVisible_in,
+                 bool isVisible_in,
                  bool isBillboard_in,
                  glm::vec3 pos_in,      // Starting pos of the object, defualt origin
                  glm::vec3 rot_in,      // 
@@ -58,8 +61,9 @@ public:
         // Create the default shader unless passed one
         if (shader_in == nullptr)
         {
+            LOG(WARN, "Sprite shader passed null -- using default shader")
             // Create heap object shader
-            shader = new Shader(sprite_defaultVertShaderPath, sprite_defaultFragShaderPath);
+            shader = new Shader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
         }
         else
         {
@@ -88,7 +92,9 @@ public:
         }
         else
         {
-            result = glm::mat4(1.0f) * getRotateMat4(rotation) * getPositionMat4(position) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
+            // result = glm::mat4(1.0f) * getRotateMat4(rotation) * getPositionMat4(position) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
+            result = glm::mat4(1.0f) * getRotateMat4(rotation) * getPositionMat4(position) * BaseObject::getScaleMat4(scaleScalar);
+
         }
     
         
@@ -100,7 +106,6 @@ public:
         else
         {
             // Apply all position and scaling before drawing
-            
             // Shader stuff should be moved to the render class
             objectShader->use();
             objectShader->setMat4("view", view);
@@ -110,5 +115,4 @@ public:
             sprite->Sprite::Draw();
         }
     }
-
 };

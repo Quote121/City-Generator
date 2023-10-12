@@ -17,7 +17,7 @@ public:
     // Derived constructor
     ModelObject(std::string& modelPath_in,   // Path to .obj
            Shader *shader_in,                                   
-           float isVisible_in,
+           bool isVisible_in,
            glm::vec3 pos_in,      // No defaults as the scene should deal with that, this is just the model nothing else
            glm::vec3 rot_in,      // 
            glm::vec3 scl_in) :                        
@@ -30,8 +30,9 @@ public:
         // Create the default shader unless passed one
         if (shader_in == nullptr)
         {
+            LOG(WARN, "Object shader null -- Setting default shader");
             // Create heap object shader
-            shader = new Shader(object_defaultVertShaderPath, object_defaultFragShaderPath);
+            shader = new Shader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
         }
         else
         {

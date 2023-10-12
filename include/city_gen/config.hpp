@@ -11,13 +11,15 @@
 //////////////// SHADERS ////////////////
 
 // Sprite default shaders
-const char* sprite_defaultVertShaderPath = "../assets/shaders/default/sprite/sprite_shader.vert";
-const char* sprite_defaultFragShaderPath = "../assets/shaders/default/sprite/sprite_shader.frag";
+namespace paths
+{
+extern const char* sprite_defaultVertShaderPath;
+extern const char* sprite_defaultFragShaderPath;
 
 // Object default shaders
-const char* object_defaultVertShaderPath = "../assets/shaders/default/object/object_shader.vert";
-const char* object_defaultFragShaderPath = "../assets/shaders/default/object/object_shader.frag";
-
+extern const char* object_defaultVertShaderPath;
+extern const char* object_defaultFragShaderPath;
+}
 /////////////////////////////////////////
 
 //////////// Logging system ////////////

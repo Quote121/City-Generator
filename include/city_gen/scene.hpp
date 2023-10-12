@@ -17,7 +17,6 @@
 #include <memory>
 #include <algorithm>
 
-#include "config.hpp"
 #include "objects/all.hpp"
 
 
@@ -49,7 +48,7 @@ public:
     void addModel(const ModelObject& modelObject);
     void addModel(std::string& modelPath_in,                          
                   Shader *shader_in,                                   
-                  float isVisible_in = true,
+                  bool isVisible_in = true,
                   glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},      
                   glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},       
                   glm::vec3 scl_in = glm::vec3{1.0f, 1.0f, 1.0f});
@@ -57,7 +56,7 @@ public:
     void addSprite(const SpriteObject& spriteObject);
     void addSprite(std::string& spriteTexture_in,
                  Shader *shader_in,
-                 float isVisible_in = true,
+                 bool isVisible_in = true,
                  bool isBillboard_in = false,
                  glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},      // Starting pos of the object, defualt origin
                  glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},      // 
@@ -66,8 +65,6 @@ public:
     // Light
     // Particle
     // Line
-
-    void addObject(const std::string &objectPath, Shader &shader, glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec3 scale_in = glm::vec3{1.0f, 1.0f, 1.0f}, glm::vec3 colour_in = glm::vec3{0.0f, 0.0f, 0.0f});
 
     // Returns true is found and removed, false otherwise
     bool removeObject(BaseObject &obj);
@@ -84,39 +81,6 @@ public:
     }
 
     // Casts each of the objects into their respected derived class to then call their respected draw functions
-    void drawSceneObjects(glm::mat4 view, glm::mat4 projection)
-    {
-        for (BaseObject* sceneObj : scene_objects)
-        {
-            if (ModelObject* object = dynamic_cast<ModelObject*>(sceneObj))
-            {
-                object->Draw(view, projection);
-            }
-            else if (SpriteObject* object = dynamic_cast<SpriteObject*>(sceneObj))
-            {
-                object->Draw(view, projection);
-            }
-            // Line
-            else if (LineObject* object = dynamic_cast<LineObject*>(sceneObj))
-            {
-                LOG(ERROR, "Line object not yet implemented");
-            }
-            // Lught
-            else if (LightObject* object = dynamic_cast<LightObject*>(sceneObj))
-            {
-                LOG(ERROR, "Light object not yet implemented");
-
-            }
-            // Particle
-            else if (ParticleObject* object = dynamic_cast<ParticleObject*>(sceneObj))
-            {
-                LOG(ERROR, "Particle object not yet implemented");
-            }
-            // Error
-            else
-            {
-                LOG(ERROR, "Unrecognized object");
-            }
-        }
-    }
+    void drawSceneObjects(glm::mat4 view, glm::mat4 projection);
+    
 };
