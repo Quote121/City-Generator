@@ -81,6 +81,10 @@ public:
 
     void Draw(glm::mat4 view, glm::mat4 projection) override
     {
+        // Only draw if the object is visible
+        if (isVisible)
+        {
+        
         glm::mat4 result;
         Shader* objectShader = sprite->GetSpriteShader();
 
@@ -116,6 +120,7 @@ public:
             objectShader->setMat4("model", result);
 
             sprite->Sprite::Draw();
+        }
         }
     }
 };
