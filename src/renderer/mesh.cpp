@@ -63,8 +63,14 @@ void Mesh::Draw(Shader &shader)
     glActiveTexture(GL_TEXTURE0); // unbind
 
     // draw mesh
+#if ENABLE_CULL_FACE_MODEL == 1
+    glEnable(GL_CULL_FACE);
+#endif
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
     glBindVertexArray(0); // unbind
     glBindTexture(GL_TEXTURE_2D, 0);
+#if ENABLE_CULL_FACE_MODEL == 1
+    glDisable(GL_CULL_FACE);
+#endif
 }

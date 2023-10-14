@@ -149,9 +149,9 @@ int main() {
     std::string grass2 = "../assets/textures/grass2.png";
 
     scene->addModel(backPackPath, nullptr, true, glm::vec3{0, 0, -15});
-    scene->addSprite(gordon, nullptr, true, false, glm::vec3{-3, 0, -3});
+    // scene->addSprite(gordon, nullptr, true, true, glm::vec3{0, 0, 0}, glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec2{2.0f, 20.0f});
     scene->addSprite(grass2, nullptr);
-    scene->addModel(modelPath, nullptr, true, glm::vec3{1, 0, -10});
+    // scene->addModel(modelPath, nullptr, true, glm::vec3{1, 0, -10});
 
     // IMGUI test
     IMGUI_CHECKVERSION();

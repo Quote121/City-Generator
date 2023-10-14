@@ -3,7 +3,7 @@
 #include "base_object.hpp"
 #include "sprite.hpp"
 #include "config.hpp" // For shader paths
-
+#include "camera.hpp"
 /*
     The object classes of these are more about the physicl properties
     of the object. For things like shaders and texture information that
@@ -54,7 +54,8 @@ public:
                  glm::vec2 scl_in) : 
                  
                  BaseObject(pos_in, rot_in, isVisible_in),
-                 isBillboard{isBillboard_in}
+                 isBillboard{isBillboard_in},
+                 scale{scl_in}
     {
         Shader* shader;
 
@@ -86,18 +87,20 @@ public:
         // if billbord texture
         if (isBillboard)
         {
+            Camera* cam = Camera::getInstance();
+            
+            glm::vec3 objectToCamera = -glm::normalize(cam->Position - position);
+            glm::vec3 right = glm::normalize(glm::cross(objectToCamera, cam->Up));
+            glm::vec3 up = glm::normalize(glm::cross(right, objectToCamera));
+            glm::mat4 rotation_new = glm::mat4(glm::vec4(right, 0.0f), glm::vec4(up, 0.0f), glm::vec4(-objectToCamera, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+
             // Ignore rotation matrix and apply the other matrix to look at player
-            // TODO change
-            result = glm::mat4(1.0f) * getRotateMat4(rotation) * getPositionMat4(position) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
+            result = glm::mat4(1.0f) * getPositionMat4(position) * rotation_new * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
         }
         else
         {
-            // result = glm::mat4(1.0f) * getRotateMat4(rotation) * getPositionMat4(position) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
-            result = glm::mat4(1.0f) * getRotateMat4(rotation) * getPositionMat4(position) * BaseObject::getScaleMat4(scaleScalar);
-
+            result = glm::mat4(1.0f) * getRotateMat4(rotation) * getPositionMat4(position) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
         }
-    
-        
 
         if (objectShader == nullptr)
         {

@@ -32,3 +32,9 @@ extern const char* object_defaultFragShaderPath;
 #define WARN (" [WARNING] in " __FILE__ " at line " STRINGIZE(__LINE__)" : ")
 #define ERROR (" [ ERROR ] in " __FILE__ " at line " STRINGIZE(__LINE__)" : ")
 ///////////////////////////////////////
+
+////////////////// Renderer settings ////////////////////
+
+#define ENABLE_CULL_FACE_MODEL 1
+
+////////////////////////////////////////////////////////

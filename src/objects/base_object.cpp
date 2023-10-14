@@ -28,8 +28,7 @@ glm::mat4 BaseObject::getRotateMat4(glm::vec3 angles)
 glm::mat4 BaseObject::getPositionMat4(glm::vec3 position)
 {
     glm::mat4 matrix(1.0f);
-    matrix[3] = glm::vec4(position, 1.0f);
-    return matrix;
+    return glm::translate(matrix, position);
 }
 
 glm::mat4 BaseObject::getScaleMat4(glm::vec3 scale)

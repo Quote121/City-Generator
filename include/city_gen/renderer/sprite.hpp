@@ -35,6 +35,9 @@ public:
     {
         // Sprite shader is allocated memory in sprite_object.hpp, needs to be freed
         delete(spriteShader);
+        glDeleteBuffers(1, &VAO);
+        glDeleteBuffers(1, &VBO);
+        glDeleteBuffers(1, &EBO);
     }
 
     // For shader hotswapping
