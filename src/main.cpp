@@ -147,10 +147,23 @@ int main() {
     std::string nighthawks = "../assets/textures/nighthawks.png";
     std::string grass = "../assets/textures/grass.png";
     std::string grass2 = "../assets/textures/grass2.png";
+    std::string grassTexture = "../assets/textures/grassTexture.png";
+    std::string cube = "../assets/models/Cube/cube.obj";
 
-    scene->addModel(backPackPath, nullptr, true, glm::vec3{0, 0, -15});
-    // scene->addSprite(gordon, nullptr, true, true, glm::vec3{0, 0, 0}, glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec2{2.0f, 20.0f});
-    scene->addSprite(grass2, nullptr);
+    // scene->addModel(backPackPath, &backpackShader, true, glm::vec3{0, 0, 0});
+    
+    // scene->addModel(modelPath, nullptr, true, glm::vec3{0, 1, 0});
+    // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{0.01, 0.01, 0.01});
+    // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
+
+
+    scene->addSprite(gordon, nullptr, true, true, glm::vec3{0, 0, 0}, glm::vec3{0.0f, 0.0f, 0.0f}, glm::vec2{1.0f, 1.0f});
+    scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
+    scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, glm::radians(90.0), 0}, glm::vec2{400, 400});
+    scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, 0, 0}, glm::vec2{400, 400});
+    
+    // scene->addSprite(cube, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
+
     // scene->addModel(modelPath, nullptr, true, glm::vec3{1, 0, -10});
 
     // IMGUI test

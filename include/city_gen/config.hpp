@@ -41,18 +41,3 @@ extern const char* object_defaultFragShaderPath;
 #define ENABLE_CULL_FACE_MODEL 1
 
 ////////////////////////////////////////////////////////
-
-///////////////// Op overloads for datastructures /////////////
-
-// std::ostream& operator<<(std::ostream& os, const glm::vec3& vec)
-// {
-//     std::stringstream ss;
-    
-//     // os << float(vec[0]);
-
-//     ss << "[" << vec[0] << ", " << vec[1] << ", " << vec[2] << "]";
-//     os << ss.str();
-//     return os;
-// }
-
-///////////////////////////////////////////////////////////////

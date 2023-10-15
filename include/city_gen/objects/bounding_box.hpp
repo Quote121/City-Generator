@@ -44,5 +44,5 @@ public:
     }
 
     // Draw function maybe for a wireframe like draw
-    
+
 };

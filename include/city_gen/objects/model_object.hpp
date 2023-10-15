@@ -57,17 +57,13 @@ public:
         }
         else
         {
-            glm::vec3 vec = base_boundingBox->getMin();
-            glm::vec3 vec2 = base_boundingBox->getMax();
-
-            
-            LOG(STATUS, "Bounding box: Min: " << "[" << vec[0] << ", " << vec[1] << ", " << vec[2] << "]" << " | Max: " << "[" << vec2[0] << ", " << vec2[1] << ", " << vec2[2] << "]");
-
             // Apply all position and scaling before drawing
             objectShader->use();
             objectShader->setMat4("view", view);
             objectShader->setMat4("projection", projection);
             objectShader->setMat4("model", result);
+            // Set the local position based on the bounding box center
+            objectShader->setVec3("localCenterPos", base_boundingBox->getCenter());
             model->Model::Draw();
         }
     }
