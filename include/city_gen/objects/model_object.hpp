@@ -48,7 +48,7 @@ public:
 
     void Draw(glm::mat4 view, glm::mat4 projection) override
     {
-        glm::mat4 result = glm::mat4(1.0f) * getRotateMat4(rotation) * getPositionMat4(position) * getScaleMat4(scaleScalar) * getScaleMat4(scale);
+        glm::mat4 result = glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * getScaleMat4(scaleScalar) * getScaleMat4(scale);
         Shader* objectShader = model->GetModelShader();
 
         if (objectShader == nullptr)

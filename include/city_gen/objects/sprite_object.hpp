@@ -103,7 +103,7 @@ public:
         }
         else
         {
-            result = glm::mat4(1.0f) * getRotateMat4(rotation) * getPositionMat4(position) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
+            result = glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
         }
 
         if (objectShader == nullptr)
