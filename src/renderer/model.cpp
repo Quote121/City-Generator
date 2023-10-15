@@ -3,8 +3,9 @@
 #include "model.hpp"
 
 
-Model::Model(Shader* modelShader_in, const std::string& path)
+Model::Model(Shader* modelShader_in, const std::string& path, BoundingBox* boundingBox_in)
 {
+    boundingBox = boundingBox_in;
     modelShader = modelShader_in;
     loadModel(path.c_str());
 }
@@ -59,6 +60,10 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         vector.y = mesh->mVertices[i].y;
         vector.z = mesh->mVertices[i].z;
         vertex.Position = vector;
+
+        // For every vertex we process it in the bounding box
+        boundingBox->Update(vector);
+
         // Normals
         if (mesh->HasNormals())
         {

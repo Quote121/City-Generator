@@ -6,7 +6,7 @@
 
 #include "shader.hpp"
 #include "model.hpp"
-
+#include "bounding_box.hpp"
 
 // The base class of an object for other objects to be created from
 class BaseObject {
@@ -15,12 +15,8 @@ class BaseObject {
 protected:
     glm::vec3 rotation = {0.0f, 0.0f, 0.0f};    // current rotation of the object
     glm::vec3 position = {0.0f, 0.0f, 0.0f};    // Position in 3d space
-
-    // TODO bounding box???
-    //
-    // Only 3d objects and sprites will need this
-
-    // Shader* objectShader = nullptr;
+    
+    BoundingBox* base_boundingBox; // Info is local verticies
 
     float scaleScalar = 1.0f;                   // Float to scale object in all directions
     bool isVisible = true;                      // Visability Flag
@@ -31,12 +27,16 @@ protected:
                bool isVisible_in = true) :
                position{pos_in}, rotation{rot_in}, isVisible{isVisible_in}
     {
-        
+        base_boundingBox = new BoundingBox();
+    }
+
+    ~BaseObject()
+    {
+        delete base_boundingBox;
     }
 
     // No definition just a virtual function for derived objects
     virtual void Draw(glm::mat4 view, glm::mat4 projection) {};
-
 
     /* get mat4 from 3 angles */
     glm::mat4 getRotateMat4(glm::vec3 angles);

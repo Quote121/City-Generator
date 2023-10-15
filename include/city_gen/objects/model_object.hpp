@@ -38,7 +38,7 @@ public:
         {
             shader = shader_in;
         }
-        model = new Model(shader, modelPath_in);
+        model = new Model(shader, modelPath_in, base_boundingBox);
     }
 
     ~ModelObject()
@@ -57,6 +57,12 @@ public:
         }
         else
         {
+            glm::vec3 vec = base_boundingBox->getMin();
+            glm::vec3 vec2 = base_boundingBox->getMax();
+
+            
+            LOG(STATUS, "Bounding box: Min: " << "[" << vec[0] << ", " << vec[1] << ", " << vec[2] << "]" << " | Max: " << "[" << vec2[0] << ", " << vec2[1] << ", " << vec2[2] << "]");
+
             // Apply all position and scaling before drawing
             objectShader->use();
             objectShader->setMat4("view", view);

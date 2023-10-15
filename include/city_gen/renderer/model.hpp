@@ -8,6 +8,8 @@
 #include <string>
 
 #include "mesh.hpp"
+#include "bounding_box.hpp" // for passing every vertex through to determine box
+
 
 /*
     Model class holds a vector of mesh objects.
@@ -17,6 +19,8 @@ class Model
 {
 private:
     Shader* modelShader = nullptr;
+
+    BoundingBox* boundingBox;
 
     // model data
     std::vector<Mesh> meshes;
@@ -36,5 +40,5 @@ public:
 
     Shader* GetModelShader();
 
-    Model(Shader* modelShader_in, const std::string& path);
+    Model(Shader* modelShader_in, const std::string& path, BoundingBox* boundingBox_in);
 };
