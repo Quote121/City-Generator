@@ -169,7 +169,7 @@ unsigned int Model::TextureFromFile(const char *path, const std::string &directo
 
     int width, height, nrComponents;
     
-    stbi_set_flip_vertically_on_load(true);
+    stbi_set_flip_vertically_on_load(false);
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {

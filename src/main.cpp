@@ -29,6 +29,12 @@
 #include "menues.hpp"
 #include "scene.hpp"
 
+
+// temp test with randomness TODO remove
+#include <random>
+
+
+
 // Prototypes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -40,7 +46,7 @@ void joystick_callback(int jid, int event);
 // Window constatns
 const unsigned int WINDOW_WIDTH = 1280;
 const unsigned int WINDOW_HEIGHT = 720;
-const char* windowTitle = "OpenGL learning";
+const char* windowTitle = "City Generator";
 
 // // Camera
 Camera* camera = Camera::getInstance(glm::vec3{0.0f, 0.0f, 3.0f});
@@ -131,11 +137,11 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
     glEnable(GL_BLEND);
 
-    // Removes the backfaces of faces
-    // however the cubes in the current state are not correct, normals wrong way
-    
-    // TODO , temp disable
-    // glEnable(GL_CULL_FACE);
+
+
+
+
+
 
 
     Scene* scene = Scene::getInstance();
@@ -149,22 +155,47 @@ int main() {
     std::string grass2 = "../assets/textures/grass2.png";
     std::string grassTexture = "../assets/textures/grassTexture.png";
     std::string cube = "../assets/models/Cube/cube.obj";
+    std::string dust2 = "../assets/models/de_dust2/de_dust2.obj";
 
-    scene->addModel(backPackPath, &backpackShader, true, glm::vec3{5, 10, 0}, glm::vec3{glm::radians(90.0), 0, 0});
+
+    scene->addLine(nullptr, glm::vec3{0,0,0}, glm::vec3{10, 10, 0}, glm::vec3{0.0f, 0.0f, 0.0f});
+
+
+
+
+
+    scene->addModel(dust2, &backpackShader, true, glm::vec3{5, -20, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec3{0.01, 0.01, 0.01});
     
-    // scene->addModel(modelPath, nullptr, true, glm::vec3{0, 1, 0});
+    scene->addModel(modelPath, nullptr, true, glm::vec3{0, 0, -3});
     // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{0.01, 0.01, 0.01});
     // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
+    // scene->addSprite(gordon, nullptr, true, true, glm::vec3{0, 0, 0}, glm::vec3{glm::radians(90.0), 0.0f, 0.0f}, glm::vec2{1.0f, 1.0f});
+    
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(0, 1000); // define the range
 
-
-    // scene->addSprite(gordon, nullptr, true, false, glm::vec3{0, 0, 0}, glm::vec3{glm::radians(90.0), 0.0f, 0.0f}, glm::vec2{1.0f, 1.0f});
-    scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
-    scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, glm::radians(90.0), 0}, glm::vec2{400, 400});
-    scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, 0, 0}, glm::vec2{400, 400});
+    for (int i = 0; i < 1; i++)
+    {
+        scene->addSprite(gordon, nullptr, true, true, glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))}, glm::vec3{glm::radians(90.0), 0.0f, 0.0f}, glm::vec2{1.0f, 1.0f});
+    }
+    
+    // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
+    // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, glm::radians(90.0), 0}, glm::vec2{400, 400});
+    // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, 0, 0}, glm::vec2{400, 400});
     
     // scene->addSprite(cube, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
 
     // scene->addModel(modelPath, nullptr, true, glm::vec3{1, 0, -10});
+
+
+
+
+
+
+
+
+
 
     // IMGUI test
     IMGUI_CHECKVERSION();
@@ -231,7 +262,6 @@ int main() {
         Menues::display(camera);
         // Menues::test();
         scene->drawSceneObjects(view, projection);
-
 
         // own scope for imgui idk why, lookinto it 
         {

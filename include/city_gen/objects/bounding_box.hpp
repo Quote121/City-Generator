@@ -45,4 +45,7 @@ public:
 
     // Draw function maybe for a wireframe like draw
 
+    // The setup for the box VAO and VBO will be done everytime the update() is called
+    void Draw();
+
 };

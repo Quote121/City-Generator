@@ -7,6 +7,7 @@
 #include "shader.hpp"
 #include "model.hpp"
 #include "bounding_box.hpp"
+#include "config.hpp"
 
 // The base class of an object for other objects to be created from
 class BaseObject {
@@ -17,6 +18,7 @@ protected:
     glm::vec3 position = {0.0f, 0.0f, 0.0f};    // Position in 3d space
     
     BoundingBox* base_boundingBox; // Info is local verticies
+    bool showBoundingBox = false; // Will draw the outline of the bounding box on the model
 
     float scaleScalar = 1.0f;                   // Float to scale object in all directions
     bool isVisible = true;                      // Visability Flag
