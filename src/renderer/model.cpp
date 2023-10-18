@@ -8,6 +8,7 @@ Model::Model(Shader* modelShader_in, const std::string& path, BoundingBox* bound
     boundingBox = boundingBox_in;
     modelShader = modelShader_in;
     loadModel(path.c_str());
+    boundingBox->SetupBuffers();
 }
 
 void Model::loadModel(std::string path)
@@ -62,7 +63,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         vertex.Position = vector;
 
         // For every vertex we process it in the bounding box
-        boundingBox->Update(vector);
+        boundingBox->StreamVertexUpdate(vector);
 
         // Normals
         if (mesh->HasNormals())
@@ -135,18 +136,6 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
         }
     }
 
-    // // If there are no textures then we load missing
-    // if (!mat->GetTextureCount(type))
-    // {
-    //     std::cout << "Model loading missing jpg: " << mat->GetTextureCount(type) << " name " << typeName << std::endl;
-    //     Texture texture;
-    //     texture.id = TextureFromFile("/assets/textures/missing.jpg", ".");
-    //     texture.type = typeName;
-    //     texture.path = "/assets/textures/missing.jpg";
-    //     textures.push_back(texture);
-    //     textures_loaded.push_back(texture); // add to loaded textures
-    // }
-
     return textures;
 }
 
@@ -169,7 +158,7 @@ unsigned int Model::TextureFromFile(const char *path, const std::string &directo
 
     int width, height, nrComponents;
     
-    stbi_set_flip_vertically_on_load(false);
+    stbi_set_flip_vertically_on_load(flipTextureOnLoad);
     unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
     if (data)
     {
@@ -204,7 +193,7 @@ unsigned int Model::TextureFromFile(const char *path, const std::string &directo
     return textureID;
 }
 
-Shader* Model::GetModelShader()
+Shader* Model::GetShader()
 {
     return modelShader;
 }

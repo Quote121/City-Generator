@@ -10,7 +10,7 @@ private:
     Shader* lineShader;
 
 public:
-    
+
     // Will rebind VAO for the new vertex positions
     void UpdateVerts(glm::vec3 point_a, glm::vec3 point_b);
     

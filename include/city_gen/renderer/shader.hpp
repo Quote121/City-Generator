@@ -8,6 +8,8 @@
 #include <sstream>
 #include <iostream>
 
+#include "config.hpp"
+
 class Shader {
 public:
 	// Program ID (set when we create a shader instance)
@@ -16,7 +18,7 @@ public:
 	// Constructor reads and creates the shader
 	Shader(const char* vertexPath, const char* fragmentPath) {
 
-        std::cout << "Vertex: " << vertexPath << std::endl << "Frag: " << fragmentPath << std::endl;
+        // std::cout << "Vertex: " << vertexPath << std::endl << "Frag: " << fragmentPath << std::endl;
 
 		// 1, retrueve the vertex/frag source code from file path
 		// store the values in these 
@@ -44,13 +46,11 @@ public:
 
 		}
 		catch (std::ifstream::failure) {
-			std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
+			LOG(ERROR, "Shader not read sucessfully: [" << vertexPath << "|" << fragmentPath << "]")
 		}
 
 		const char* vShaderCode = vertexCode.c_str();
 		const char* fShaderCode = fragmentCode.c_str();
-
-		std::cout << "CONTENT\n" << vertexCode.size() << " " << fragmentCode.size() << std::endl;
 
 		// 2. compile shaders
 		unsigned int vertex, fragment;
@@ -65,7 +65,7 @@ public:
 		glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
 		if (!success) {
 			glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-			std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+			LOG(ERROR, "Vertex shader compilation failed: " << infoLog);
 		}
 
 		//frangment shader
@@ -76,7 +76,7 @@ public:
 		glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
 		if (!success) {
 			glGetShaderInfoLog(fragment, 512, NULL, infoLog);
-			std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+			LOG(ERROR, "Fragment shader compilation failed: " << infoLog);
 		}
 
 		ID = glCreateProgram();
@@ -87,7 +87,7 @@ public:
 		glGetProgramiv(ID, GL_LINK_STATUS, &success);
 		if (!success) {
 			glGetProgramInfoLog(ID, 512, NULL, infoLog);
-			std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+			LOG(ERROR, "Shader linker failed: " << infoLog);
 		}
 
 		// delete shaders; they're linked into our program and no longer necessary

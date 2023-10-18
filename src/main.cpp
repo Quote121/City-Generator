@@ -12,13 +12,12 @@
 #include <stdlib.h> // Clearing cmd for fps
 #include <iostream>
 #include <cmath> 
+#include <memory>
 
 // IMGUI
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
-
-#include <memory>
 
 // Other
 #include "shader.hpp" // Custom shader header
@@ -32,7 +31,6 @@
 
 // temp test with randomness TODO remove
 #include <random>
-
 
 
 // Prototypes
@@ -108,7 +106,6 @@ int main() {
     //
     //////////////////
     int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
-    std::cout << "Present" << present << std::endl;
     glfwSetJoystickCallback(joystick_callback);
 
     // glfwSwapInterval(0); // This will disable vsync and remove frame rate cap
@@ -158,15 +155,11 @@ int main() {
     std::string dust2 = "../assets/models/de_dust2/de_dust2.obj";
 
 
-    scene->addLine(nullptr, glm::vec3{0,0,0}, glm::vec3{10, 10, 0}, glm::vec3{0.0f, 0.0f, 0.0f});
+    // scene->addLine(nullptr, glm::vec3{0,0,0}, glm::vec3{10, 10, 0}, glm::vec3{0.0f, 0.0f, 0.0f});
 
-
-
-
-
-    scene->addModel(dust2, &backpackShader, true, glm::vec3{5, -20, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec3{0.01, 0.01, 0.01});
+    scene->addModel(dust2, nullptr, true, glm::vec3{5, -20, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec3{0.01, 0.01, 0.01});
     
-    scene->addModel(modelPath, nullptr, true, glm::vec3{0, 0, -3});
+    // scene->addModel(modelPath, nullptr, true, glm::vec3{0, 0, 0});
     // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{0.01, 0.01, 0.01});
     // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
     // scene->addSprite(gordon, nullptr, true, true, glm::vec3{0, 0, 0}, glm::vec3{glm::radians(90.0), 0.0f, 0.0f}, glm::vec2{1.0f, 1.0f});
@@ -186,7 +179,7 @@ int main() {
     
     // scene->addSprite(cube, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
 
-    // scene->addModel(modelPath, nullptr, true, glm::vec3{1, 0, -10});
+    scene->addModel(backPackPath, nullptr, true, glm::vec3{0, 0, 0});
 
 
 
@@ -196,6 +189,17 @@ int main() {
 
 
 
+
+
+
+
+    // X Y Z (R G B) Lines for the orientation
+    // X is Red
+    scene->addLine(nullptr, glm::vec3{-1000.0, 0, 0}, glm::vec3{1000.0, 0, 0}, glm::vec3{1, 0, 0});
+    // Y is Green
+    scene->addLine(nullptr, glm::vec3{0, -1000.0, 0}, glm::vec3{0, 1000.0, 0}, glm::vec3{0, 1, 0});
+    // Z is Blue
+    scene->addLine(nullptr, glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0}, glm::vec3{0, 0, 1});
 
     // IMGUI test
     IMGUI_CHECKVERSION();

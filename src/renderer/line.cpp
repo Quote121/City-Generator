@@ -3,6 +3,10 @@
 Line::Line(Shader* shader)
 {
     lineShader = shader;
+
+    // Generate the VAO and VBO in the constructor
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
 }
 
 void Line::UpdateVerts(glm::vec3 point_a, glm::vec3 point_b)
@@ -11,9 +15,6 @@ void Line::UpdateVerts(glm::vec3 point_a, glm::vec3 point_b)
         point_a[0], point_a[1], point_a[2],
         point_b[0], point_b[1], point_b[2]
     };
-
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
 
     glBindVertexArray(VAO);
     
@@ -30,8 +31,6 @@ void Line::UpdateVerts(glm::vec3 point_a, glm::vec3 point_b)
 
 void Line::Draw()
 {
-    LOG(STATUS, "VAO for Line: " << VAO);
-
     // glLineWidth(2.0f);
     glBindVertexArray(VAO);
     glDrawArrays(GL_LINES, 0, 2);

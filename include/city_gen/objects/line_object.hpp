@@ -76,7 +76,7 @@ public:
             objectShader->setMat4("model", result);
 
             objectShader->setVec3("colour", colour);
-
+            line_obj->UpdateVerts(a, b);
             line_obj->Line::Draw();
         }
 

@@ -130,13 +130,16 @@ void Sprite::Draw()
     glBindVertexArray(0); // Once drawn we unbind the vertex object
     
     glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
-    
+
+    GLenum error;
+    while ((error = glGetError()) != GL_NO_ERROR) {
+        LOG(ERROR, "OpenGL Sprite::Draw() Error: " << error);
+    }
 }
 
 
 // Sprite Shader getters and setters
-void Sprite::SetSpriteShader(Shader* spriteShader_in) 
-    { spriteShader = spriteShader_in; }
+
 // Shader* Sprite::GetSpriteShader() 
     
 
