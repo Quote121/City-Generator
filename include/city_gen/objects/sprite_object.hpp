@@ -21,26 +21,10 @@ private:
     
     // TODO add alias based on texture name e.g. wall_01 or grass_03
 
-
     bool isBillboard = false;                   // Billboard sprite always looking at player
     glm::vec2 scale = {1.0f, 1.0f};             // only scaled in X-axis and Y-axis 
     float scaleScalar = 1.0f; // for proportional scaling in x and y
     Sprite* sprite;
-    // bounding box
-    // The bounding box of this is the dimentions of the texture
-    // so its quite easy to implement
-
-    //
-    // We take in a texture
-    // We determine the ratio of its x and y.
-    // We want to accept formats with transparancy
-    //
-    // We then take that ratio to plot a quad to then display that texture
-    // 
-    // The constructor of sprite.hpp will determine the above
-    // The Draw call below will call into sprite.hpp where the openGL code will
-    // draw our sprite
-    //
 
 public:
     // only parameter is spriteTexture_in

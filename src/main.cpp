@@ -12,13 +12,12 @@
 #include <stdlib.h> // Clearing cmd for fps
 #include <iostream>
 #include <cmath> 
+#include <memory>
 
 // IMGUI
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
-
-#include <memory>
 
 // Other
 #include "shader.hpp" // Custom shader header
@@ -28,6 +27,11 @@
 
 #include "menues.hpp"
 #include "scene.hpp"
+
+
+// temp test with randomness TODO remove
+#include <random>
+
 
 // Prototypes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -40,7 +44,7 @@ void joystick_callback(int jid, int event);
 // Window constatns
 const unsigned int WINDOW_WIDTH = 1280;
 const unsigned int WINDOW_HEIGHT = 720;
-const char* windowTitle = "OpenGL learning";
+const char* windowTitle = "City Generator";
 
 // // Camera
 Camera* camera = Camera::getInstance(glm::vec3{0.0f, 0.0f, 3.0f});
@@ -102,7 +106,6 @@ int main() {
     //
     //////////////////
     int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
-    std::cout << "Present" << present << std::endl;
     glfwSetJoystickCallback(joystick_callback);
 
     // glfwSwapInterval(0); // This will disable vsync and remove frame rate cap
@@ -131,11 +134,11 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
     glEnable(GL_BLEND);
 
-    // Removes the backfaces of faces
-    // however the cubes in the current state are not correct, normals wrong way
-    
-    // TODO , temp disable
-    // glEnable(GL_CULL_FACE);
+
+
+
+
+
 
 
     Scene* scene = Scene::getInstance();
@@ -149,22 +152,54 @@ int main() {
     std::string grass2 = "../assets/textures/grass2.png";
     std::string grassTexture = "../assets/textures/grassTexture.png";
     std::string cube = "../assets/models/Cube/cube.obj";
+    std::string dust2 = "../assets/models/de_dust2/de_dust2.obj";
 
-    scene->addModel(backPackPath, &backpackShader, true, glm::vec3{5, 10, 0}, glm::vec3{glm::radians(90.0), 0, 0});
+
+    // scene->addLine(nullptr, glm::vec3{0,0,0}, glm::vec3{10, 10, 0}, glm::vec3{0.0f, 0.0f, 0.0f});
+
+    scene->addModel(dust2, nullptr, true, glm::vec3{5, -20, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec3{0.01, 0.01, 0.01});
     
-    // scene->addModel(modelPath, nullptr, true, glm::vec3{0, 1, 0});
+    // scene->addModel(modelPath, nullptr, true, glm::vec3{0, 0, 0});
     // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{0.01, 0.01, 0.01});
     // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
+    // scene->addSprite(gordon, nullptr, true, true, glm::vec3{0, 0, 0}, glm::vec3{glm::radians(90.0), 0.0f, 0.0f}, glm::vec2{1.0f, 1.0f});
+    
+    std::random_device rd; // obtain a random number from hardware
+    std::mt19937 gen(rd()); // seed the generator
+    std::uniform_int_distribution<> distr(0, 1000); // define the range
 
-
-    // scene->addSprite(gordon, nullptr, true, false, glm::vec3{0, 0, 0}, glm::vec3{glm::radians(90.0), 0.0f, 0.0f}, glm::vec2{1.0f, 1.0f});
-    scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
-    scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, glm::radians(90.0), 0}, glm::vec2{400, 400});
-    scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, 0, 0}, glm::vec2{400, 400});
+    for (int i = 0; i < 1; i++)
+    {
+        scene->addSprite(gordon, nullptr, true, true, glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))}, glm::vec3{glm::radians(90.0), 0.0f, 0.0f}, glm::vec2{1.0f, 1.0f});
+    }
+    
+    // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
+    // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, glm::radians(90.0), 0}, glm::vec2{400, 400});
+    // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, 0, 0}, glm::vec2{400, 400});
     
     // scene->addSprite(cube, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
 
-    // scene->addModel(modelPath, nullptr, true, glm::vec3{1, 0, -10});
+    scene->addModel(backPackPath, nullptr, true, glm::vec3{0, 0, 0});
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // X Y Z (R G B) Lines for the orientation
+    // X is Red
+    scene->addLine(nullptr, glm::vec3{-1000.0, 0, 0}, glm::vec3{1000.0, 0, 0}, glm::vec3{1, 0, 0});
+    // Y is Green
+    scene->addLine(nullptr, glm::vec3{0, -1000.0, 0}, glm::vec3{0, 1000.0, 0}, glm::vec3{0, 1, 0});
+    // Z is Blue
+    scene->addLine(nullptr, glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0}, glm::vec3{0, 0, 1});
 
     // IMGUI test
     IMGUI_CHECKVERSION();
@@ -231,7 +266,6 @@ int main() {
         Menues::display(camera);
         // Menues::test();
         scene->drawSceneObjects(view, projection);
-
 
         // own scope for imgui idk why, lookinto it 
         {

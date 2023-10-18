@@ -56,6 +56,28 @@ void Scene::addSprite(std::string& spriteTexture_in,
     scene_objects.push_back(dynamic_cast<BaseObject*>(sprite));
 }
 
+
+void Scene::addLine(const LineObject& LineObject)
+{
+    // TODO
+}
+
+
+void Scene::addLine(Shader* shader_in,
+               glm::vec3 point_a,
+               glm::vec3 point_b,
+               glm::vec3 colour_in,
+               bool isVisible_in,
+               glm::vec3 scale_in)
+{
+    // Create line
+    LineObject* line = new LineObject(
+        shader_in, point_a, point_b, colour_in, isVisible_in, scale_in
+    );
+    scene_objects.push_back(dynamic_cast<BaseObject*>(line));
+}
+
+
 bool Scene::removeObject(BaseObject &obj)
 {
     // TODO
@@ -86,9 +108,9 @@ void Scene::drawSceneObjects(glm::mat4 view, glm::mat4 projection)
         // Line
         else if (LineObject* object = dynamic_cast<LineObject*>(sceneObj))
         {
-            LOG(ERROR, "Line object not yet implemented");
+            object->Draw(view, projection);
         }
-        // // Lught
+        // // Light
         // else if (LightObject* object = dynamic_cast<LightObject*>(sceneObj))
         // {
         //     LOG(ERROR, "Light object not yet implemented");

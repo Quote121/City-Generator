@@ -41,8 +41,9 @@ public:
     }
 
     // For shader hotswapping
-    void SetSpriteShader(Shader* spriteShader_in);
-    
+    void SetSpriteShader(Shader* spriteShader_in)
+        { spriteShader = spriteShader_in; }
+
     // Inline methods are defined where they are defined as inline
     inline Shader* GetSpriteShader()
         { return spriteShader; }

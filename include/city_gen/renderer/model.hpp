@@ -20,6 +20,8 @@ class Model
 private:
     Shader* modelShader = nullptr;
 
+    bool flipTextureOnLoad = true;
+
     BoundingBox* boundingBox;
 
     // model data
@@ -38,7 +40,7 @@ private:
 public:
     void Draw();
 
-    Shader* GetModelShader();
+    Shader* GetShader();
 
     Model(Shader* modelShader_in, const std::string& path, BoundingBox* boundingBox_in);
 };

@@ -49,7 +49,7 @@ public:
     void Draw(glm::mat4 view, glm::mat4 projection) override
     {
         glm::mat4 result = glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * getScaleMat4(scaleScalar) * getScaleMat4(scale);
-        Shader* objectShader = model->GetModelShader();
+        Shader* objectShader = model->GetShader();
 
         if (objectShader == nullptr)
         {
@@ -65,6 +65,19 @@ public:
             // Set the local position based on the bounding box center
             objectShader->setVec3("localCenterPos", base_boundingBox->getCenter());
             model->Model::Draw();
+        }
+
+        // Draw bounding box if asked
+        if (showBoundingBox)
+        {
+            Shader* bbShader = base_boundingBox->getShader();
+            bbShader->use();
+            bbShader->setMat4("view", view);
+            bbShader->setMat4("projection", projection);
+            bbShader->setMat4("model", result);
+            bbShader->setVec3("localCenterPos", base_boundingBox->getCenter());
+
+            base_boundingBox->Draw();
         }
     }
 
