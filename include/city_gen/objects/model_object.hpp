@@ -11,13 +11,27 @@ private:
     glm::vec3 scale = {1.0f, 1.0f, 1.0f};
     Model* model;
 
+    std::string modelName;
+
 public:
     ModelObject(std::string& modelPath_in,   // Path to .obj
                 Shader *shader_in) :                        
                 BaseObject()
     {
         Shader* shader;
+        // Get the model name
 
+        std::vector<std::string> tokens;
+        // Split the string by '/'
+        size_t start = 0, end = 0;
+        while ((end = modelPath_in.find("/", start)) != std::string::npos) {
+            tokens.push_back(modelPath_in.substr(start, end - start));
+            start = end + 1;
+        }
+        tokens.push_back(modelPath_in.substr(start));
+        // Get the last token
+        modelName = tokens.back();
+        
         // Create the default shader unless passed one
         if (shader_in == nullptr)
         {
@@ -130,5 +144,7 @@ public:
         objectOriginPosition = base_boundingBox->getCenter();
         return this;
     }
+
+    
 
 };

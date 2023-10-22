@@ -29,8 +29,6 @@
 
 class Menues
 {
-
 public:
-    // TODO, maybe instead of passing as arg we go off the singleton instance?
-    static void display(Camera* cam);
+    static void display(float deltaTime);
 };

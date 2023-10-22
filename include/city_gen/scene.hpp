@@ -34,6 +34,11 @@ private:
 
     static Scene* pinstance_;
 
+    // Used for alias'
+    int lineCount = 0;
+    int modelCount = 0;
+    int spriteCount = 0;
+
 public:
     // Singleton setup //  
     Scene(Scene &other) = delete;

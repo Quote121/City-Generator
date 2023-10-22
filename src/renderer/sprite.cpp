@@ -3,14 +3,16 @@
 
 #include "config.hpp"
 
-Sprite::Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in, BoundingBox* boundingBox) : texturePath{spriteTexturePath_in}
+Sprite::Sprite(Shader* spriteShader_in, const std::string& filename, BoundingBox* boundingBox) : texturePath{filename}
 {
     boundingBoxPtr = boundingBox;
 
-    std::string filename = std::string(spriteTexturePath_in);
-    
     // filename = directory + '/' + filename; // assume relative
 
+    // TODO for resource manager
+    // Here we would do our cache lookup to see if the filename is already loaded somewhere, if so return the pointer struct to that asset
+    // The texture struct returned would have info such as format type as dimentions
+    // Need to work out if its alight if we use the same texture ID, should be alright
     unsigned int textureID;
     glGenTextures(1, &textureID);
 
@@ -43,7 +45,7 @@ Sprite::Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in,
     }
     else
     {
-        std::cout << "Texture failed to load at path: " << spriteTexturePath_in << std::endl;
+        std::cout << "Texture failed to load at path: " << filename << std::endl;
     }
     stbi_image_free(data);
 
@@ -146,7 +148,6 @@ void Sprite::Draw()
 
 
 // Sprite Shader getters and setters
-
 // Shader* Sprite::GetSpriteShader() 
     
 

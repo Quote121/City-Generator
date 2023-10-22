@@ -5,8 +5,37 @@
 #include <string>
 #include <vector>
 
-void Menues::display(Camera* cam)
+void Menues::display(float deltaTime)
 {
+    Camera* cam = Camera::getInstance();
+    // Fps and general stats area
+    static int fpsSampCount = 0;
+    static float fpsSum = 0;
+    static float fpsValue;
+    // Print fps and coords
+    const int sampleSize = 100;
+    fpsSum += (1 / deltaTime);
+    fpsSampCount += 1;
+    if (fpsSampCount == sampleSize) {
+        fpsValue = ceil((int)(fpsSum / sampleSize * 10)) / 10;
+        fpsSum = 0; fpsSampCount = 0;
+    }
+    //////////////////////////////////////////////////////////////
+    //
+    // Window that gives fps, position, camera view
+    //
+    ImGui::Begin("Stats");
+    std::stringstream imGuiFPS;
+    imGuiFPS << "FPS: " << fpsValue;
+    ImGui::Text(imGuiFPS.str().c_str());
+    std::stringstream viewss;
+    viewss << "Pitch | Yaw: " << cam->Pitch << " " << cam->Yaw;
+    ImGui::Text(viewss.str().c_str());
+    std::stringstream pos_ss;
+    pos_ss << "[x,y,z] : " << cam->GetPositionCoords();
+    ImGui::Text(pos_ss.str().c_str());
+    ImGui::End();
+    //////////////////////////////////////////////////////////////
     
     // Scene* scene = Scene::getInstance();
     

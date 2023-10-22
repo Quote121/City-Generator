@@ -14,6 +14,11 @@ class BaseObject {
 
 // Only accessable by classes that inherit
 protected:
+    // Alias given by the scene handler
+    // e.g. line_7, sprite_12
+    // 3D assets will also have a filepath for the asset its loading
+    std::string alias;
+
     glm::vec3 rotation = {0.0f, 0.0f, 0.0f};    // current rotation of the object
     glm::vec3 position = {0.0f, 0.0f, 0.0f};    // Position in 3d space
     
@@ -46,4 +51,13 @@ protected:
     glm::mat4 getScaleMat4(glm::vec3 scale);
     glm::mat4 getScaleMat4(glm::vec2 scale); // For sprites
     glm::mat4 getScaleMat4(float scale);
+public:
+    void SetAlias(const std::string* alias_in)
+    {
+        alias = *alias_in;
+    }
+    inline std::string& GetAlias()
+    {
+        return alias;
+    }
 };

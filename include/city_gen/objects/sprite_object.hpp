@@ -26,12 +26,25 @@ private:
     float scaleScalar = 1.0f;                   // for proportional scaling in x and y
     Sprite* sprite;
 
+    std::string spriteName;
+
 public:
     SpriteObject(std::string& spriteTexture_in,
                 Shader *shader_in) : 
                 BaseObject()
     {
         Shader* shader;
+
+        std::vector<std::string> tokens;
+        // Split the string by '/'
+        size_t start = 0, end = 0;
+        while ((end = spriteTexture_in.find("/", start)) != std::string::npos) {
+            tokens.push_back(spriteTexture_in.substr(start, end - start));
+            start = end + 1;
+        }
+        tokens.push_back(spriteTexture_in.substr(start));
+        // Get the last token
+        spriteName = tokens.back();
 
         // Create the default shader unless passed one
         if (shader_in == nullptr)

@@ -44,6 +44,12 @@ ModelObject* Scene::addModel(std::string& modelPath_in,
         modelPath_in, shader_in
     );
     scene_objects.push_back(dynamic_cast<BaseObject*>(model));
+
+    modelCount++;
+
+    std::string name = "Model_" + std::to_string(modelCount);
+    model->SetAlias(&name);
+    
     return model;
 }
 
@@ -60,6 +66,12 @@ SpriteObject* Scene::addSprite(std::string& spriteTexture_in,
         spriteTexture_in, shader_in
     );
     scene_objects.push_back(dynamic_cast<BaseObject*>(sprite));
+    
+    spriteCount++;
+
+    std::string name = "Sprite_" + std::to_string(spriteCount);
+    sprite->SetAlias(&name);
+    
     return sprite;
 }
 
@@ -80,6 +92,12 @@ LineObject* Scene::addLine(Shader* shader_in,
         shader_in, point_a, point_b, colour_in
     );
     scene_objects.push_back(dynamic_cast<BaseObject*>(line));
+
+    lineCount++;
+
+    std::string name = "Line_" + std::to_string(lineCount);
+    line->SetAlias(&name);
+
     return line;
 }
 

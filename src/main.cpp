@@ -253,51 +253,15 @@ int main() {
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
 
-        /////////////
-        // FPS Count
-        /////////////
-        // TODO move this to an appropriate area
-        static int fpsSampCount = 0;
-        static float fpsSum = 0;
-        // Print fps and coords
-        const int sampleSize = 100;
-        float fpsValue;
-        fpsSum += (1 / deltaTime);
-        fpsSampCount += 1;
-        if (fpsSampCount == sampleSize) {
-            fpsValue = ceil((int)(fpsSum / sampleSize * 10)) / 10;
-            fpsSum = 0; fpsSampCount = 0;
-        }
-
         // 2 View types of view, perspective and orthographic projections. We use perspective becuase we are human and have 2 eyes and so can measure depth
         //glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f); // Makes stuff look 2d
         // FOV, aspect ratio (width/height), near distance, far distance
         glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f);
         glm::mat4 view = camera->GetViewMatrix();
         
-        // static float speed = 10.0f;
-        // static float col[4] = {0.5f, 0.5f, 0.5f, 1.0f};
-
-        
-        Menues::display(camera);
+        Menues::display(deltaTime);
         // Menues::test();
         scene->drawSceneObjects(view, projection);
-
-        // own scope for imgui idk why, lookinto it 
-        {
-        ImGui::Begin("Stats");
-        std::stringstream imGuiFPS;
-        imGuiFPS << "FPS: " << fpsValue;
-        ImGui::Text(imGuiFPS.str().c_str());
-        std::stringstream viewss;
-        viewss << "Pitch | Yaw: " << camera->Pitch << " " << camera->Yaw;
-        ImGui::Text(viewss.str().c_str());
-        std::stringstream pos_ss;
-        pos_ss << "[x,y,z] : " << camera->GetPositionCoords();
-        ImGui::Text(pos_ss.str().c_str());
-        ImGui::End();
-        }
-
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
