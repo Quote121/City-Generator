@@ -6,7 +6,7 @@
 class LineObject : public BaseObject
 {
 private:
-    glm::vec3 scale; // Acts as a scale
+    glm::vec3 scale = {1.0f, 1.0f, 1.0f}; // Acts as a scale
     glm::vec3 colour;
 
     glm::vec3 a; // The two vertices that describe the line
@@ -23,15 +23,11 @@ public:
     LineObject(Shader* shader_in,
                glm::vec3 point_a,
                glm::vec3 point_b,
-               glm::vec3 colour_in,
-               bool isVisible_in,
-               glm::vec3 scale_in
-               ) :
-               BaseObject(glm::vec3{0,0,0}, glm::vec3{0,0,0}, isVisible_in),
+               glm::vec3 colour_in) :
+               BaseObject(),
                a{point_a},
                b{point_b},
-               colour{colour_in},
-               scale{scale_in}
+               colour{colour_in}
     {
         // Determine if we are using the default shader and also the bounding box
         base_boundingBox->Update(point_a);
@@ -80,5 +76,67 @@ public:
             line_obj->Line::Draw();
         }
 
+    }
+
+    LineObject* SetColour(glm::vec3 colour_in)
+    {
+        colour = colour_in;
+        return this;
+    }
+
+    LineObject* SetPosition(glm::vec3 position_in)
+    {
+        position = position_in;
+        return this;
+    }
+
+    LineObject* SetRotation(glm::vec3 rotation_in)
+    {
+        rotation = rotation_in;
+        return this;
+    }
+
+    LineObject* SetScale(glm::vec3 scale_in)
+    {
+        scale = scale_in;
+        return this;
+    }
+
+    LineObject* SetScale(float scale_in)
+    {
+        scaleScalar = scale_in;
+        return this;
+    }
+
+    LineObject* IsVisible(bool toggle)
+    {
+        isVisible = toggle;
+        return this;
+    }
+
+    LineObject* ShowBoundingBox(bool toggle)
+    {
+        showBoundingBox = toggle;
+        return this;
+    }
+
+    LineObject* SetSpawnOffset(glm::vec3 vec3)
+    {
+        objectOriginPosition = vec3;
+        return this;
+    }
+
+    LineObject* SetModelOriginCenterBottom()
+    {
+        glm::vec3 center = base_boundingBox->getCenter();
+        center.y = base_boundingBox->getMin().y;
+        objectOriginPosition = center;
+        return this;
+    }
+
+    LineObject* SetModelOriginCenter()
+    {
+        objectOriginPosition = base_boundingBox->getCenter();
+        return this;
     }
 };

@@ -47,31 +47,20 @@ public:
 
     // 3D models
     void addModel(const ModelObject& modelObject);
-    void addModel(std::string& modelPath_in,                          
-                  Shader *shader_in,                                   
-                  bool isVisible_in = true,
-                  glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},      
-                  glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},       
-                  glm::vec3 scl_in = glm::vec3{1.0f, 1.0f, 1.0f});
+    ModelObject* addModel(std::string& modelPath_in,
+                          Shader* shader_in);
 
     // 2D sprites
     void addSprite(const SpriteObject& spriteObject);
-    void addSprite(std::string& spriteTexture_in,
-                   Shader *shader_in,
-                   bool isVisible_in = true,
-                   bool isBillboard_in = false,
-                   glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},      // Starting pos of the object, defualt origin
-                   glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},      // 
-                   glm::vec2 scl_in = glm::vec2{1.0f, 1.0f});
+    SpriteObject* addSprite(std::string& spriteTexture_in,
+                            Shader *shader_in);
 
     // Line
     void addLine(const LineObject& lineObject);
-    void addLine(Shader* shader_in,
+    LineObject* addLine(Shader* shader_in,
                  glm::vec3 point_a,
                  glm::vec3 point_b,
-                 glm::vec3 colour_in = glm::vec3{0.0f, 0.0f, 0.0f},
-                 bool isVisible_in = true,
-                 glm::vec3 scale_in = glm::vec3{1.0f, 1.0f, 1.0f});
+                 glm::vec3 colour_in = glm::vec3{1.0f, 1.0f, 1.0f});
 
     // Light
     // Particle

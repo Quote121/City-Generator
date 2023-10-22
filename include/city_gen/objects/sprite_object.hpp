@@ -23,23 +23,13 @@ private:
 
     bool isBillboard = false;                   // Billboard sprite always looking at player
     glm::vec2 scale = {1.0f, 1.0f};             // only scaled in X-axis and Y-axis 
-    float scaleScalar = 1.0f; // for proportional scaling in x and y
+    float scaleScalar = 1.0f;                   // for proportional scaling in x and y
     Sprite* sprite;
 
 public:
-    // only parameter is spriteTexture_in
-    // *shader_in can be NULL
     SpriteObject(std::string& spriteTexture_in,
-                 Shader *shader_in,
-                 bool isVisible_in,
-                 bool isBillboard_in,
-                 glm::vec3 pos_in,      // Starting pos of the object, defualt origin
-                 glm::vec3 rot_in,      // 
-                 glm::vec2 scl_in) : 
-                 
-                 BaseObject(pos_in, rot_in, isVisible_in),
-                 isBillboard{isBillboard_in},
-                 scale{scl_in}
+                Shader *shader_in) : 
+                BaseObject()
     {
         Shader* shader;
 
@@ -107,4 +97,68 @@ public:
         }
         }
     }
+
+    // Builders
+    SpriteObject* SetPosition(glm::vec3 position_in)
+    {
+        position = position_in;
+        return this;
+    }
+
+    SpriteObject* SetRotation(glm::vec3 rotation_in)
+    {
+        rotation = rotation_in;
+        return this;
+    }
+
+    SpriteObject* SetScale(glm::vec2 scale_in)
+    {
+        scale = scale_in;
+        return this;
+    }
+
+    SpriteObject* SetScale(float scale_in)
+    {
+        scaleScalar = scale_in;
+        return this;
+    }
+
+    SpriteObject* SetIsVisible(bool toggle)
+    {
+        isVisible = toggle;
+        return this;
+    }
+
+    SpriteObject* SetIsBillboard(bool toggle)
+    {
+        isBillboard = toggle;
+        return this;
+    }
+
+    SpriteObject* ShowBoundingBox(bool toggle)
+    {
+        showBoundingBox = toggle;
+        return this;
+    }
+
+    SpriteObject* SetSpawnOffset(glm::vec3 vec3)
+    {
+        objectOriginPosition = vec3;
+        return this;
+    }
+
+    SpriteObject* SetModelOriginCenterBottom()
+    {
+        glm::vec3 center = base_boundingBox->getCenter();
+        center.y = base_boundingBox->getMin().y;
+        objectOriginPosition = center;
+        return this;
+    }
+
+    SpriteObject* SetModelOriginCenter()
+    {
+        objectOriginPosition = base_boundingBox->getCenter();
+        return this;
+    }
+
 };

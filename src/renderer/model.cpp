@@ -148,6 +148,7 @@ void Model::Draw()
 }
 
 // TODO gamma unused and to be moved to common as a few use this method
+// TODO intercept this call to point towards a texture cache
 unsigned int Model::TextureFromFile(const char *path, const std::string &directory, bool gamma)
 {
     std::string filename = std::string(path);

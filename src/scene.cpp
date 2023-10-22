@@ -22,18 +22,29 @@ void Scene::addModel(const ModelObject& modelObject)
     // TODO
 }
 
-void Scene::addModel(std::string& modelPath_in,                          
-                     Shader *shader_in,                                   
-                     bool isVisible_in,
-                     glm::vec3 pos_in,      
-                     glm::vec3 rot_in,       
-                     glm::vec3 scl_in)
+// ModelObject* Scene::addModel(std::string& modelPath_in,                          
+//                      Shader *shader_in,                                   
+//                      bool isVisible_in,
+//                      glm::vec3 pos_in,      
+//                      glm::vec3 rot_in,       
+//                      glm::vec3 scl_in)
+// {
+//     // Create model and allocate memory for it, and add it to the scene
+//     ModelObject* model = new ModelObject(
+//         modelPath_in, shader_in, isVisible_in, pos_in, rot_in, scl_in
+//     );
+//     scene_objects.push_back(dynamic_cast<BaseObject*>(model));
+//     return model;
+// }
+
+ModelObject* Scene::addModel(std::string& modelPath_in,
+                             Shader* shader_in)
 {
-    // Create model and allocate memory for it, and add it to the scene
     ModelObject* model = new ModelObject(
-        modelPath_in, shader_in, isVisible_in, pos_in, rot_in, scl_in
+        modelPath_in, shader_in
     );
     scene_objects.push_back(dynamic_cast<BaseObject*>(model));
+    return model;
 }
 
 void Scene::addSprite(const SpriteObject& spriteObject)
@@ -41,19 +52,15 @@ void Scene::addSprite(const SpriteObject& spriteObject)
     // TOOD
 }
 
-void Scene::addSprite(std::string& spriteTexture_in,
-                Shader *shader_in,
-                bool isVisible_in,
-                bool isBillboard_in,
-                glm::vec3 pos_in,      
-                glm::vec3 rot_in,      
-                glm::vec2 scl_in)
+SpriteObject* Scene::addSprite(std::string& spriteTexture_in,
+                Shader *shader_in)
 {
     // Create sprite, allocate memory and put in list
     SpriteObject* sprite = new SpriteObject(
-        spriteTexture_in, shader_in, isVisible_in, isBillboard_in, pos_in, rot_in, scl_in
+        spriteTexture_in, shader_in
     );
     scene_objects.push_back(dynamic_cast<BaseObject*>(sprite));
+    return sprite;
 }
 
 
@@ -63,20 +70,18 @@ void Scene::addLine(const LineObject& LineObject)
 }
 
 
-void Scene::addLine(Shader* shader_in,
+LineObject* Scene::addLine(Shader* shader_in,
                glm::vec3 point_a,
                glm::vec3 point_b,
-               glm::vec3 colour_in,
-               bool isVisible_in,
-               glm::vec3 scale_in)
+               glm::vec3 colour_in)
 {
     // Create line
     LineObject* line = new LineObject(
-        shader_in, point_a, point_b, colour_in, isVisible_in, scale_in
+        shader_in, point_a, point_b, colour_in
     );
     scene_objects.push_back(dynamic_cast<BaseObject*>(line));
+    return line;
 }
-
 
 bool Scene::removeObject(BaseObject &obj)
 {

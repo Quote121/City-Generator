@@ -69,7 +69,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6); // Setting to version 4.6
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    glfwWindowHint(GLFW_SAMPLES, 4);
+    glfwWindowHint(GLFW_SAMPLES, 4); // MSAA x4
     #ifdef __APPLE__
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // MACOSX
     #endif
@@ -136,7 +136,7 @@ int main() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); 
     glEnable(GL_BLEND);
 
-    glEnable(GL_MULTISAMPLE); 
+    glEnable(GL_MULTISAMPLE); // Toggled MSAA
 
 
 
@@ -156,11 +156,23 @@ int main() {
     std::string cube = "../assets/models/Cube/cube.obj";
     std::string dust2 = "../assets/models/de_dust2/de_dust2.obj";
 
+    std::string terrain = "../assets/models/Terrain/Terrain_first.obj";
+
+
+    // scene->addModel(terrain, nullptr, true);
+
+
+
+
+
 
     // scene->addLine(nullptr, glm::vec3{0,0,0}, glm::vec3{10, 10, 0}, glm::vec3{0.0f, 0.0f, 0.0f});
 
-    scene->addModel(dust2, nullptr, true, glm::vec3{5, -20, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec3{0.01, 0.01, 0.01});
     
+
+    // scene->addModel(dust2, nullptr, true, glm::vec3{5, -20, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec3{0.01, 0.01, 0.01});
+    
+
     // scene->addModel(modelPath, nullptr, true, glm::vec3{0, 0, 0});
     // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{0.01, 0.01, 0.01});
     // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
@@ -168,11 +180,15 @@ int main() {
     
     std::random_device rd; // obtain a random number from hardware
     std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(0, 1000); // define the range
+    std::uniform_int_distribution<> distr(0, 100); // define the range
 
     for (int i = 0; i < 1; i++)
     {
-        scene->addSprite(gordon, nullptr, true, true, glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))}, glm::vec3{glm::radians(90.0), 0.0f, 0.0f}, glm::vec2{1.0f, 1.0f});
+        scene->addSprite(gordon, nullptr)
+            ->SetModelOriginCenterBottom()
+            ->SetIsVisible(true)
+            ->SetIsBillboard(true)
+            ->SetPosition(glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))});
     }
     
     // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
@@ -181,18 +197,15 @@ int main() {
     
     // scene->addSprite(cube, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
 
-    scene->addModel(backPackPath, nullptr, true, glm::vec3{0, 0, 0});
+    // scene->addModel(backPackPath, nullptr, true, glm::vec3{0, 0, 0})
+    //     ->SetModelOriginCenterBottom()
+    //     ;
 
-
-
-
-
-
-
-
-
-
-
+    scene->addModel(backPackPath, nullptr)
+        ->SetModelOriginCenterBottom()
+        ->IsVisible(true)
+        ->ShowBoundingBox(true)
+        ->SetScale(0.5f);
 
 
     // X Y Z (R G B) Lines for the orientation

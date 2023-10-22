@@ -17,20 +17,19 @@ protected:
     glm::vec3 rotation = {0.0f, 0.0f, 0.0f};    // current rotation of the object
     glm::vec3 position = {0.0f, 0.0f, 0.0f};    // Position in 3d space
     
+    glm::vec3 objectOriginPosition = {0.0f, 0.0f, 0.0f}; // Position offset for spawning. E.g. when spawning at 0,0,0 the offset can be set
+                                                         // to the center of the object or the center of the bottom so its easier to place
+    
     BoundingBox* base_boundingBox; // Info is local verticies
     bool showBoundingBox = true; // Will draw the outline of the bounding box on the model
 
     float scaleScalar = 1.0f;                   // Float to scale object in all directions
     bool isVisible = true;                      // Visability Flag
 
-
-    BaseObject(glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},
-               glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},
-               bool isVisible_in = true) :
-               position{pos_in}, rotation{rot_in}, isVisible{isVisible_in}
+    BaseObject()
     {
         base_boundingBox = new BoundingBox();
-    }
+    };
 
     ~BaseObject()
     {

@@ -11,19 +11,10 @@ private:
     glm::vec3 scale = {1.0f, 1.0f, 1.0f};
     Model* model;
 
-    // bounding box?
-
 public:
-    // Derived constructor
     ModelObject(std::string& modelPath_in,   // Path to .obj
-           Shader *shader_in,                                   
-           bool isVisible_in,
-           glm::vec3 pos_in,      // No defaults as the scene should deal with that, this is just the model nothing else
-           glm::vec3 rot_in,      // 
-           glm::vec3 scl_in) :                        
-
-           BaseObject(pos_in, rot_in, isVisible_in), // Base constructor
-           scale(scl_in)                                        // initalizer list
+                Shader *shader_in) :                        
+                BaseObject()
     {
         Shader* shader;
 
@@ -63,7 +54,7 @@ public:
             objectShader->setMat4("projection", projection);
             objectShader->setMat4("model", result);
             // Set the local position based on the bounding box center
-            objectShader->setVec3("localCenterPos", base_boundingBox->getCenter());
+            objectShader->setVec3("localCenterPos", objectOriginPosition);
             model->Model::Draw();
         }
 
@@ -75,10 +66,69 @@ public:
             bbShader->setMat4("view", view);
             bbShader->setMat4("projection", projection);
             bbShader->setMat4("model", result);
-            bbShader->setVec3("localCenterPos", base_boundingBox->getCenter());
+            bbShader->setVec3("localCenterPos", objectOriginPosition);
 
             base_boundingBox->Draw();
         }
+    }
+
+    // For builder, these are object specific as we want to return
+    // the object type and also it means we can choose for different
+    // objects what the user can see.
+    ModelObject* SetPosition(glm::vec3 position_in)
+    {
+        position = position_in;
+        return this;
+    }
+
+    ModelObject* SetRotation(glm::vec3 rotation_in)
+    {
+        rotation = rotation_in;
+        return this;
+    }
+
+    ModelObject* SetScale(glm::vec3 scale_in)
+    {
+        scale = scale_in;
+        return this;
+    }
+
+    ModelObject* SetScale(float scale_in)
+    {
+        scaleScalar = scale_in;
+        return this;
+    }
+
+    ModelObject* IsVisible(bool toggle)
+    {
+        isVisible = toggle;
+        return this;
+    }
+
+    ModelObject* ShowBoundingBox(bool toggle)
+    {
+        showBoundingBox = toggle;
+        return this;
+    }
+
+    ModelObject* SetSpawnOffset(glm::vec3 vec3)
+    {
+        objectOriginPosition = vec3;
+        return this;
+    }
+
+    ModelObject* SetModelOriginCenterBottom()
+    {
+        glm::vec3 center = base_boundingBox->getCenter();
+        center.y = base_boundingBox->getMin().y;
+        objectOriginPosition = center;
+        return this;
+    }
+
+    ModelObject* SetModelOriginCenter()
+    {
+        objectOriginPosition = base_boundingBox->getCenter();
+        return this;
     }
 
 };

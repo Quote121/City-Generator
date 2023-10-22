@@ -47,6 +47,7 @@ extern const char* bb_defaultFragShaderPath;
 
 ////////////////// Renderer settings ////////////////////
 
-#define ENABLE_CULL_FACE_MODEL 1
+#define ENABLE_CULL_FACE_MODEL 1                // Back face cull on 3D assets
+
 
 ////////////////////////////////////////////////////////
