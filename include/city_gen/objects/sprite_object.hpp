@@ -45,12 +45,14 @@ public:
             shader = shader_in;
         }
 
-        sprite = new Sprite(shader, spriteTexture_in);
+        base_boundingBox = new BoundingBox();
+        sprite = new Sprite(shader, spriteTexture_in, base_boundingBox);
     }
 
     ~SpriteObject()
     {
         delete(sprite);
+        delete(base_boundingBox);
     }
 
     void Draw(glm::mat4 view, glm::mat4 projection) override
@@ -92,6 +94,7 @@ public:
             objectShader->setMat4("view", view);
             objectShader->setMat4("projection", projection);
             objectShader->setMat4("model", result);
+            objectShader->setVec3("localCenterPos", objectOriginPosition);
 
             sprite->Sprite::Draw();
         }

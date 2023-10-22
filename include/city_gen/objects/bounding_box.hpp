@@ -107,6 +107,11 @@ public:
         min = glm::min(min, point);
         max = glm::max(max, point);
     }
+    void StreamVertexUpdate(float x, float y, float z)
+    {
+        min = glm::min(min, {x, y, z});
+        max = glm::max(max, {x, y, z});
+    }
 
     // When we update the bounding box after creation we use this method
     void Update(glm::vec3& point)

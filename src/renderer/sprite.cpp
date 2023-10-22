@@ -3,9 +3,9 @@
 
 #include "config.hpp"
 
-Sprite::Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in) : texturePath{spriteTexturePath_in}
+Sprite::Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in, BoundingBox* boundingBox) : texturePath{spriteTexturePath_in}
 {
-    
+    boundingBoxPtr = boundingBox;
 
     std::string filename = std::string(spriteTexturePath_in);
     
@@ -82,6 +82,13 @@ Sprite::Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in)
         -x, -y, 0.0f,   0.0f, 0.0f,   // bottom left
         -x,  y, 0.0f,   0.0f, 1.0f    // top left 
     };
+
+    // Stream the verts to the bounding box
+    boundingBoxPtr->StreamVertexUpdate(x, y, 0);
+    boundingBoxPtr->StreamVertexUpdate(x, -y, 0);
+    boundingBoxPtr->StreamVertexUpdate(-x, -y, 0);
+    boundingBoxPtr->StreamVertexUpdate(-x, y, 0);
+
 
     // textureID to be stored
     spriteTextureID = textureID;

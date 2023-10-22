@@ -157,11 +157,15 @@ int main() {
     std::string dust2 = "../assets/models/de_dust2/de_dust2.obj";
 
     std::string terrain = "../assets/models/Terrain/Terrain_first.obj";
+    std::string tree = "../assets/textures/tree_2_cropped.png";
+
+    scene->addModel(terrain, nullptr)
+        ->SetModelOriginCenterBottom()
+        
+    ;
 
 
-    // scene->addModel(terrain, nullptr, true);
-
-
+    // Note for terrain generation the terrain asset is 160 by 160
 
 
 
@@ -180,15 +184,16 @@ int main() {
     
     std::random_device rd; // obtain a random number from hardware
     std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(0, 100); // define the range
+    std::uniform_int_distribution<> distr(-160, 160); // define the range
 
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 10; i++)
     {
-        scene->addSprite(gordon, nullptr)
+        scene->addSprite(tree, nullptr)
             ->SetModelOriginCenterBottom()
             ->SetIsVisible(true)
             ->SetIsBillboard(true)
-            ->SetPosition(glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))});
+            ->SetPosition(glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))})
+            ->SetScale(2.0f);
     }
     
     // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
@@ -201,12 +206,8 @@ int main() {
     //     ->SetModelOriginCenterBottom()
     //     ;
 
-    scene->addModel(backPackPath, nullptr)
-        ->SetModelOriginCenterBottom()
-        ->IsVisible(true)
-        ->ShowBoundingBox(true)
-        ->SetScale(0.5f);
-
+    scene->addModel(backPackPath, nullptr) ->SetModelOriginCenterBottom()
+;
 
     // X Y Z (R G B) Lines for the orientation
     // X is Red

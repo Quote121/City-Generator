@@ -2,8 +2,10 @@
 
 #include <vector>
 #include <string>
+#include <glm/glm.hpp>
 
 #include "shader.hpp"
+#include "bounding_box.hpp"
 
 /*
     Sprite is just a 2D texture, it has position and rotation
@@ -19,6 +21,7 @@ private:
     unsigned int VAO, VBO, EBO;
 
     Shader* spriteShader = nullptr;
+    BoundingBox* boundingBoxPtr;
 
     std::string texturePath;
     unsigned int spriteTextureID;
@@ -29,7 +32,7 @@ private:
 public:
 
     // constructor for texture
-    Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in);
+    Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in, BoundingBox* boundingBox);
     
     ~Sprite()
     {
