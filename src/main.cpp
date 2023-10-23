@@ -28,6 +28,8 @@
 #include "menues.hpp"
 #include "scene.hpp"
 
+#include "Reputeless/PerlinNoise.hpp"
+
 
 // temp test with randomness TODO remove
 #include <random>
@@ -159,29 +161,57 @@ int main() {
     std::string terrain = "../assets/models/Terrain/Terrain_first.obj";
     std::string tree = "../assets/textures/tree_2_cropped.png";
 
-    scene->addModel(terrain, nullptr)
+    std::string building1 = "../assets/models/Buildings/NoTextureStarter/CellPhoneBuilding_01.obj";
+    std::string building2 = "../assets/models/Buildings/NoTextureStarter/LargeRectangle.obj";
+    std::string building3 = "../assets/models/Buildings/NoTextureStarter/AngledRoofHouse.obj";
+
+    scene->addModel(building1, nullptr)
         ->SetModelOriginCenterBottom()
-        
-    ;
+        ->SetPosition(glm::vec3{10, 0, 0});
+
+
+    scene->addModel(building2, nullptr)
+        ->SetModelOriginCenterBottom()
+        ->SetPosition(glm::vec3{10, 0, 10});
+
+
+    scene->addModel(building3, nullptr)
+        ->SetModelOriginCenterBottom()
+        ->SetPosition(glm::vec3{10, 0, -10});
+
+
+    scene->addModel(terrain, nullptr)
+        ->SetModelOriginCenterBottom();
+
+
+    const siv::PerlinNoise::seed_type seed = 123456u;
+	const siv::PerlinNoise perlin{ seed };
+	
+	for (int y = 0; y < 160; ++y)
+	{
+		for (int x = 0; x < 160; ++x)
+		{
+			const double noise = perlin.noise2D_01((x), (y));
+
+            if (noise > 0.7)
+            {
+                scene->addModel(building1, nullptr)
+                    ->SetModelOriginCenterBottom()
+                    ->SetPosition(glm::vec3{(x-80)*2, 0, (y-80)*2});
+            }
+
+			std::cout << noise << std::endl;
+		}
+
+	}
+
+
+
 
 
     // Note for terrain generation the terrain asset is 160 by 160
 
 
-
-
-    // scene->addLine(nullptr, glm::vec3{0,0,0}, glm::vec3{10, 10, 0}, glm::vec3{0.0f, 0.0f, 0.0f});
-
-    
-
-    // scene->addModel(dust2, nullptr, true, glm::vec3{5, -20, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec3{0.01, 0.01, 0.01});
-    
-
-    // scene->addModel(modelPath, nullptr, true, glm::vec3{0, 0, 0});
-    // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{0.01, 0.01, 0.01});
-    // scene->addModel(cube, nullptr, true, glm::vec3{0, 0, 0}, glm::vec3{0, 0, 0}, glm::vec3{1, 1, 1});
-    // scene->addSprite(gordon, nullptr, true, true, glm::vec3{0, 0, 0}, glm::vec3{glm::radians(90.0), 0.0f, 0.0f}, glm::vec2{1.0f, 1.0f});
-    
     std::random_device rd; // obtain a random number from hardware
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(-160, 160); // define the range
@@ -195,20 +225,13 @@ int main() {
             ->SetPosition(glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))})
             ->SetScale(2.0f);
     }
-    
-    // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
-    // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, glm::radians(90.0), 0}, glm::vec2{400, 400});
-    // scene->addSprite(grassTexture, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{0, 0, 0}, glm::vec2{400, 400});
-    
-    // scene->addSprite(cube, nullptr, true, false, glm::vec3{0, -200, 0}, glm::vec3{glm::radians(90.0), 0, 0}, glm::vec2{400, 400});
 
-    // scene->addModel(backPackPath, nullptr, true, glm::vec3{0, 0, 0})
-    //     ->SetModelOriginCenterBottom()
-    //     ;
+    // scene->addModel(backPackPath, nullptr)
+    //      ->SetModelOriginCenter()
+    //      ->SetPosition(glm::vec3{0.0f, 1.0f, 0.0f});
 
-    scene->addModel(backPackPath, nullptr)
-         ->SetModelOriginCenter()
-         ->SetPosition(glm::vec3{0.0f, 1.0f, 0.0f});
+
+
 
 
     // X Y Z (R G B) Lines for the orientation
