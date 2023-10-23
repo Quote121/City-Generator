@@ -111,4 +111,9 @@ public:
         return showBoundingBox;
     }
 
+    float& GetScaleScalarImGui()
+    {
+        return scaleScalar;
+    }
+
 };

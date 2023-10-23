@@ -8,7 +8,6 @@
 // as currently there is no need for multiple scene classes.
 //
 //
-//  TODO thread safe access
 //
 ////////////////
 #pragma once

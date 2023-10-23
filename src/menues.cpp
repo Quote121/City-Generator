@@ -61,34 +61,60 @@ void Menues::display(float deltaTime)
                 ss_distance << object->GetAlias() << " is " << glm::length(object->GetPosition()-cam->Position) << " units away from you.";
                 ImGui::Text(ss_distance.str().c_str());
                 
-                ImGui::NewLine();
-                ImGui::Text("Position:\n");
-                ImGui::SliderFloat("X pos: ", &object->GetPositionImGui().x, -200.0f, 200.0f);
-                ImGui::SliderFloat("Y pos: ", &object->GetPositionImGui().y, -200.0f, 200.0f);
-                ImGui::SliderFloat("Z pos: ", &object->GetPositionImGui().z, -200.0f, 200.0f);
-
-                ImGui::SliderFloat("X rot: ", &object->GetRotationImGui().x, -5.0f, 5.0f);
-                ImGui::SliderFloat("Y rot: ", &object->GetRotationImGui().y, -5.0f, 5.0f);
-                ImGui::SliderFloat("Z rot: ", &object->GetRotationImGui().z, -5.0f, 5.0f);
-
-                ImGui::Checkbox("Visible", &object->GetIsVisibleImGui());
-                ImGui::Checkbox("Display AABB", &object->GetShowBoundingBoxImGui());
 
 
                 // Object specific controls
                 if (ModelObject* modelObject = dynamic_cast<ModelObject*>(object))
                 {
+                    std::string nameString = "\nModel : " + modelObject->GetModelName();
+                    // ImGui::Text(nameString.c_str());
+                    ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f}, nameString.c_str());
+
+                    ImGui::Text("Scale:\n");
+                    ImGui::SliderFloat("X scale", &modelObject->GetScaleImGui().x, 0.1f, 10.0f);
+                    ImGui::SliderFloat("Y scale", &modelObject->GetScaleImGui().y, 0.1f, 10.0f);
+                    ImGui::SliderFloat("Z scale", &modelObject->GetScaleImGui().z, 0.1f, 10.0f);
+                    ImGui::SliderFloat("Scale", &modelObject->GetScaleScalarImGui(), 0.1f, 10.0f);
 
                 }
                 // Sprite specific controls
                 else if (SpriteObject* spriteObject = dynamic_cast<SpriteObject*>(object))
                 {
-                
+                    std::string nameString = "\nSprite : " + spriteObject->GetSpriteName();
+                    ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f}, nameString.c_str());
+
+                    ImGui::Text("Scale:\n");
+                    ImGui::SliderFloat("X scale", &spriteObject->GetScaleImGui().x, 0.1f, 10.0f);
+                    ImGui::SliderFloat("Y scale", &spriteObject->GetScaleImGui().y, 0.1f, 10.0f);
+                    ImGui::SliderFloat("Scale", &spriteObject->GetScaleScalarImGui(), 0.1f, 10.0f);
+
+                    ImGui::Checkbox("Toggle billboard", &spriteObject->GetIsBillboardImGui());
+
                 }
                 // Line specific controls
                 else if (LineObject* lineObject = dynamic_cast<LineObject*>(object))
                 {
-                    
+
+                    ImGui::Text("Scale:\n");
+                    ImGui::SliderFloat("X scale", &lineObject->GetScaleImGui().x, 0.1f, 10.0f);
+                    ImGui::SliderFloat("Y scale", &lineObject->GetScaleImGui().y, 0.1f, 10.0f);
+                    ImGui::SliderFloat("Z scale", &lineObject->GetScaleImGui().z, 0.1f, 10.0f);
+                    ImGui::SliderFloat("Scale", &lineObject->GetScaleScalarImGui(), 0.1f, 10.0f);
+
+                    ImGui::Text("Point A:\n");
+                    ImGui::SliderFloat("X", &lineObject->GetPointAImGui().x, -100.0f, 100.0f);
+                    ImGui::SliderFloat("Y", &lineObject->GetPointAImGui().y, -100.0f, 100.0f);
+                    ImGui::SliderFloat("Z", &lineObject->GetPointAImGui().z, -100.0f, 100.0f);
+
+                    ImGui::Text("Point B:\n");
+                    ImGui::SliderFloat("X", &lineObject->GetPointBImGui().x, -100.0f, 100.0f);
+                    ImGui::SliderFloat("Y", &lineObject->GetPointBImGui().y, -100.0f, 100.0f);
+                    ImGui::SliderFloat("Z", &lineObject->GetPointBImGui().z, -100.0f, 100.0f);
+
+                    ImGui::Text("Colour:\n");
+                    ImGui::SliderFloat("R", &lineObject->GetColourImGui().x, 0.0f, 1.0f);
+                    ImGui::SliderFloat("G", &lineObject->GetColourImGui().y, 0.0f, 1.0f);
+                    ImGui::SliderFloat("B", &lineObject->GetColourImGui().z, 0.0f, 1.0f);
                 }
                 // Light specific controls
                 // else if (LightObject* object = dynamic_cast<LightObject*>(sceneObj))
@@ -106,6 +132,28 @@ void Menues::display(float deltaTime)
                 {
                     LOG(ERROR, "Unrecognized object: " << i << " name : ");
                 }
+
+
+                ImGui::NewLine();
+                ImGui::Text("Position:\n");
+                ImGui::SliderFloat("X pos: ", &object->GetPositionImGui().x, -200.0f, 200.0f);
+                ImGui::SliderFloat("Y pos: ", &object->GetPositionImGui().y, -200.0f, 200.0f);
+                ImGui::SliderFloat("Z pos: ", &object->GetPositionImGui().z, -200.0f, 200.0f);
+                ImGui::NewLine();
+                ImGui::Text("Rotation:\n");
+                ImGui::SliderFloat("X rot: ", &object->GetRotationImGui().x, -5.0f, 5.0f);
+                ImGui::SliderFloat("Y rot: ", &object->GetRotationImGui().y, -5.0f, 5.0f);
+                ImGui::SliderFloat("Z rot: ", &object->GetRotationImGui().z, -5.0f, 5.0f);
+
+                ImGui::Checkbox("Visible", &object->GetIsVisibleImGui());
+                ImGui::Checkbox("Display AABB", &object->GetShowBoundingBoxImGui());
+
+
+
+
+
+
+
                 ImGui::TreePop();
             }
             i++;
