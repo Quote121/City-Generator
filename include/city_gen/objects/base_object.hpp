@@ -60,4 +60,55 @@ public:
     {
         return alias;
     }
+
+    glm::vec3 GetPosition()
+    {
+        return position;
+    }
+
+    glm::vec3 GetRotation()
+    {
+        return rotation;
+    }
+
+    bool GetIsVisible()
+    {
+        return isVisible;
+    }
+
+    float GetScaleScalar()
+    {
+        return scaleScalar;
+    }
+
+    bool GetShowBoundingBox()
+    {
+        return showBoundingBox;
+    }
+
+    // ImGui getters. These return a reference to each data type
+    // as the imgui interface requires it for callbacks.
+    // since this is a single threaded application we dont have
+    // to worry about race cases etc.
+
+    glm::vec3& GetPositionImGui()
+    {
+        return position;
+    }
+
+    glm::vec3& GetRotationImGui()
+    {
+        return rotation;
+    }
+
+    bool& GetIsVisibleImGui()
+    {
+        return isVisible;
+    }
+
+    bool& GetShowBoundingBoxImGui()
+    {
+        return showBoundingBox;
+    }
+
 };

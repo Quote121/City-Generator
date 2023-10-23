@@ -53,36 +53,39 @@ public:
 
     void Draw(glm::mat4 view, glm::mat4 projection) override
     {
-        glm::mat4 result = glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * getScaleMat4(scaleScalar) * getScaleMat4(scale);
-        Shader* objectShader = model->GetShader();
-
-        if (objectShader == nullptr)
+        if (isVisible)
         {
-            std::cerr << "NO SHADER LOADED TO OBJECT CLASS" << std::endl;
-        }
-        else
-        {
-            // Apply all position and scaling before drawing
-            objectShader->use();
-            objectShader->setMat4("view", view);
-            objectShader->setMat4("projection", projection);
-            objectShader->setMat4("model", result);
-            // Set the local position based on the bounding box center
-            objectShader->setVec3("localCenterPos", objectOriginPosition);
-            model->Model::Draw();
-        }
+            glm::mat4 result = glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * getScaleMat4(scaleScalar) * getScaleMat4(scale);
+            Shader* objectShader = model->GetShader();
 
-        // Draw bounding box if asked
-        if (showBoundingBox)
-        {
-            Shader* bbShader = base_boundingBox->getShader();
-            bbShader->use();
-            bbShader->setMat4("view", view);
-            bbShader->setMat4("projection", projection);
-            bbShader->setMat4("model", result);
-            bbShader->setVec3("localCenterPos", objectOriginPosition);
+            if (objectShader == nullptr)
+            {
+                std::cerr << "NO SHADER LOADED TO OBJECT CLASS" << std::endl;
+            }
+            else
+            {
+                // Apply all position and scaling before drawing
+                objectShader->use();
+                objectShader->setMat4("view", view);
+                objectShader->setMat4("projection", projection);
+                objectShader->setMat4("model", result);
+                // Set the local position based on the bounding box center
+                objectShader->setVec3("localCenterPos", objectOriginPosition);
+                model->Model::Draw();
+            }
 
-            base_boundingBox->Draw();
+            // Draw bounding box if asked
+            if (showBoundingBox)
+            {
+                Shader* bbShader = base_boundingBox->getShader();
+                bbShader->use();
+                bbShader->setMat4("view", view);
+                bbShader->setMat4("projection", projection);
+                bbShader->setMat4("model", result);
+                bbShader->setVec3("localCenterPos", objectOriginPosition);
+
+                base_boundingBox->Draw();
+            }
         }
     }
 
@@ -145,6 +148,5 @@ public:
         return this;
     }
 
-    
 
 };

@@ -206,8 +206,10 @@ int main() {
     //     ->SetModelOriginCenterBottom()
     //     ;
 
-    scene->addModel(backPackPath, nullptr) ->SetModelOriginCenterBottom()
-;
+    scene->addModel(backPackPath, nullptr)
+         ->SetModelOriginCenter()
+         ->SetPosition(glm::vec3{0.0f, 1.0f, 0.0f});
+
 
     // X Y Z (R G B) Lines for the orientation
     // X is Red

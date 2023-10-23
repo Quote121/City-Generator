@@ -24,6 +24,7 @@ void Menues::display(float deltaTime)
     //
     // Window that gives fps, position, camera view
     //
+    
     ImGui::Begin("Stats");
     std::stringstream imGuiFPS;
     imGuiFPS << "FPS: " << fpsValue;
@@ -37,80 +38,81 @@ void Menues::display(float deltaTime)
     ImGui::End();
     //////////////////////////////////////////////////////////////
     
-    // Scene* scene = Scene::getInstance();
+    Scene* scene = Scene::getInstance();
     
-    
-    // int i = 0;
-    
-    // ImGui::Begin("Game objects");
+    // Later on with the resource manager, the user will be able to select from a list of things to spawn into the world
 
-    // if(ImGui::TreeNode("Objects"))
-    // {
-    //     for (auto& obj : scene->getObjects())
-    //     {
+    int i = 0;
 
-    //         // Get the object name from the filepath specifed
-    //         std::stringstream ss_filePath{obj->getFilePath()};
-    //         std::string segment;
-    //         std::vector<std::string> seglist;
-    //         while(std::getline(ss_filePath, segment, '/')) { seglist.push_back(segment); }
-
-    //         // Give the object a number and its filename
-    //         if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, seglist[seglist.size()-1].c_str()))
-    //         {
-
-    //             std::stringstream ss_name;
-    //             ss_name << "Controls for " << seglist[seglist.size()-1] << " : ";
-
-    //             ImGui::Text(ss_name.str().c_str());
-    //             std::stringstream ss_pos;
-    //             ss_pos << "Box " << i << " pos : [X:Y:Z] = " << obj->_position.x << "," << obj->_position.y << "," << obj->_position.z;
-    //             ImGui::Text(ss_pos.str().c_str());
-    //             std::stringstream ss_distance;
-    //             ss_distance << "Box " << i << " is " << glm::length(obj->_position-cam->Position) << " units away from you.";
-    //             ImGui::Text(ss_distance.str().c_str());
-
-    //             ImGui::NewLine();
-    //             ImGui::Text("Position:\n");
-    //             ImGui::SliderFloat("X pos: ", &obj->_position.x, -100.0f, 100.0f);
-    //             ImGui::SliderFloat("Y pos: ", &obj->_position.y, -100.0f, 100.0f);
-    //             ImGui::SliderFloat("Z pos: ", &obj->_position.z, -100.0f, 100.0f);
-
-    //             ImGui::Text("Rotation:\n");
-    //             ImGui::SliderFloat("X rotation", &obj->_rotation.x, -10.0f, 100.0f);
-    //             ImGui::SliderFloat("Y rotation", &obj->_rotation.y, -10.0f, 10.0f);
-    //             ImGui::SliderFloat("Z rotation", &obj->_rotation.z, -10.0f, 10.0f);
-
-    //             ImGui::Text("Scale:\n");
-    //             ImGui::SliderFloat("X scale", &obj->_scale.x, 0.1f, 10.0f);
-    //             ImGui::SliderFloat("Y scale", &obj->_scale.y, 0.1f, 10.0f);
-    //             ImGui::SliderFloat("Z scale", &obj->_scale.z, 0.1f, 10.0f);
-    //             ImGui::SliderFloat("Scale", &obj->_scaleScalar, 0.1f, 10.0f);
+    ImGui::Begin("Game objects");
+    if(ImGui::TreeNode("Objects"))
+    {
+        for (BaseObject* object : scene->getObjects())
+        {
+            if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
+            {
+                // General base class info
+                std::stringstream ss_name;
+                ss_name << "Controls for " << object->GetAlias() << " : ";
+                ImGui::Text(ss_name.str().c_str());
+                std::stringstream ss_pos;
+                ss_pos << "Position : [X:Y:Z] = " << object->GetPosition().x << "," << object->GetPosition().y << "," << object->GetPosition().z;
+                ImGui::Text(ss_pos.str().c_str());
+                std::stringstream ss_distance;
+                ss_distance << object->GetAlias() << " is " << glm::length(object->GetPosition()-cam->Position) << " units away from you.";
+                ImGui::Text(ss_distance.str().c_str());
                 
-    //             ImGui::TreePop();
+                ImGui::NewLine();
+                ImGui::Text("Position:\n");
+                ImGui::SliderFloat("X pos: ", &object->GetPositionImGui().x, -200.0f, 200.0f);
+                ImGui::SliderFloat("Y pos: ", &object->GetPositionImGui().y, -200.0f, 200.0f);
+                ImGui::SliderFloat("Z pos: ", &object->GetPositionImGui().z, -200.0f, 200.0f);
 
-    //             if (ImGui::Button("Delete"))
-    //             {
-    //                 // since we have deleted an object we need to re render the imgui list (break)
-    //                 scene->removeObject(*obj);
-    //                 break;
-    //             }
+                ImGui::SliderFloat("X rot: ", &object->GetRotationImGui().x, -5.0f, 5.0f);
+                ImGui::SliderFloat("Y rot: ", &object->GetRotationImGui().y, -5.0f, 5.0f);
+                ImGui::SliderFloat("Z rot: ", &object->GetRotationImGui().z, -5.0f, 5.0f);
+
+                ImGui::Checkbox("Visible", &object->GetIsVisibleImGui());
+                ImGui::Checkbox("Display AABB", &object->GetShowBoundingBoxImGui());
+
+
+                // Object specific controls
+                if (ModelObject* object = dynamic_cast<ModelObject*>(object))
+                {
+
+                }
+                // Sprite specific controls
+                else if (SpriteObject* object = dynamic_cast<SpriteObject*>(object))
+                {
                 
-    //         }
-    //         i++;
-    //     }
-    //     ImGui::TreePop();
-    // }
+                }
+                // Line specific controls
+                else if (LineObject* object = dynamic_cast<LineObject*>(object))
+                {
 
-    // // List box of spawnable objects
-    // static int listbox_currentitem = 0;
-    // const char* items[] = { "Rat", "Cargo" };
-    // ImGui::ListBox("Lists:\n", &listbox_currentitem, items, IM_ARRAYSIZE(items));
+                }
+                // Light specific controls
+                // else if (LightObject* object = dynamic_cast<LightObject*>(sceneObj))
+                // {
+                //     LOG(ERROR, "Light object not yet implemented");
 
-    // if (ImGui::Button("Spawn"))
-    // {
-    //     ImGui::Text("In development");
-    // }
-
-    // ImGui::End();
+                // }
+                // Particle specific controls
+                // Particle
+                // else if (ParticleObject* object = dynamic_cast<ParticleObject*>(obj))
+                // {
+                //     LOG(ERROR, "Particle object not yet implemented");
+                // }
+                // Error
+                else
+                {
+                    LOG(ERROR, "Unrecognized object");
+                }
+                ImGui::TreePop();
+            }
+            i++;
+        }
+        ImGui::TreePop();
+    }
+    ImGui::End();
 }
