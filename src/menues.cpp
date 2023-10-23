@@ -43,7 +43,6 @@ void Menues::display(float deltaTime)
     // Later on with the resource manager, the user will be able to select from a list of things to spawn into the world
 
     int i = 0;
-
     ImGui::Begin("Game objects");
     if(ImGui::TreeNode("Objects"))
     {
@@ -77,19 +76,19 @@ void Menues::display(float deltaTime)
 
 
                 // Object specific controls
-                if (ModelObject* object = dynamic_cast<ModelObject*>(object))
+                if (ModelObject* modelObject = dynamic_cast<ModelObject*>(object))
                 {
 
                 }
                 // Sprite specific controls
-                else if (SpriteObject* object = dynamic_cast<SpriteObject*>(object))
+                else if (SpriteObject* spriteObject = dynamic_cast<SpriteObject*>(object))
                 {
                 
                 }
                 // Line specific controls
-                else if (LineObject* object = dynamic_cast<LineObject*>(object))
+                else if (LineObject* lineObject = dynamic_cast<LineObject*>(object))
                 {
-
+                    
                 }
                 // Light specific controls
                 // else if (LightObject* object = dynamic_cast<LightObject*>(sceneObj))
@@ -98,15 +97,14 @@ void Menues::display(float deltaTime)
 
                 // }
                 // Particle specific controls
-                // Particle
-                // else if (ParticleObject* object = dynamic_cast<ParticleObject*>(obj))
-                // {
-                //     LOG(ERROR, "Particle object not yet implemented");
-                // }
-                // Error
+                else if (ParticleObject* particleObject = dynamic_cast<ParticleObject*>(object))
+                {
+                    LOG(ERROR, "Particle object not yet implemented");
+                }
+                // Error cant cast the object
                 else
                 {
-                    LOG(ERROR, "Unrecognized object");
+                    LOG(ERROR, "Unrecognized object: " << i << " name : ");
                 }
                 ImGui::TreePop();
             }
