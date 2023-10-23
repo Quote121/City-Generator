@@ -6,3 +6,5 @@ Libraries and headers used:
 - glfw - https://www.glfw.org/
 - stb_image.h - https://github.com/nothings/stb/blob/master/stb_image.h
 - glad.h - https://github.com/go-gl/glfw/blob/master/v3.1/glfw/glfw/deps/glad/glad.h
+- ImGui - https://github.com/ocornut/imgui
+- Perlin noise generator - https://github.com/Reputeless/PerlinNoise
