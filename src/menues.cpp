@@ -46,7 +46,12 @@ void Menues::display(float deltaTime)
     ImGui::Begin("Game objects");
     if(ImGui::TreeNode("Objects"))
     {
-        for (BaseObject* object : scene->getObjects())
+        std::vector<BaseObject*> objects;
+        objects.insert(objects.end(), scene->GetLineObjects().begin(), scene->GetLineObjects().end());
+        objects.insert(objects.end(), scene->GetModelObjects().begin(), scene->GetModelObjects().end());
+        objects.insert(objects.end(), scene->GetSpriteObjects().begin(), scene->GetSpriteObjects().end());
+
+        for (BaseObject* object : objects)
         {
             if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
             {

@@ -129,7 +129,6 @@ void Sprite::SetupSprite(float vertices[], unsigned int indices[])
 // Make the OpenGL draw call
 void Sprite::Draw()
 {
-
     glActiveTexture(GL_TEXTURE0); // Associate the texture to GL_TEXTURE0 texture unit
     glBindTexture(GL_TEXTURE_2D, spriteTextureID);
     spriteShader->setInt("texture1", 0);

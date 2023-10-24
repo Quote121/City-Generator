@@ -184,29 +184,51 @@ int main() {
         ->SetModelOriginCenterBottom();
 
 
-    const siv::PerlinNoise::seed_type seed = 123456u;
-	const siv::PerlinNoise perlin{ seed };
-	
-	for (int y = 0; y < 160; ++y)
-	{
-		for (int x = 0; x < 160; ++x)
-		{
-			const double noise = perlin.noise2D_01((x), (y));
+    scene->addSprite(tree, nullptr)
+        ->SetModelOriginCenterBottom()
+        ->SetIsVisible(true)
+        ->SetIsBillboard(true)
+        ->SetPosition(glm::vec3{0, 0, 1})
+        ->SetScale(2.0f);
+    scene->addSprite(tree, nullptr)
+        ->SetModelOriginCenterBottom()
+        ->SetIsVisible(true)
+        ->SetIsBillboard(true)
+        ->SetPosition(glm::vec3{0, 0, 3})
+        ->SetScale(2.0f);
+    scene->addSprite(tree, nullptr)
+        ->SetModelOriginCenterBottom()
+        ->SetIsVisible(true)
+        ->SetIsBillboard(true)
+        ->SetPosition(glm::vec3{0, 0, 5})
+        ->SetScale(2.0f);
+    scene->addSprite(tree, nullptr)
+        ->SetModelOriginCenterBottom()
+        ->SetIsVisible(true)
+        ->SetIsBillboard(true)
+        ->SetPosition(glm::vec3{0, 0, 7})
+        ->SetScale(2.0f);
 
-            if (noise > 0.7)
-            {
-                scene->addModel(building1, nullptr)
-                    ->SetModelOriginCenterBottom()
-                    ->SetPosition(glm::vec3{(x-80)*2, 0, (y-80)*2});
-            }
-
-			std::cout << noise << std::endl;
-		}
-
-	}
 
 
+    // const siv::PerlinNoise::seed_type seed = 123456u;
+	// const siv::PerlinNoise perlin{ seed };
+	// for (int y = 0; y < 160; ++y)
+	// {
+	// 	for (int x = 0; x < 160; ++x)
+	// 	{
+	// 		const double noise = perlin.noise2D_01((x), (y));
 
+    //         if (noise > 0.72)
+    //         {
+    //             scene->addModel(building1, nullptr)
+    //                 ->SetModelOriginCenterBottom()
+    //                 ->SetPosition(glm::vec3{(x-80)*2, 0, (y-80)*2});
+    //         }
+
+	// 		std::cout << noise << std::endl;
+	// 	}
+	// }
 
 
     // Note for terrain generation the terrain asset is 160 by 160
@@ -216,7 +238,7 @@ int main() {
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(-160, 160); // define the range
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 100; i++)
     {
         scene->addSprite(tree, nullptr)
             ->SetModelOriginCenterBottom()
@@ -226,9 +248,9 @@ int main() {
             ->SetScale(2.0f);
     }
 
-    // scene->addModel(backPackPath, nullptr)
-    //      ->SetModelOriginCenter()
-    //      ->SetPosition(glm::vec3{0.0f, 1.0f, 0.0f});
+    scene->addModel(backPackPath, nullptr)
+         ->SetModelOriginCenter()
+         ->SetPosition(glm::vec3{0.0f, 1.0f, 0.0f});
 
 
 

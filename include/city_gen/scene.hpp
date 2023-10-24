@@ -22,7 +22,11 @@
 class Scene
 {
 private:
-    std::vector<BaseObject*> scene_objects;
+    // Scene objects specific to objects
+    // This allows us to choose rendering order with minimal overhead
+    std::vector<ModelObject*> scene_model_objects;
+    std::vector<SpriteObject*> scene_sprite_objects;
+    std::vector<LineObject*> scene_line_objects;
 
     Scene() {}
 
@@ -37,6 +41,8 @@ private:
     int lineCount = 0;
     int modelCount = 0;
     int spriteCount = 0;
+
+    static bool SortByDistanceInv(BaseObject* a, BaseObject* b);
 
 public:
     // Singleton setup //  
@@ -78,11 +84,27 @@ public:
 
     // Light
     // particle
-    // light
 
-    std::vector<BaseObject*> const& getObjects()
+    // std::vector<BaseObject*> const& getObjects()
+    // {
+    //     return scene_objects;
+    // }
+
+    // Get scene objects
+    std::vector<ModelObject*> const& GetModelObjects()
     {
-        return scene_objects;
+        return scene_model_objects;
+    }
+
+    std::vector<SpriteObject*> const& GetSpriteObjects()
+    {
+        // Sort by distance and return the sprites
+        return scene_sprite_objects;
+    }
+
+    std::vector<LineObject*> const& GetLineObjects()
+    {
+        return scene_line_objects;
     }
 
     // Casts each of the objects into their respected derived class to then call their respected draw functions

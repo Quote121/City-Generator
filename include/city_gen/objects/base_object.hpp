@@ -8,6 +8,7 @@
 #include "model.hpp"
 #include "bounding_box.hpp"
 #include "config.hpp"
+#include "camera.hpp"
 
 // The base class of an object for other objects to be created from
 class BaseObject {
@@ -52,6 +53,13 @@ protected:
     glm::mat4 getScaleMat4(glm::vec2 scale); // For sprites
     glm::mat4 getScaleMat4(float scale);
 public:
+    float GetDistanceFromCamera()
+    {
+        Camera* cam = Camera::getInstance();
+
+        return glm::length((cam->Position-position));
+    }
+
     void SetAlias(const std::string* alias_in)
     {
         alias = *alias_in;
