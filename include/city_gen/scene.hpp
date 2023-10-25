@@ -17,7 +17,7 @@
 #include <algorithm>
 
 #include "objects/all.hpp"
-
+#include "skybox.hpp"
 
 class Scene
 {
@@ -27,6 +27,9 @@ private:
     std::vector<ModelObject*> scene_model_objects;
     std::vector<SpriteObject*> scene_sprite_objects;
     std::vector<LineObject*> scene_line_objects;
+    
+    SkyBox* skybox; // The skybox object
+
 
     Scene() {}
 
@@ -72,6 +75,11 @@ public:
                  glm::vec3 point_b,
                  glm::vec3 colour_in = glm::vec3{1.0f, 1.0f, 1.0f});
 
+
+    void CreateSkyBox(std::vector<std::string>* images);
+    void DrawSkyBox(glm::mat4 view, glm::mat4 projection);
+
+
     // Light
     // Particle
     // Line
@@ -107,7 +115,7 @@ public:
         return scene_line_objects;
     }
 
-    // Casts each of the objects into their respected derived class to then call their respected draw functions
+    // Draws all of the objects form each of the object vectors
     void drawSceneObjects(glm::mat4 view, glm::mat4 projection);
     
 };

@@ -140,12 +140,21 @@ int main() {
 
     glEnable(GL_MULTISAMPLE); // Toggled MSAA
 
-
-
-
-
-
     Scene* scene = Scene::getInstance();
+
+    std::vector<std::string> skyBoxImages;
+    
+    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_ft.jpg");
+    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_bk.jpg");
+    
+    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_up.jpg");
+    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_dn.jpg");
+
+    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_rt.jpg");
+    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_lf.jpg");
+
+    scene->CreateSkyBox(&skyBoxImages);
+
 
     std::string modelPath = "../assets/models/Box/cube.obj";
     std::string backPackPath = "../assets/models/Backpack/backpack.obj";
@@ -167,22 +176,26 @@ int main() {
 
     scene->addModel(building1, nullptr)
         ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, 0});
+        ->SetPosition(glm::vec3{10, 0, 0})
+        ->ShowBoundingBox(false);
+        
 
 
     scene->addModel(building2, nullptr)
         ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, 10});
+        ->SetPosition(glm::vec3{10, 0, 10})
+        ->ShowBoundingBox(false);
 
 
     scene->addModel(building3, nullptr)
         ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, -10});
+        ->SetPosition(glm::vec3{10, 0, -10})
+        ->ShowBoundingBox(false);
 
 
     scene->addModel(terrain, nullptr)
-        ->SetModelOriginCenterBottom();
-
+        ->SetModelOriginCenterBottom()
+        ->ShowBoundingBox(false);
 
     scene->addSprite(tree, nullptr)
         ->SetModelOriginCenterBottom()
@@ -238,7 +251,7 @@ int main() {
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(-160, 160); // define the range
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 0; i++)
     {
         scene->addSprite(tree, nullptr)
             ->SetModelOriginCenterBottom()
@@ -250,19 +263,20 @@ int main() {
 
     scene->addModel(backPackPath, nullptr)
          ->SetModelOriginCenter()
-         ->SetPosition(glm::vec3{0.0f, 1.0f, 0.0f});
+         ->SetPosition(glm::vec3{0.0f, 1.0f, 0.0f})
+         ->ShowBoundingBox(false);
 
 
 
 
 
-    // X Y Z (R G B) Lines for the orientation
-    // X is Red
-    scene->addLine(nullptr, glm::vec3{-1000.0, 0, 0}, glm::vec3{1000.0, 0, 0}, glm::vec3{1, 0, 0});
-    // Y is Green
-    scene->addLine(nullptr, glm::vec3{0, -1000.0, 0}, glm::vec3{0, 1000.0, 0}, glm::vec3{0, 1, 0});
-    // Z is Blue
-    scene->addLine(nullptr, glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0}, glm::vec3{0, 0, 1});
+    // // X Y Z (R G B) Lines for the orientation
+    // // X is Red
+    // scene->addLine(nullptr, glm::vec3{-1000.0, 0, 0}, glm::vec3{1000.0, 0, 0}, glm::vec3{1, 0, 0});
+    // // Y is Green
+    // scene->addLine(nullptr, glm::vec3{0, -1000.0, 0}, glm::vec3{0, 1000.0, 0}, glm::vec3{0, 1, 0});
+    // // Z is Blue
+    // scene->addLine(nullptr, glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0}, glm::vec3{0, 0, 1});
 
     // IMGUI test
     IMGUI_CHECKVERSION();
@@ -307,8 +321,14 @@ int main() {
         glm::mat4 view = camera->GetViewMatrix();
         
         Menues::display(deltaTime);
-        // Menues::test();
+        
+        // Remove translation from matrix by casting to mat3 then mat4
+        glm::mat4 viewSB = glm::mat4(glm::mat3(camera->GetViewMatrix()));
+        scene->DrawSkyBox(viewSB, projection);
         scene->drawSceneObjects(view, projection);
+        
+        
+
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

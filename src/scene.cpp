@@ -12,30 +12,10 @@ Scene* Scene::getInstance()
     return pinstance_; 
 }
 
-void Scene::addObject(BaseObject* object_in) const
-{
-    // TODO
-}
-
 void Scene::addModel(const ModelObject& modelObject)
 {
     // TODO
 }
-
-// ModelObject* Scene::addModel(std::string& modelPath_in,                          
-//                      Shader *shader_in,                                   
-//                      bool isVisible_in,
-//                      glm::vec3 pos_in,      
-//                      glm::vec3 rot_in,       
-//                      glm::vec3 scl_in)
-// {
-//     // Create model and allocate memory for it, and add it to the scene
-//     ModelObject* model = new ModelObject(
-//         modelPath_in, shader_in, isVisible_in, pos_in, rot_in, scl_in
-//     );
-//     scene_objects.push_back(dynamic_cast<BaseObject*>(model));
-//     return model;
-// }
 
 ModelObject* Scene::addModel(std::string& modelPath_in,
                              Shader* shader_in)
@@ -121,7 +101,6 @@ bool Scene::SortByDistanceInv(BaseObject* a, BaseObject* b)
     return a->GetDistanceFromCamera() > b->GetDistanceFromCamera();
 }
 
-
 void Scene::drawSceneObjects(glm::mat4 view, glm::mat4 projection)
 {
     // Draw lines
@@ -142,4 +121,21 @@ void Scene::drawSceneObjects(glm::mat4 view, glm::mat4 projection)
     {
         sprite->Draw(view, projection);
     }
+}
+
+
+void Scene::CreateSkyBox(std::vector<std::string>* images)
+{
+    // In here we create the skybox object and allocate it memory.
+    // This will make a call to skybox.cpp and skybox.hpp which keeps the opengl 
+    // code in renderer
+    //
+    // Scene will have a renderer which can then be used
+    skybox = new SkyBox(*images);
+}
+
+void Scene::DrawSkyBox(glm::mat4 view, glm::mat4 projection)
+{
+    // We call the skybox draw call from the skybox object we created.
+    skybox->Draw(view, projection);
 }

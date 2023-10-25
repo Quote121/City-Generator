@@ -31,6 +31,10 @@ extern const char* line_defaultFragShaderPath;
 extern const char* bb_defaultVertShaderPath;
 extern const char* bb_defaultFragShaderPath;
 
+// Skybox shader
+extern const char* skybox_defaultVertShaderPath;
+extern const char* skybox_defaultFragShaderPath;
+
 }
 /////////////////////////////////////////
 
