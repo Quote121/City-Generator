@@ -11,6 +11,7 @@
 #include "camera.hpp"
 #include "resourceManager.hpp"
 
+
 // The base class of an object for other objects to be created from
 class BaseObject {
 
@@ -47,14 +48,14 @@ protected:
     virtual void Draw(glm::mat4 view, glm::mat4 projection) {};
 
     /* get mat4 from 3 angles */
-    glm::mat4 getRotateMat4(glm::vec3 angles);
-    glm::mat4 getPositionMat4(glm::vec3 position);
+    glm::mat4 getRotateMat4(glm::vec3 angles) const;
+    glm::mat4 getPositionMat4(glm::vec3 position) const;
     
-    glm::mat4 getScaleMat4(glm::vec3 scale);
-    glm::mat4 getScaleMat4(glm::vec2 scale); // For sprites
-    glm::mat4 getScaleMat4(float scale);
+    glm::mat4 getScaleMat4(glm::vec3 scale) const;
+    glm::mat4 getScaleMat4(glm::vec2 scale) const; // For sprites
+    glm::mat4 getScaleMat4(float scale) const;
 public:
-    float GetDistanceFromCamera()
+    float GetDistanceFromCamera() const
     {
         Camera* cam = Camera::getInstance();
 
@@ -70,27 +71,27 @@ public:
         return alias;
     }
 
-    glm::vec3 GetPosition()
+    glm::vec3 GetPosition() const
     {
         return position;
     }
 
-    glm::vec3 GetRotation()
+    glm::vec3 GetRotation() const
     {
         return rotation;
     }
 
-    bool GetIsVisible()
+    bool GetIsVisible() const
     {
         return isVisible;
     }
 
-    float GetScaleScalar()
+    float GetScaleScalar() const
     {
         return scaleScalar;
     }
 
-    bool GetShowBoundingBox()
+    bool GetShowBoundingBox() const
     {
         return showBoundingBox;
     }

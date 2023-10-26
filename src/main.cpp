@@ -228,24 +228,23 @@ int main() {
 
 
 
-    // const siv::PerlinNoise::seed_type seed = 123456u;
-	// const siv::PerlinNoise perlin{ seed };
-	// for (int y = 0; y < 160; ++y)
-	// {
-	// 	for (int x = 0; x < 160; ++x)
-	// 	{
-	// 		const double noise = perlin.noise2D_01((x), (y));
+    const siv::PerlinNoise::seed_type seed = 123456u;
+	const siv::PerlinNoise perlin{ seed };
+	for (int y = 0; y < 160; ++y)
+	{
+		for (int x = 0; x < 160; ++x)
+		{
+			const double noise = perlin.noise2D_01((x), (y));
 
-    //         if (noise > 0.72)
-    //         {
-    //             scene->addModel(building1, nullptr)
-    //                 ->SetModelOriginCenterBottom()
-    //                 ->SetPosition(glm::vec3{(x-80)*2, 0, (y-80)*2});
-    //         }
-
-	// 		std::cout << noise << std::endl;
-	// 	}
-	// }
+            if (noise > 0.7)
+            {
+                scene->addModel(building1, nullptr)
+                    ->SetModelOriginCenterBottom()
+                    ->SetPosition(glm::vec3{(x-80)*2, 0, (y-80)*2})
+                    ->ShowBoundingBox(false);
+            }
+		}
+	}
 
 
     // Note for terrain generation the terrain asset is 160 by 160
@@ -255,7 +254,7 @@ int main() {
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(-160, 160); // define the range
 
-    for (int i = 0; i < 2000; i++)
+    for (int i = 0; i < 120; i++)
     {
         scene->addSprite(tree, nullptr)
             ->SetModelOriginCenterBottom()
@@ -340,6 +339,8 @@ int main() {
         // Will swap the colour buffers (2d buffer that contains colour values for each pixel in GLFW window)
         glfwSwapBuffers(window);
     }
+
+    ResourceManager::deleteInstance();
 
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();

@@ -7,16 +7,8 @@ SpriteObject::SpriteObject(std::string& spriteTexture_in,
     Shader* shader;
     ResourceManager* RM = ResourceManager::getInstance();
 
-    std::vector<std::string> tokens;
-    // Split the string by '/'
-    size_t start = 0, end = 0;
-    while ((end = spriteTexture_in.find("/", start)) != std::string::npos) {
-        tokens.push_back(spriteTexture_in.substr(start, end - start));
-        start = end + 1;
-    }
-    tokens.push_back(spriteTexture_in.substr(start));
-    // Get the last token
-    spriteName = tokens.back();
+    // Get spriteName
+    spriteName = spriteTexture_in.substr(spriteTexture_in.find_last_of('/')+1, spriteTexture_in.size()-1);
 
     // Create the default shader unless passed one
     if (shader_in == nullptr)

@@ -44,13 +44,48 @@ private:
     ResourceManager() {};
     ~ResourceManager() 
     {
-        delete(pinstance);
+        LOG(STATUS, "========== On exit tally - Resource manager ==============")
+
+        LOG(STATUS, "Shaders : " << shader_map.size())
+        LOG(STATUS, "Textures: " << texture_map.size())
+        LOG(STATUS, "Models  : " << model_map.size())
+
+        LOG(STATUS, "========== On exit tally - Resource manager ==============")
+
+        deleteShaders();
+        deleteTextures();
+        deleteModels();
     };
+
+    void deleteShaders()
+    {
+        for (auto& a : shader_map)
+        {
+            delete(a.second);
+        }
+    }
+
+    void deleteTextures()
+    {
+        for (auto& a : texture_map)
+        {
+            delete(a.second);
+        }
+    }
+
+    void deleteModels()
+    {
+        for (auto& a : model_map)
+        {
+            delete(a.second);
+        }
+    }
 
 
 public:
     ResourceManager(ResourceManager &other) = delete;
     void operator=(const ResourceManager &) = delete;
+
     static ResourceManager* getInstance()
     {
         if (pinstance == nullptr)
@@ -60,7 +95,12 @@ public:
         return pinstance; 
     }
 
-
+    static ResourceManager* deleteInstance()
+    {
+        // Will call destructor
+        delete(pinstance); 
+        pinstance = nullptr;
+    }
 
     // Load shader
     Shader* LoadShader(const std::string& vertexShaderPath, const std::string& fragmentShaderPath)
@@ -83,8 +123,20 @@ public:
     }
 
     // Load texture
-    TextureInfo* LoadTexture(const std::string& texturePath, bool flip_texture_vertically)
+    TextureInfo* LoadTexture(const std::string& textureName, bool flip_texture_vertically, const std::string* directory = nullptr)
     {
+        std::string texturePath;
+
+        // We have a directory 
+        if (directory != nullptr)
+        {
+            texturePath = *directory + "/" + textureName;
+        }
+        else
+        {
+            texturePath = textureName;
+        }
+
         // Check in map
         if (texture_map.find(texturePath) != texture_map.end())
         {

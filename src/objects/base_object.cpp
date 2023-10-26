@@ -1,7 +1,6 @@
 #include "base_object.hpp"
 
-// TODO check it works
-glm::mat4 BaseObject::getScaleMat4(glm::vec2 scale)
+glm::mat4 BaseObject::getScaleMat4(glm::vec2 scale) const
 {
     // identity
     glm::mat4 matrix(1.0f);
@@ -14,7 +13,7 @@ glm::mat4 BaseObject::getScaleMat4(glm::vec2 scale)
 /**
  * pass a vec3 and get a mat4 result
 */
-glm::mat4 BaseObject::getRotateMat4(glm::vec3 angles)
+glm::mat4 BaseObject::getRotateMat4(glm::vec3 angles) const
 {
     glm::mat4 rotation = glm::mat4{
         {glm::cos(angles.z) * glm::cos(angles.y), glm::cos(angles.z)*glm::sin(angles.y)*glm::sin(angles.x) - glm::sin(angles.z)*glm::cos(angles.x), glm::cos(angles.z)*glm::sin(angles.y)*glm::cos(angles.x) + glm::sin(angles.z)*glm::sin(angles.x), 0 },
@@ -25,13 +24,13 @@ glm::mat4 BaseObject::getRotateMat4(glm::vec3 angles)
     return rotation;
 }
 
-glm::mat4 BaseObject::getPositionMat4(glm::vec3 position)
+glm::mat4 BaseObject::getPositionMat4(glm::vec3 position) const
 {
     glm::mat4 matrix(1.0f);
     return glm::translate(matrix, position);
 }
 
-glm::mat4 BaseObject::getScaleMat4(glm::vec3 scale)
+glm::mat4 BaseObject::getScaleMat4(glm::vec3 scale) const
 {
     // identity
     glm::mat4 matrix(1.0f);
@@ -42,7 +41,7 @@ glm::mat4 BaseObject::getScaleMat4(glm::vec3 scale)
     return matrix;
 }
 
-glm::mat4 BaseObject::getScaleMat4(float scale)
+glm::mat4 BaseObject::getScaleMat4(float scale) const
 {
     glm::mat4 matrix(1.0f);
     matrix[0][0] *= scale;

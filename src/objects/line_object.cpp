@@ -13,15 +13,13 @@ LineObject::LineObject(Shader* shader_in,
     // Determine if we are using the default shader and also the bounding box
     base_boundingBox->Update(point_a);
     base_boundingBox->Update(point_b);
-    // position = base_boundingBox->getCenter();
 
     Shader* shader;
 
     if (shader_in == nullptr)
     {
         LOG(WARN, "Line shader null -- Using default shader");
-        
-        shader = new Shader(paths::line_defaultVertShaderPath, paths::line_defaultFragShaderPath);
+        shader = ResourceManager::getInstance()->LoadShader(paths::line_defaultVertShaderPath, paths::line_defaultFragShaderPath);
     }
     else
     {

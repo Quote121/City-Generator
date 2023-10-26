@@ -104,9 +104,3 @@ void Sprite::Draw()
         LOG(ERROR, "OpenGL Sprite::Draw() Error: " << error);
     }
 }
-
-
-// Sprite Shader getters and setters
-// Shader* Sprite::GetSpriteShader() 
-    
-

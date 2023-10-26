@@ -7,24 +7,15 @@ ModelObject::ModelObject(std::string& modelPath_in,   // Path to .obj
 {
     Shader* shader;
     // Get the model name
+    modelName = modelPath_in.substr(modelPath_in.find_last_of('/')+1, modelPath_in.size()-1);
 
-    std::vector<std::string> tokens;
-    // Split the string by '/'
-    size_t start = 0, end = 0;
-    while ((end = modelPath_in.find("/", start)) != std::string::npos) {
-        tokens.push_back(modelPath_in.substr(start, end - start));
-        start = end + 1;
-    }
-    tokens.push_back(modelPath_in.substr(start));
-    // Get the last token
-    modelName = tokens.back();
-    
     // Create the default shader unless passed one
     if (shader_in == nullptr)
     {
         LOG(WARN, "Object shader null -- Setting default shader");
         // Create heap object shader
-        shader = new Shader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
+        shader = ResourceManager::getInstance()->LoadShader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
+        // shader = new Shader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
     }
     else
     {
