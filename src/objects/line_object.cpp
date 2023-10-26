@@ -20,6 +20,7 @@ LineObject::LineObject(Shader* shader_in,
     if (shader_in == nullptr)
     {
         LOG(WARN, "Line shader null -- Using default shader");
+        
         shader = new Shader(paths::line_defaultVertShaderPath, paths::line_defaultFragShaderPath);
     }
     else

@@ -51,6 +51,9 @@ const char* windowTitle = "City Generator";
 // // Camera
 Camera* camera = Camera::getInstance(glm::vec3{0.0f, 0.0f, 3.0f});
 
+// Resource manager
+ResourceManager* RM = ResourceManager::getInstance();
+
 // Mouse position data (center of the screen by init
 float lastX = WINDOW_WIDTH / 2.0f, lastY = WINDOW_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -140,6 +143,7 @@ int main() {
 
     glEnable(GL_MULTISAMPLE); // Toggled MSAA
 
+    
     Scene* scene = Scene::getInstance();
 
     std::vector<std::string> skyBoxImages;
@@ -251,7 +255,7 @@ int main() {
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(-160, 160); // define the range
 
-    for (int i = 0; i < 0; i++)
+    for (int i = 0; i < 2000; i++)
     {
         scene->addSprite(tree, nullptr)
             ->SetModelOriginCenterBottom()
@@ -270,13 +274,13 @@ int main() {
 
 
 
-    // // X Y Z (R G B) Lines for the orientation
-    // // X is Red
-    // scene->addLine(nullptr, glm::vec3{-1000.0, 0, 0}, glm::vec3{1000.0, 0, 0}, glm::vec3{1, 0, 0});
-    // // Y is Green
-    // scene->addLine(nullptr, glm::vec3{0, -1000.0, 0}, glm::vec3{0, 1000.0, 0}, glm::vec3{0, 1, 0});
-    // // Z is Blue
-    // scene->addLine(nullptr, glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0}, glm::vec3{0, 0, 1});
+    // X Y Z (R G B) Lines for the orientation
+    // X is Red
+    scene->addLine(nullptr, glm::vec3{-1000.0, 0, 0}, glm::vec3{1000.0, 0, 0}, glm::vec3{1, 0, 0});
+    // Y is Green
+    scene->addLine(nullptr, glm::vec3{0, -1000.0, 0}, glm::vec3{0, 1000.0, 0}, glm::vec3{0, 1, 0});
+    // Z is Blue
+    scene->addLine(nullptr, glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0}, glm::vec3{0, 0, 1});
 
     // IMGUI test
     IMGUI_CHECKVERSION();

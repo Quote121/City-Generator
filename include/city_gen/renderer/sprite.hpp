@@ -6,7 +6,6 @@
 
 #include "shader.hpp"
 #include "bounding_box.hpp"
-
 /*
     Sprite is just a 2D texture, it has position and rotation
     Most of the time it'll be a billboard to the player

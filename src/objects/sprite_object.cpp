@@ -5,6 +5,7 @@ SpriteObject::SpriteObject(std::string& spriteTexture_in,
             BaseObject()
 {
     Shader* shader;
+    ResourceManager* RM = ResourceManager::getInstance();
 
     std::vector<std::string> tokens;
     // Split the string by '/'
@@ -22,10 +23,12 @@ SpriteObject::SpriteObject(std::string& spriteTexture_in,
     {
         LOG(WARN, "Sprite shader passed null -- using default shader")
         // Create heap object shader
-        shader = new Shader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
+        shader = RM->LoadShader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
+        // shader = new Shader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
     }
     else
     {
+        // Already created shader that has been passed in
         shader = shader_in;
     }
 

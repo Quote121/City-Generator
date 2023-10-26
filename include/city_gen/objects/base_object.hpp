@@ -9,6 +9,7 @@
 #include "bounding_box.hpp"
 #include "config.hpp"
 #include "camera.hpp"
+#include "resourceManager.hpp"
 
 // The base class of an object for other objects to be created from
 class BaseObject {

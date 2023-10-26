@@ -30,6 +30,4 @@ public:
     {
         return lineShader;
     }
-
-
 };
