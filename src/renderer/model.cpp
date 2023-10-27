@@ -1,4 +1,4 @@
-#include "model.hpp"
+#include <model.hpp>
 
 #include <bounding_box.hpp>
 #include <resourceManager.hpp>

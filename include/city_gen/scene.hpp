@@ -16,8 +16,8 @@
 #include <memory>
 #include <algorithm>
 
-#include "objects/all.hpp"
-#include "skybox.hpp"
+#include <objects/all.hpp>
+#include <skybox.hpp>
 
 class Scene
 {

@@ -1,4 +1,4 @@
-#include "skybox.hpp"
+#include <skybox.hpp>
 
 #include <config.hpp>
 #include <shader.hpp>

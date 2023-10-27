@@ -1,4 +1,4 @@
-#include "inputHandler.hpp"
+#include <inputHandler.hpp>
 
 
 bool InputHandler::showMouse = false;

@@ -1,4 +1,4 @@
-#include "camera.hpp"
+#include <camera.hpp>
 
 // Defined static member variable
 Camera* Camera::pinstance_{nullptr};

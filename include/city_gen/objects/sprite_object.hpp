@@ -1,6 +1,6 @@
 #pragma once
 
-#include "base_object.hpp"
+#include <base_object.hpp>
 
 // Forward declarations
 class Sprite;

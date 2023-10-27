@@ -14,9 +14,9 @@
 #include <stb_image/stb_image.h>        // image reading
 #include <glad/glad.h>                  // opengl bindings
 
-#include "config.hpp"                   // logging
-#include "shader.hpp"
-#include "model.hpp"
+#include <config.hpp>                   // logging
+#include <shader.hpp>
+#include <model.hpp>
 
 
 // Texture struct

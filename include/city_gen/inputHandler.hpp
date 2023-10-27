@@ -4,7 +4,7 @@
 #include <imgui/imgui.h>
 #include <iostream>
 
-#include "camera.hpp"
+#include <camera.hpp>
 
 // For joystick readout
 //#define JOYSTICK_INPUT_DEBUG_READOUT

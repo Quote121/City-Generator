@@ -1,4 +1,4 @@
-#include "config.hpp"
+#include <config.hpp>
 
 
 // Sprite default shader

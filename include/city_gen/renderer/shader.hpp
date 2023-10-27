@@ -8,7 +8,7 @@
 #include <sstream>
 #include <iostream>
 
-#include "config.hpp"
+#include <config.hpp>
 
 class Shader {
 public:
