@@ -110,7 +110,8 @@ int main() {
     // Gamepad
     //
     //////////////////
-    int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+    
+    // int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
     glfwSetJoystickCallback(joystick_callback);
 
     // glfwSwapInterval(0); // This will disable vsync and remove frame rate cap
@@ -226,23 +227,23 @@ int main() {
 
 
 
-    const siv::PerlinNoise::seed_type seed = 123456u;
-	const siv::PerlinNoise perlin{ seed };
-	for (int y = 0; y < 160; ++y)
-	{
-		for (int x = 0; x < 160; ++x)
-		{
-			const double noise = perlin.noise2D_01((x), (y));
+    // const siv::PerlinNoise::seed_type seed = 123456u;
+	// const siv::PerlinNoise perlin{ seed };
+	// for (int y = 0; y < 160; ++y)
+	// {
+	// 	for (int x = 0; x < 160; ++x)
+	// 	{
+	// 		const double noise = perlin.noise2D_01((x), (y));
 
-            if (noise > 0.7)
-            {
-                scene->addModel(building1, nullptr)
-                    ->SetModelOriginCenterBottom()
-                    ->SetPosition(glm::vec3{(x-80)*2, 0, (y-80)*2})
-                    ->ShowBoundingBox(false);
-            }
-		}
-	}
+    //         if (noise > 0.7)
+    //         {
+    //             scene->addModel(building1, nullptr)
+    //                 ->SetModelOriginCenterBottom()
+    //                 ->SetPosition(glm::vec3{(x-80)*2, 0, (y-80)*2})
+    //                 ->ShowBoundingBox(false);
+    //         }
+	// 	}
+	// }
 
 
     // Note for terrain generation the terrain asset is 160 by 160
@@ -252,7 +253,7 @@ int main() {
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(-160, 160); // define the range
 
-    for (int i = 0; i < 120; i++)
+    for (int i = 0; i < 100; i++)
     {
         scene->addSprite(tree, nullptr)
             ->SetModelOriginCenterBottom()
@@ -291,7 +292,7 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 460");
 
-    bool show_demo_window = true;
+    // bool show_demo_window = true;
     // Render loop to keep rendering until the program is closed
     // If GLFW has been instructed to close then run this function
     while (!glfwWindowShouldClose(window)){

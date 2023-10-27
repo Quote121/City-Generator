@@ -29,15 +29,13 @@ SpriteObject::SpriteObject(std::string& spriteTexture_in,
         shader = shader_in;
     }
 
-    base_boundingBox = new BoundingBox();
-    sprite = new Sprite(shader, spriteTexture_in, base_boundingBox);
+    sprite = new Sprite(shader, spriteTexture_in);
 }
 
 
 SpriteObject::~SpriteObject()
 {
     delete(sprite);
-    delete(base_boundingBox);
 }
 
 
@@ -124,12 +122,6 @@ SpriteObject* SpriteObject::SetIsBillboard(bool toggle)
     return this;
 }
 
-SpriteObject* SpriteObject::ShowBoundingBox(bool toggle)
-{
-    showBoundingBox = toggle;
-    return this;
-}
-
 SpriteObject* SpriteObject::SetSpawnOffset(glm::vec3 vec3)
 {
     objectOriginPosition = vec3;
@@ -138,15 +130,15 @@ SpriteObject* SpriteObject::SetSpawnOffset(glm::vec3 vec3)
 
 SpriteObject* SpriteObject::SetModelOriginCenterBottom()
 {
-    glm::vec3 center = base_boundingBox->getCenter();
-    center.y = base_boundingBox->getMin().y;
+    glm::vec3 center = sprite->GetBoundingBox()->getCenter();
+    center.y = sprite->GetBoundingBox()->getMin().y;
     objectOriginPosition = center;
     return this;
 }
 
 SpriteObject* SpriteObject::SetModelOriginCenter()
 {
-    objectOriginPosition = base_boundingBox->getCenter();
+    objectOriginPosition = sprite->GetBoundingBox()->getCenter();
     return this;
 }
 

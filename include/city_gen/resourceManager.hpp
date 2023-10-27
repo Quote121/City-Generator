@@ -56,8 +56,11 @@ private:
         LOG(STATUS, "========== On exit tally - Resource manager ==============")
 
         deleteShaders();
+        LOG(STATUS, "Deleted shaders");
         deleteTextures();
+        LOG(STATUS, "Deleted textures");
         deleteModels();
+        LOG(STATUS, "Deleted models");
     };
 
     void deleteShaders()
@@ -98,7 +101,7 @@ public:
         return pinstance; 
     }
 
-    static ResourceManager* deleteInstance()
+    static void deleteInstance()
     {
         // Will call destructor
         delete(pinstance); 
@@ -202,7 +205,7 @@ public:
     }
 
     // Load model
-    Model* LoadModel(const std::string& modelPath_in, Shader* modelShader_in, BoundingBox* boundingBox_in)
+    Model* LoadModel(const std::string& modelPath_in, Shader* modelShader_in)
     {
         // Hit
         if (model_map.find(modelPath_in) != model_map.end())
@@ -212,7 +215,7 @@ public:
         // Miss
         else
         {
-            Model* model = new Model(modelShader_in, modelPath_in, boundingBox_in);
+            Model* model = new Model(modelShader_in, modelPath_in);
             model_map.insert(std::make_pair(modelPath_in, model));
             return model;
         }

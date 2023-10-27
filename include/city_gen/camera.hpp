@@ -54,12 +54,6 @@ public:
 	static Camera* getInstance(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 	static Camera* getInstance(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
-	std::string GetPositionCoords(void) {
-		std::stringstream s;
-		s << "[" << Position.x << "," << Position.y << "," << Position.z << "]";
-		return s.str();
-	}
-
 	// returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	glm::mat4 GetViewMatrix()
 	{

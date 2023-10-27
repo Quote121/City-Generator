@@ -25,8 +25,9 @@ protected:
     glm::vec3 objectOriginPosition = {0.0f, 0.0f, 0.0f}; // Position offset for spawning. E.g. when spawning at 0,0,0 the offset can be set
                                                          // to the center of the object or the center of the bottom so its easier to place
     
-    BoundingBox* base_boundingBox; // Info is local verticies
-    bool showBoundingBox = true; // Will draw the outline of the bounding box on the model
+    // TODO
+    // BoundingBox* base_boundingBox; // Info is local verticies
+    // bool showBoundingBox = true; // Will draw the outline of the bounding box on the model
 
     float scaleScalar = 1.0f;                   // Float to scale object in all directions
     bool isVisible = true;                      // Visability Flag
@@ -76,10 +77,7 @@ public:
         return scaleScalar;
     }
 
-    bool GetShowBoundingBox() const
-    {
-        return showBoundingBox;
-    }
+
 
     // ImGui getters. These return a reference to each data type
     // as the imgui interface requires it for callbacks.
@@ -101,10 +99,6 @@ public:
         return isVisible;
     }
 
-    bool& GetShowBoundingBoxImGui()
-    {
-        return showBoundingBox;
-    }
 
     float& GetScaleScalarImGui()
     {

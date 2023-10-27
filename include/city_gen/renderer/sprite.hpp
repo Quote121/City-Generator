@@ -22,7 +22,7 @@ private:
     unsigned int VAO, VBO, EBO;
 
     Shader* spriteShader = nullptr;
-    BoundingBox* boundingBoxPtr;
+    BoundingBox* spriteBoundingBox;
 
     std::string texturePath;
     unsigned int spriteTextureID;
@@ -33,7 +33,7 @@ private:
 public:
 
     // constructor for texture
-    Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in, BoundingBox* boundingBox);
+    Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in);
     ~Sprite();
 
     // For shader hotswapping
@@ -49,6 +49,9 @@ public:
 
     inline std::string GetTexturePath()
         { return texturePath; }
+
+    inline BoundingBox* GetBoundingBox()
+        { return spriteBoundingBox; }
 
     // Draw call for sprite
     void Draw();

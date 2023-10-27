@@ -5,10 +5,9 @@
 #include <resourceManager.hpp>
 #include <config.hpp>
 
-Sprite::Sprite(Shader* spriteShader_in, const std::string& filename, BoundingBox* boundingBox) : texturePath{filename}
+Sprite::Sprite(Shader* spriteShader_in, const std::string& filename) : texturePath{filename}
 {
-    boundingBoxPtr = boundingBox;
-
+    spriteBoundingBox = new BoundingBox();
     TextureInfo* textureInfo = ResourceManager::getInstance()->LoadTexture(filename, true);
 
     float x, y;
@@ -48,11 +47,10 @@ Sprite::Sprite(Shader* spriteShader_in, const std::string& filename, BoundingBox
     };
 
     // Stream the verts to the bounding box
-    boundingBoxPtr->StreamVertexUpdate(x, y, 0);
-    boundingBoxPtr->StreamVertexUpdate(x, -y, 0);
-    boundingBoxPtr->StreamVertexUpdate(-x, -y, 0);
-    boundingBoxPtr->StreamVertexUpdate(-x, y, 0);
-
+    spriteBoundingBox->StreamVertexUpdate(x, y, 0);
+    spriteBoundingBox->StreamVertexUpdate(x, -y, 0);
+    spriteBoundingBox->StreamVertexUpdate(-x, -y, 0);
+    spriteBoundingBox->StreamVertexUpdate(-x, y, 0);
 
     // textureID to be stored
     spriteTextureID = textureInfo->textureID;
@@ -67,6 +65,7 @@ Sprite::~Sprite()
 {
     // Sprite shader is allocated memory in sprite_object.hpp, needs to be freed
     delete(spriteShader);
+    delete(spriteBoundingBox);
     glDeleteBuffers(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);

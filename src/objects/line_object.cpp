@@ -8,13 +8,13 @@ LineObject::LineObject(Shader* shader_in,
             glm::vec3 point_b,
             glm::vec3 colour_in) :
             BaseObject(),
+            colour{colour_in},
             a{point_a},
-            b{point_b},
-            colour{colour_in}
+            b{point_b}
 {
     // Determine if we are using the default shader and also the bounding box
-    base_boundingBox->Update(point_a);
-    base_boundingBox->Update(point_b);
+    // base_boundingBox->Update(point_a);
+    // base_boundingBox->Update(point_b);
 
     Shader* shader;
 
@@ -98,29 +98,9 @@ LineObject* LineObject::IsVisible(bool toggle)
     return this;
 }
 
-LineObject* LineObject::ShowBoundingBox(bool toggle)
-{
-    showBoundingBox = toggle;
-    return this;
-}
-
 LineObject* LineObject::SetSpawnOffset(glm::vec3 vec3)
 {
     objectOriginPosition = vec3;
-    return this;
-}
-
-LineObject* LineObject::SetModelOriginCenterBottom()
-{
-    glm::vec3 center = base_boundingBox->getCenter();
-    center.y = base_boundingBox->getMin().y;
-    objectOriginPosition = center;
-    return this;
-}
-
-LineObject* LineObject::SetModelOriginCenter()
-{
-    objectOriginPosition = base_boundingBox->getCenter();
     return this;
 }
 

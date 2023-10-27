@@ -23,15 +23,10 @@ void Menues::display(float deltaTime)
     //
     
     ImGui::Begin("Stats");
-    std::stringstream imGuiFPS;
-    imGuiFPS << "FPS: " << fpsValue;
-    ImGui::Text(imGuiFPS.str().c_str());
-    std::stringstream viewss;
-    viewss << "Pitch | Yaw: " << cam->Pitch << " " << cam->Yaw;
-    ImGui::Text(viewss.str().c_str());
-    std::stringstream pos_ss;
-    pos_ss << "[x,y,z] : " << cam->GetPositionCoords();
-    ImGui::Text(pos_ss.str().c_str());
+    ImGui::Text("FPS %.2f", fpsValue);
+    ImGui::Text("Pitch | Yaw: %.3f %.3f", cam->Pitch, cam->Yaw);
+    ImGui::Text("[x,y,z] : %.3f, %.3f, %.3f",cam->Position.x, cam->Position.y, cam->Position.z);
+
     ImGui::End();
     //////////////////////////////////////////////////////////////
     
@@ -53,37 +48,29 @@ void Menues::display(float deltaTime)
             if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
             {
                 // General base class info
-                std::stringstream ss_name;
-                ss_name << "Controls for " << object->GetAlias() << " : ";
-                ImGui::Text(ss_name.str().c_str());
-                std::stringstream ss_pos;
-                ss_pos << "Position : [X:Y:Z] = " << object->GetPosition().x << "," << object->GetPosition().y << "," << object->GetPosition().z;
-                ImGui::Text(ss_pos.str().c_str());
-                std::stringstream ss_distance;
-                ss_distance << object->GetAlias() << " is " << glm::length(object->GetPosition()-cam->Position) << " units away from you.";
-                ImGui::Text(ss_distance.str().c_str());
-                
 
+                ImGui::Text("Position : [X:Y:Z] =  %.3f,%.3f,%.3f", object->GetPosition().x, object->GetPosition().y, object->GetPosition().z);
+                ImGui::Text("%s is %.3f units away from you.", object->GetAlias().c_str(), glm::length(object->GetPosition()-cam->Position));
 
                 // Object specific controls
                 if (ModelObject* modelObject = dynamic_cast<ModelObject*>(object))
                 {
                     std::string nameString = "\nModel : " + modelObject->GetModelName();
                     // ImGui::Text(nameString.c_str());
-                    ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f}, nameString.c_str());
+                    ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f}, "%s", nameString.c_str());
 
                     ImGui::Text("Scale:\n");
                     ImGui::SliderFloat("X scale", &modelObject->GetScaleImGui().x, 0.1f, 10.0f);
                     ImGui::SliderFloat("Y scale", &modelObject->GetScaleImGui().y, 0.1f, 10.0f);
                     ImGui::SliderFloat("Z scale", &modelObject->GetScaleImGui().z, 0.1f, 10.0f);
                     ImGui::SliderFloat("Scale", &modelObject->GetScaleScalarImGui(), 0.1f, 10.0f);
-
+                    ImGui::Checkbox("Display AABB", &modelObject->GetShowBoundingBoxImGui());
                 }
                 // Sprite specific controls
                 else if (SpriteObject* spriteObject = dynamic_cast<SpriteObject*>(object))
                 {
                     std::string nameString = "\nSprite : " + spriteObject->GetSpriteName();
-                    ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f}, nameString.c_str());
+                    ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f}, "%s", nameString.c_str());
 
                     ImGui::Text("Scale:\n");
                     ImGui::SliderFloat("X scale", &spriteObject->GetScaleImGui().x, 0.1f, 10.0f);
@@ -125,10 +112,10 @@ void Menues::display(float deltaTime)
 
                 // }
                 // Particle specific controls
-                else if (ParticleObject* particleObject = dynamic_cast<ParticleObject*>(object))
-                {
-                    LOG(ERROR, "Particle object not yet implemented");
-                }
+                // else if (ParticleObject* particleObject = dynamic_cast<ParticleObject*>(object))
+                // {
+                //     LOG(ERROR, "Particle object not yet implemented");
+                // }
                 // Error cant cast the object
                 else
                 {
@@ -148,12 +135,6 @@ void Menues::display(float deltaTime)
                 ImGui::SliderFloat("Z rot: ", &object->GetRotationImGui().z, -5.0f, 5.0f);
 
                 ImGui::Checkbox("Visible", &object->GetIsVisibleImGui());
-                ImGui::Checkbox("Display AABB", &object->GetShowBoundingBoxImGui());
-
-
-
-
-
 
 
                 ImGui::TreePop();

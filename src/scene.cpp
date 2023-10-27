@@ -80,20 +80,20 @@ LineObject* Scene::addLine(Shader* shader_in,
     return line;
 }
 
-bool Scene::removeObject(BaseObject &obj)
-{
-    // TODO
-}
+// bool Scene::removeObject(BaseObject &obj)
+// {
+//     // TODO
+// }
 
-bool Scene::removeModel(ModelObject& obj)
-{
-    // TODO
-}
+// bool Scene::removeModel(ModelObject& obj)
+// {
+//     // TODO
+// }
 
-bool Scene::removeSprite(SpriteObject& obj)
-{
-    // TODO
-}
+// bool Scene::removeSprite(SpriteObject& obj)
+// {
+//     // TODO
+// }
 
 bool Scene::SortByDistanceInv(BaseObject* a, BaseObject* b)
 {   

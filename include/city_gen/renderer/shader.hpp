@@ -45,8 +45,8 @@ public:
 			fragmentCode = fShaderStream.str();
 
 		}
-		catch (std::ifstream::failure) {
-			LOG(ERROR, "Shader not read sucessfully: [" << vertexPath << "|" << fragmentPath << "]")
+		catch (const std::ifstream::failure& e) {
+			LOG(ERROR, "Shader not read sucessfully: [" << vertexPath << "|" << fragmentPath << "] : " << e.what() << " " << e.code())
 		}
 
 		const char* vShaderCode = vertexCode.c_str();

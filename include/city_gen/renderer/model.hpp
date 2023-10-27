@@ -21,10 +21,7 @@ class Model
 {
 private:
     Shader* modelShader = nullptr;
-
-    bool flipTextureOnLoad = true;
-
-    BoundingBox* boundingBox;
+    BoundingBox* modelBoundingBox;
 
     // model data
     std::vector<Mesh> meshes;
@@ -37,9 +34,18 @@ private:
     std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 
 public:
+    Model(Shader* modelShader_in, const std::string& path);
+    ~Model();
+
+    inline Shader* GetShader()
+    {
+        return modelShader;
+    }
+
+    inline BoundingBox* GetBoundingBox()
+    {
+        return modelBoundingBox;
+    }
+
     void Draw();
-
-    Shader* GetShader();
-
-    Model(Shader* modelShader_in, const std::string& path, BoundingBox* boundingBox_in);
 };

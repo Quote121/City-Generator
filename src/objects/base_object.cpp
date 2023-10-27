@@ -3,15 +3,11 @@
 #include <camera.hpp>
 #include <bounding_box.hpp>
 
-BaseObject::BaseObject()
-{
-    base_boundingBox = new BoundingBox();
-};
 
-BaseObject::~BaseObject()
-{
-    delete base_boundingBox;
-}
+BaseObject::BaseObject() {}
+
+
+BaseObject::~BaseObject() {}
 
 
 glm::mat4 BaseObject::getScaleMat4(glm::vec2 scale) const

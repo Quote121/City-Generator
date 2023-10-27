@@ -65,12 +65,10 @@ BoundingBox::BoundingBox()
     // Setup VAO and VBOs
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    // SetupBuffers();
 }
 
 BoundingBox::~BoundingBox()
 {
-    delete(boundingBoxShader);
     glDeleteBuffers(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }

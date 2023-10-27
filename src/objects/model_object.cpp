@@ -24,7 +24,11 @@ ModelObject::ModelObject(std::string& modelPath_in,   // Path to .obj
     {
         shader = shader_in;
     }
-    model = new Model(shader, modelPath_in, base_boundingBox);
+
+
+    model = ResourceManager::getInstance()->LoadModel(modelPath_in, shader);
+
+    // model = new Model(shader, modelPath_in, base_boundingBox);
 }
 
 ModelObject::~ModelObject()
@@ -58,14 +62,14 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
         // Draw bounding box if asked
         if (showBoundingBox)
         {
-            Shader* bbShader = base_boundingBox->getShader();
+            BoundingBox* bb = model->GetBoundingBox();
+            Shader* bbShader = bb->getShader();
             bbShader->use();
             bbShader->setMat4("view", view);
             bbShader->setMat4("projection", projection);
             bbShader->setMat4("model", result);
             bbShader->setVec3("localCenterPos", objectOriginPosition);
-
-            base_boundingBox->Draw();
+            bb->Draw();
         }
     }
 }
@@ -120,25 +124,38 @@ ModelObject* ModelObject::SetSpawnOffset(glm::vec3 vec3)
 
 ModelObject* ModelObject::SetModelOriginCenterBottom()
 {
-    glm::vec3 center = base_boundingBox->getCenter();
-    center.y = base_boundingBox->getMin().y;
+    glm::vec3 center = model->GetBoundingBox()->getCenter();
+    center.y = model->GetBoundingBox()->getMin().y;
     objectOriginPosition = center;
     return this;
 }
 
 ModelObject* ModelObject::SetModelOriginCenter()
 {
-    objectOriginPosition = base_boundingBox->getCenter();
+    objectOriginPosition = model->GetBoundingBox()->getCenter();
     return this;
 }
 
-std::string const& ModelObject::GetModelName()
+// Getters and setters
+
+std::string const& ModelObject::GetModelName() const
 {
     return modelName;
 }
 
-// ImGui
+bool ModelObject::GetShowBoundingBox() const
+{
+    return showBoundingBox;
+}
+
+// ImGui reference handles
+
 glm::vec3& ModelObject::GetScaleImGui()
 {
     return scale;
+}
+
+bool& ModelObject::GetShowBoundingBoxImGui()
+{
+    return showBoundingBox;
 }

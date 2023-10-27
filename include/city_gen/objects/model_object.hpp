@@ -15,6 +15,9 @@ private:
 
     std::string modelName;
 
+    // Will draw the outline of the bounding box on the model
+    bool showBoundingBox = true;
+
 public:
     ModelObject(std::string& modelPath_in,   // Path to .obj
                 Shader *shader_in);                       
@@ -36,7 +39,12 @@ public:
     ModelObject* SetSpawnOffset(glm::vec3 vec3);
     ModelObject* SetModelOriginCenterBottom();
     ModelObject* SetModelOriginCenter();
-    std::string const& GetModelName();
+
+    // Getters
+    std::string const& GetModelName() const;
+    bool GetShowBoundingBox() const;
+    
     // ImGui
     glm::vec3& GetScaleImGui();
+    bool& GetShowBoundingBoxImGui();
 };

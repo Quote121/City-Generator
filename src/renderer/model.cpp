@@ -3,12 +3,19 @@
 #include <bounding_box.hpp>
 #include <resourceManager.hpp>
 
-Model::Model(Shader* modelShader_in, const std::string& path, BoundingBox* boundingBox_in)
+Model::Model(Shader* modelShader_in, const std::string& path)
 {
-    boundingBox = boundingBox_in;
+    modelBoundingBox = new BoundingBox();
     modelShader = modelShader_in;
+    
     loadModel(path.c_str());
-    boundingBox->SetupBuffers();
+    // Load the bb GL buffers after all verts have been streamed
+    modelBoundingBox->SetupBuffers();
+}
+
+Model::~Model()
+{
+    delete(modelBoundingBox);
 }
 
 void Model::loadModel(std::string path)
@@ -63,7 +70,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
         vertex.Position = vector;
 
         // For every vertex we process it in the bounding box
-        boundingBox->StreamVertexUpdate(vector);
+        modelBoundingBox->StreamVertexUpdate(vector);
 
         // Normals
         if (mesh->HasNormals())
@@ -145,10 +152,4 @@ void Model::Draw()
 {
     for (unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(*modelShader);
-}
-
-
-Shader* Model::GetShader()
-{
-    return modelShader;
 }
