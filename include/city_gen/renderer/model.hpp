@@ -3,13 +3,15 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <stb_image/stb_image.h>
 
 #include <vector>
 #include <string>
 
-#include "mesh.hpp"
-#include "bounding_box.hpp" // for passing every vertex through to determine box
+#include <mesh.hpp>
 
+// Forward declarations
+class BoundingBox;
 
 /*
     Model class holds a vector of mesh objects.
@@ -34,9 +36,6 @@ private:
     Mesh processMesh(aiMesh *mesh, const aiScene *scene);
     std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName);
 
-    // Path is relative, default directory is current to the executable
-    unsigned int TextureFromFile(const char *path, const std::string &directory = ".", bool gamma = false);
-    
 public:
     void Draw();
 

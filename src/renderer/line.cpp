@@ -1,4 +1,7 @@
-#include "line.hpp"
+#include <line.hpp>
+
+#include <shader.hpp>
+#include <glad/glad.h>
 
 Line::Line(Shader* shader)
 {
@@ -7,6 +10,13 @@ Line::Line(Shader* shader)
     // Generate the VAO and VBO in the constructor
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+}
+
+Line::~Line()
+{
+    delete(lineShader);
+    glDeleteBuffers(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }
 
 void Line::UpdateVerts(glm::vec3 point_a, glm::vec3 point_b)

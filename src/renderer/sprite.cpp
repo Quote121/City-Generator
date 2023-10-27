@@ -1,7 +1,9 @@
-#include "sprite.hpp"
-#include "stb_image/stb_image.h"
+#include <sprite.hpp>
 
-#include "config.hpp"
+#include <shader.hpp>
+#include <bounding_box.hpp>
+#include <resourceManager.hpp>
+#include <config.hpp>
 
 Sprite::Sprite(Shader* spriteShader_in, const std::string& filename, BoundingBox* boundingBox) : texturePath{filename}
 {
@@ -59,6 +61,17 @@ Sprite::Sprite(Shader* spriteShader_in, const std::string& filename, BoundingBox
 
     SetupSprite(vertices, indices);
 }
+
+
+Sprite::~Sprite()
+{
+    // Sprite shader is allocated memory in sprite_object.hpp, needs to be freed
+    delete(spriteShader);
+    glDeleteBuffers(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
+}
+
 
 // Setup vertex and buffer arrays
 void Sprite::SetupSprite(float vertices[], unsigned int indices[])

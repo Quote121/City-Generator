@@ -7,7 +7,8 @@
 #include <string>
 #include <vector>
 
-#include "shader.hpp"
+// Forward declaration
+class Shader;
 
 struct Vertex{
     glm::vec3 Position;

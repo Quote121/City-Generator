@@ -2,12 +2,13 @@
 
 #include <glad/glad.h>
 #include <stb_image/stb_image.h>
+#include <glm/glm.hpp>
 
 #include <vector>
 #include <string>
 
-#include "config.hpp"
-#include "shader.hpp"
+// Forward declaration
+class Shader;
 
 class SkyBox{
 private:
@@ -22,21 +23,7 @@ private:
     void SetupVertices();
 
 public:
-    SkyBox(std::vector<std::string> textureFaces_in)
-    {
-        textureFaces = textureFaces_in;
-        cubemapTextureid = loadCubeMap();
-        SetupVertices();
-        // load skybox default shader
-        skyBoxShader = new Shader(paths::skybox_defaultVertShaderPath, paths::skybox_defaultFragShaderPath);
-    }
-
-    // GlDelete
-    ~SkyBox()
-    {
-        delete(skyBoxShader);
-        glDeleteBuffers(1, &VAO);
-        glDeleteBuffers(1, &VBO);
-    }
+    SkyBox(std::vector<std::string> textureFaces_in);
+    ~SkyBox();
     void Draw(glm::mat4 view, glm::mat4 projection);
 };

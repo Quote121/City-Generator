@@ -1,5 +1,7 @@
-#include "line_object.hpp"
+#include <line_object.hpp>
 
+#include <resourceManager.hpp>
+#include <bounding_box.hpp>
 
 LineObject::LineObject(Shader* shader_in,
             glm::vec3 point_a,

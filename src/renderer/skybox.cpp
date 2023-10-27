@@ -1,5 +1,27 @@
 #include "skybox.hpp"
 
+#include <config.hpp>
+#include <shader.hpp>
+
+SkyBox::SkyBox(std::vector<std::string> textureFaces_in)
+{
+    textureFaces = textureFaces_in;
+    cubemapTextureid = loadCubeMap();
+    SetupVertices();
+    // load skybox default shader
+    skyBoxShader = new Shader(paths::skybox_defaultVertShaderPath, paths::skybox_defaultFragShaderPath);
+}
+
+
+// GlDelete
+SkyBox::~SkyBox()
+{
+    delete(skyBoxShader);
+    glDeleteBuffers(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
+
+
 // Load all 6 cubemap texture into one texture
 unsigned int SkyBox::loadCubeMap()
 {

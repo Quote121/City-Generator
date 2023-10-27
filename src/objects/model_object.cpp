@@ -1,5 +1,9 @@
-#include "model_object.hpp"
+#include <model_object.hpp>
 
+#include <config.hpp>
+#include <shader.hpp>
+#include <resourceManager.hpp>
+#include <bounding_box.hpp>
 
 ModelObject::ModelObject(std::string& modelPath_in,   // Path to .obj
                          Shader *shader_in) :                        
@@ -15,7 +19,6 @@ ModelObject::ModelObject(std::string& modelPath_in,   // Path to .obj
         LOG(WARN, "Object shader null -- Setting default shader");
         // Create heap object shader
         shader = ResourceManager::getInstance()->LoadShader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
-        // shader = new Shader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
     }
     else
     {

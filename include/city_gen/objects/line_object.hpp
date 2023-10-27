@@ -1,7 +1,7 @@
 #pragma once
-#include "base_object.hpp"
-#include "line.hpp"
 
+#include <base_object.hpp>
+#include <line.hpp>
 
 // Line object
 class LineObject : public BaseObject

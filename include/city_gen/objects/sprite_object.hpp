@@ -1,18 +1,12 @@
 #pragma once
 
 #include "base_object.hpp"
-#include "sprite.hpp"
-#include "config.hpp" // For shader paths
-#include "camera.hpp"
-/*
-    The object classes of these are more about the physicl properties
-    of the object. For things like shaders and texture information that
-    will be stored in the Sprite class below in the renderer
 
-    This goes for all objects
-*/
+// Forward declarations
+class Sprite;
+class Shader;
 
-// 2d sprites like bilboards
+// 2d sprites like billboards
 class SpriteObject : public BaseObject
 {
 private:

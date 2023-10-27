@@ -1,4 +1,18 @@
-#include "base_object.hpp"
+#include <base_object.hpp>
+
+#include <camera.hpp>
+#include <bounding_box.hpp>
+
+BaseObject::BaseObject()
+{
+    base_boundingBox = new BoundingBox();
+};
+
+BaseObject::~BaseObject()
+{
+    delete base_boundingBox;
+}
+
 
 glm::mat4 BaseObject::getScaleMat4(glm::vec2 scale) const
 {
@@ -48,4 +62,10 @@ glm::mat4 BaseObject::getScaleMat4(float scale) const
     matrix[1][1] *= scale;
     matrix[2][2] *= scale;
     return matrix;
+}
+
+float BaseObject::GetDistanceFromCamera() const
+{
+    Camera * cam = Camera::getInstance();
+    return glm::length(cam->Position-position);
 }

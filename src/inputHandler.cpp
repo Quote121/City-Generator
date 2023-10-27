@@ -1,7 +1,5 @@
 #include "inputHandler.hpp"
-#include <imgui/imgui.h>
 
-#include <iostream>
 
 bool InputHandler::showMouse = false;
 

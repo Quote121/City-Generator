@@ -1,9 +1,6 @@
 #include "menues.hpp"
 
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
+
 
 void Menues::display(float deltaTime)
 {

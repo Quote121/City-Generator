@@ -1,7 +1,8 @@
 #pragma once
 #include <glm/glm.hpp>
-#include "shader.hpp"
-#include "config.hpp"
+
+// Forward declaration
+class Shader;
 
 class Line
 {
@@ -18,13 +19,7 @@ public:
     void Draw();
 
     Line(Shader* shader);
-
-    ~Line()
-    {
-        delete(lineShader);
-        glDeleteBuffers(1, &VAO);
-        glDeleteBuffers(1, &VBO);
-    }
+    ~Line();
 
     inline Shader* GetLineShader()
     {

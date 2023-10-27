@@ -4,13 +4,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "shader.hpp"
-#include "model.hpp"
-#include "bounding_box.hpp"
-#include "config.hpp"
-#include "camera.hpp"
-#include "resourceManager.hpp"
+#include <config.hpp>
 
+// Forward declaration
+class BoundingBox;
 
 // The base class of an object for other objects to be created from
 class BaseObject {
@@ -34,15 +31,8 @@ protected:
     float scaleScalar = 1.0f;                   // Float to scale object in all directions
     bool isVisible = true;                      // Visability Flag
 
-    BaseObject()
-    {
-        base_boundingBox = new BoundingBox();
-    };
-
-    ~BaseObject()
-    {
-        delete base_boundingBox;
-    }
+    BaseObject();
+    ~BaseObject();
 
     // No definition just a virtual function for derived objects
     virtual void Draw(glm::mat4 view, glm::mat4 projection) {};
@@ -55,12 +45,7 @@ protected:
     glm::mat4 getScaleMat4(glm::vec2 scale) const; // For sprites
     glm::mat4 getScaleMat4(float scale) const;
 public:
-    float GetDistanceFromCamera() const
-    {
-        Camera* cam = Camera::getInstance();
-
-        return glm::length((cam->Position-position));
-    }
+    float GetDistanceFromCamera() const;
 
     void SetAlias(const std::string* alias_in)
     {

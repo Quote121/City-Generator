@@ -1,8 +1,10 @@
 #pragma once
 
-#include "base_object.hpp"
+#include <base_object.hpp>
 
-#include "config.hpp"
+// Forward declarations
+class Model;
+class Shader;
 
 // 3D object
 class ModelObject : public BaseObject

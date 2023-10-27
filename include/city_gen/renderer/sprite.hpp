@@ -1,20 +1,20 @@
 #pragma once
-
-#include <vector>
-#include <string>
-#include <glm/glm.hpp>
-
-#include "shader.hpp"
-#include "bounding_box.hpp"
-#include "resourceManager.hpp"
-
 /*
     Sprite is just a 2D texture, it has position and rotation
     Most of the time it'll be a billboard to the player
 
     Scale it can only scale in x and y since its a flat texture
 */
+#include <glm/glm.hpp>
+#include <stb_image/stb_image.h>
 
+#include <vector>
+#include <string>
+
+// Forward declaration
+class Shader;
+class BoundingBox;
+class ResourceManager;
 
 class Sprite
 {
@@ -34,15 +34,7 @@ public:
 
     // constructor for texture
     Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in, BoundingBox* boundingBox);
-    
-    ~Sprite()
-    {
-        // Sprite shader is allocated memory in sprite_object.hpp, needs to be freed
-        delete(spriteShader);
-        glDeleteBuffers(1, &VAO);
-        glDeleteBuffers(1, &VBO);
-        glDeleteBuffers(1, &EBO);
-    }
+    ~Sprite();
 
     // For shader hotswapping
     void SetSpriteShader(Shader* spriteShader_in)

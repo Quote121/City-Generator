@@ -15,8 +15,9 @@
 #include <glad/glad.h>                  // opengl bindings
 
 #include "config.hpp"                   // logging
-#include "model.hpp"
 #include "shader.hpp"
+#include "model.hpp"
+
 
 // Texture struct
 struct TextureInfo{
@@ -25,6 +26,8 @@ struct TextureInfo{
     int height;             // height of texture
     std::string fileName;   // Name of texture
 };
+
+
 
 class ResourceManager{
 private:

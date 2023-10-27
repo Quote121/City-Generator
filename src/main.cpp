@@ -13,26 +13,24 @@
 #include <iostream>
 #include <cmath> 
 #include <memory>
+// temp test with randomness
+#include <random>
 
 // IMGUI
 #include <imgui/imgui.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <imgui/imgui_impl_opengl3.h>
 
-// Other
-#include "shader.hpp" // Custom shader header
-#include "stb_image/stb_image.h" // Image imports
-#include "camera.hpp" // Camera class
-#include "inputHandler.hpp"
+// City_gen
+#include <shader.hpp> // Custom shader header
+#include <camera.hpp> // Camera class
+#include <resourceManager.hpp>
+#include <inputHandler.hpp>
+#include <menues.hpp>
+#include <scene.hpp>
 
-#include "menues.hpp"
-#include "scene.hpp"
-
-#include "Reputeless/PerlinNoise.hpp"
-
-
-// temp test with randomness TODO remove
-#include <random>
+// Perlin noise generator
+#include <Reputeless/PerlinNoise.hpp>
 
 
 // Prototypes

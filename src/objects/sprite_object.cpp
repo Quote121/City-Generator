@@ -1,4 +1,10 @@
-#include "sprite_object.hpp"
+#include <sprite_object.hpp>
+
+#include <shader.hpp>
+#include <resourceManager.hpp>
+#include <sprite.hpp>
+#include <camera.hpp>
+#include <bounding_box.hpp>
 
 SpriteObject::SpriteObject(std::string& spriteTexture_in,
             Shader *shader_in) : 
@@ -16,7 +22,6 @@ SpriteObject::SpriteObject(std::string& spriteTexture_in,
         LOG(WARN, "Sprite shader passed null -- using default shader")
         // Create heap object shader
         shader = RM->LoadShader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
-        // shader = new Shader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
     }
     else
     {

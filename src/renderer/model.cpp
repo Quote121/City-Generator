@@ -1,7 +1,7 @@
-#include <stb_image/stb_image.h>
-#include "resourceManager.hpp"
 #include "model.hpp"
 
+#include <bounding_box.hpp>
+#include <resourceManager.hpp>
 
 Model::Model(Shader* modelShader_in, const std::string& path, BoundingBox* boundingBox_in)
 {

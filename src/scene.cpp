@@ -1,6 +1,5 @@
 #include "scene.hpp"
 
-
 Scene* Scene::pinstance_{nullptr};
 
 Scene* Scene::getInstance()
