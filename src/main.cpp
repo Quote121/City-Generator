@@ -66,6 +66,7 @@ float InputHandler::y_axis_deadzone = 0.3;
 
 
 int main() {
+    LOG(STATUS, "Started");
     // Initalise GLFW for the window
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // Spec what the window should have
@@ -240,7 +241,7 @@ int main() {
     //             scene->addModel(building1, nullptr)
     //                 ->SetModelOriginCenterBottom()
     //                 ->SetPosition(glm::vec3{(x-80)*2, 0, (y-80)*2})
-    //                 ->ShowBoundingBox(false);
+    //                 ->ShowBoundingBox(true);
     //         }
 	// 	}
 	// }

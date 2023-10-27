@@ -5,6 +5,8 @@
 #include <string>
 #include <sstream>
 
+#include <stopwatch.hpp>
+
 /*
     Header for global config info such as file paths, constants, data
 
@@ -39,7 +41,7 @@ extern const char* skybox_defaultFragShaderPath;
 /////////////////////////////////////////
 
 //////////// Logging system ////////////
-#define LOG(log_type, b) std::cout << "[" << __TIME__ << "]" \
+#define LOG(log_type, b) std::cout << "[" << StopWatch::GetTimeElapsed() << " ms]" \
                             << log_type << b << std::endl;
 #define STRINGIZE2(x) #x
 #define STRINGIZE(x) STRINGIZE2(x)
