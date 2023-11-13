@@ -264,14 +264,14 @@ int main() {
             ->SetScale(2.0f);
     }
 
-    scene->addModel(backPackPath, nullptr)
+    scene->addModel(backPackPath, &backpackShader)
          ->SetModelOriginCenter()
-         ->SetPosition(glm::vec3{0.0f, 1.0f, 0.0f})
+         ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
          ->ShowBoundingBox(false);
 
-
-
-
+    scene->addPointLight()
+        ->SetPosition(glm::vec3{10, 10, -5});
+    
 
     // X Y Z (R G B) Lines for the orientation
     // X is Red

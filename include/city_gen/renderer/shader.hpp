@@ -65,7 +65,7 @@ public:
 		glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
 		if (!success) {
 			glGetShaderInfoLog(vertex, 512, NULL, infoLog);
-			LOG(ERROR, "Vertex shader compilation failed: " << infoLog);
+			LOG(ERROR, "Vertex shader compilation failed: " << infoLog << vertexPath);
 		}
 
 		//frangment shader
@@ -76,7 +76,7 @@ public:
 		glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
 		if (!success) {
 			glGetShaderInfoLog(fragment, 512, NULL, infoLog);
-			LOG(ERROR, "Fragment shader compilation failed: " << infoLog);
+			LOG(ERROR, "Fragment shader compilation failed: " << infoLog << fragmentPath);
 		}
 
 		ID = glCreateProgram();

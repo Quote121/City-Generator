@@ -1,32 +1,44 @@
-#pragma once
+// #pragma once
 
-#include <base_object.hpp>
+// #include <base_object.hpp>
 
-// class LightObject : public BaseObject
+// enum LightType
+// {
+//     DIRECTIONAL,
+//     POINT,
+//     SPOTLIGHT
+// };
+
+
+// class LightObject : public BaseObject<LightObject>
 // {
 // private:
-//     glm::vec4 lightColour;
-//     float intensity;
-
+//     glm::vec3 lightColour = {1.0f, 1.0f, 1.0f};
+//     float intensity = 1.0f;
+//     LightType lightType;
 
 // public:
 //     LightObject(Shader *shader_in,
-//                 glm::vec3 pos_in = glm::vec3{0.0f, 0.0f, 0.0f},
-//                 glm::vec3 rot_in = glm::vec3{0.0f, 0.0f, 0.0f},
-                
-//                 // might need default values for this
-//                 glm::vec4 lightColour_in,
-//                 float intensity_in,
-
-//                 float isVisible_in = true) :
-
-//                 BaseObject(shader_in, pos_in, rot_in, isVisible_in),
-//                 lightColour{lightColour_in},
-//                 intensity{intensity_in}
+//                 LightType lightType_in) :
+//                 BaseObject()
 //     {
-//         // constuctor for light renderer
-//         // this might not be needed due to how easy light is
-//         // except for the shader
+        
+//     }
+    
+//     static std::string GetStringLightType(LightType type)
+//     {
+//         switch (type)
+//         {
+//         case (LightType::DIRECTIONAL):
+//             return std::string("DIRECTIONAL");
+//         case (LightType::POINT):
+//             return std::string("POINT");
+//         case (LightType::SPOTLIGHT):
+//             return std::string("SPOTLIGHT");
+//         default:
+//             LOG(ERROR, "Invalid LightType for GetStringLightType(LightType type)");
+//             return nullptr;
+//         }
 //     }
 
 

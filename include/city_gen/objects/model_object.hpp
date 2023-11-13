@@ -7,7 +7,7 @@ class Model;
 class Shader;
 
 // 3D object
-class ModelObject : public BaseObject
+class ModelObject : public BaseObject<ModelObject>
 {
 private:
     glm::vec3 scale = {1.0f, 1.0f, 1.0f};
@@ -18,9 +18,13 @@ private:
     // Will draw the outline of the bounding box on the model
     bool showBoundingBox = true;
 
+    bool lightingEnable = true;
+
 public:
-    ModelObject(std::string& modelPath_in,   // Path to .obj
-                Shader *shader_in);                       
+    // modelPath_in -- Path to the model's .obj
+    // shader_in -- path to models vertex shader
+    ModelObject(const std::string& modelPath_in,   // Path to .obj
+                Shader* shader_in);                       
 
     ~ModelObject();
 

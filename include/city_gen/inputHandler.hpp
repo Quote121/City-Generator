@@ -13,7 +13,7 @@
 
 struct joyStick
 {
-    char* name;
+    const char* name;
     unsigned int jid;
     bool connected;
 };

@@ -7,7 +7,7 @@ class Sprite;
 class Shader;
 
 // 2d sprites like billboards
-class SpriteObject : public BaseObject
+class SpriteObject : public BaseObject<SpriteObject>
 {
 private:
     
@@ -19,20 +19,15 @@ private:
     std::string spriteName;
 
 public:
-    SpriteObject(std::string& spriteTexture_in,
+    // Shader_in can be nullptr
+    SpriteObject(const std::string& spriteTexture_in,
                  Shader *shader_in);
     ~SpriteObject();
 
     void Draw(glm::mat4 view, glm::mat4 projection) override;
 
-    // Builders
-    SpriteObject* SetPosition(glm::vec3 position_in);
-    SpriteObject* SetRotation(glm::vec3 rotation_in);
-    SpriteObject* SetScale(glm::vec2 scale_in);
-    SpriteObject* SetScale(float scale_in);
-    SpriteObject* SetIsVisible(bool toggle);
+    SpriteObject* SetVec2Scale(glm::vec2 scale_in);
     SpriteObject* SetIsBillboard(bool toggle);
-    SpriteObject* ShowBoundingBox(bool toggle);
     SpriteObject* SetSpawnOffset(glm::vec3 vec3);
     SpriteObject* SetModelOriginCenterBottom();
     SpriteObject* SetModelOriginCenter();

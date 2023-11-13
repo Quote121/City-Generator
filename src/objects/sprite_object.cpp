@@ -6,7 +6,7 @@
 #include <camera.hpp>
 #include <bounding_box.hpp>
 
-SpriteObject::SpriteObject(std::string& spriteTexture_in,
+SpriteObject::SpriteObject(const std::string& spriteTexture_in,
             Shader *shader_in) : 
             BaseObject()
 {
@@ -85,34 +85,9 @@ void SpriteObject::Draw(glm::mat4 view, glm::mat4 projection)
 }
 
 
-// Builders
-SpriteObject* SpriteObject::SetPosition(glm::vec3 position_in)
-{
-    position = position_in;
-    return this;
-}
-
-SpriteObject* SpriteObject::SetRotation(glm::vec3 rotation_in)
-{
-    rotation = rotation_in;
-    return this;
-}
-
-SpriteObject* SpriteObject::SetScale(glm::vec2 scale_in)
+SpriteObject* SpriteObject::SetVec2Scale(glm::vec2 scale_in)
 {
     scale = scale_in;
-    return this;
-}
-
-SpriteObject* SpriteObject::SetScale(float scale_in)
-{
-    scaleScalar = scale_in;
-    return this;
-}
-
-SpriteObject* SpriteObject::SetIsVisible(bool toggle)
-{
-    isVisible = toggle;
     return this;
 }
 

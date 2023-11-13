@@ -3,7 +3,7 @@
 #include <base_object.hpp>
 
 // Particle emmitter object
-class ParticleObject : public BaseObject
+class ParticleObject : public BaseObject<ParticleObject>
 {
 
 };

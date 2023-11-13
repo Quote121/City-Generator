@@ -4,7 +4,7 @@
 #include <line.hpp>
 
 // Line object
-class LineObject : public BaseObject
+class LineObject : public BaseObject<LineObject>
 {
 private:
     glm::vec3 scale = {1.0f, 1.0f, 1.0f}; // Acts as a scale

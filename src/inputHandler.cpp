@@ -10,9 +10,8 @@ bool InputHandler::getJoyStick()
         if (glfwJoystickIsGamepad(GLFW_JOYSTICK_1+i))
         {
             this->joystick.jid = i;
-            this->joystick.name = (char*)glfwGetGamepadName(i);
+            this->joystick.name = glfwGetGamepadName(i);
             this->joystick.connected = true;
-            
             return true;
         }
 

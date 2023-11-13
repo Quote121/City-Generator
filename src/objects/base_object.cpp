@@ -2,15 +2,24 @@
 
 #include <camera.hpp>
 #include <bounding_box.hpp>
+#include <all.hpp>
+
+template class BaseObject<DirectionalLightObject>;
+template class BaseObject<PointLightObject>;
+template class BaseObject<SpriteObject>;
+template class BaseObject<LineObject>;
+template class BaseObject<ModelObject>;
 
 
-BaseObject::BaseObject() {}
 
+template<class T>
+BaseObject<T>::BaseObject() {}
 
-BaseObject::~BaseObject() {}
+template<class T>
+BaseObject<T>::~BaseObject() {}
 
-
-glm::mat4 BaseObject::getScaleMat4(glm::vec2 scale) const
+template<class T>
+glm::mat4 BaseObject<T>::getScaleMat4(glm::vec2 scale) const
 {
     // identity
     glm::mat4 matrix(1.0f);
@@ -23,7 +32,8 @@ glm::mat4 BaseObject::getScaleMat4(glm::vec2 scale) const
 /**
  * pass a vec3 and get a mat4 result
 */
-glm::mat4 BaseObject::getRotateMat4(glm::vec3 angles) const
+template<class T>
+glm::mat4 BaseObject<T>::getRotateMat4(glm::vec3 angles) const
 {
     glm::mat4 rotation = glm::mat4{
         {glm::cos(angles.z) * glm::cos(angles.y), glm::cos(angles.z)*glm::sin(angles.y)*glm::sin(angles.x) - glm::sin(angles.z)*glm::cos(angles.x), glm::cos(angles.z)*glm::sin(angles.y)*glm::cos(angles.x) + glm::sin(angles.z)*glm::sin(angles.x), 0 },
@@ -34,13 +44,15 @@ glm::mat4 BaseObject::getRotateMat4(glm::vec3 angles) const
     return rotation;
 }
 
-glm::mat4 BaseObject::getPositionMat4(glm::vec3 position) const
+template<class T>
+glm::mat4 BaseObject<T>::getPositionMat4(glm::vec3 position) const
 {
     glm::mat4 matrix(1.0f);
     return glm::translate(matrix, position);
 }
 
-glm::mat4 BaseObject::getScaleMat4(glm::vec3 scale) const
+template<class T>
+glm::mat4 BaseObject<T>::getScaleMat4(glm::vec3 scale) const
 {
     // identity
     glm::mat4 matrix(1.0f);
@@ -51,7 +63,8 @@ glm::mat4 BaseObject::getScaleMat4(glm::vec3 scale) const
     return matrix;
 }
 
-glm::mat4 BaseObject::getScaleMat4(float scale) const
+template<class T>
+glm::mat4 BaseObject<T>::getScaleMat4(float scale) const
 {
     glm::mat4 matrix(1.0f);
     matrix[0][0] *= scale;
@@ -60,8 +73,44 @@ glm::mat4 BaseObject::getScaleMat4(float scale) const
     return matrix;
 }
 
-float BaseObject::GetDistanceFromCamera() const
+template<class T>
+float BaseObject<T>::GetDistanceFromCamera() const
 {
     Camera * cam = Camera::getInstance();
     return glm::length(cam->Position-position);
+}
+
+
+
+
+
+// Builders
+template<class T>
+T* BaseObject<T>::SetPosition(glm::vec3 position_in)
+{
+    position = position_in;
+    return static_cast<T*>(this);
+}
+
+template<class T>
+T* BaseObject<T>::SetRotation(glm::vec3 rotation_in)
+{
+    rotation = rotation_in;
+    return static_cast<T*>(this);
+}
+
+
+
+template<class T>
+T* BaseObject<T>::SetScale(float scale_in)
+{
+    scaleScalar = scale_in;
+    return static_cast<T*>(this);
+}
+
+template<class T>
+T* BaseObject<T>::SetIsVisible(bool toggle)
+{
+    isVisible = toggle;
+    return static_cast<T*>(this);
 }

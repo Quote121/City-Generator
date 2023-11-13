@@ -52,11 +52,11 @@ void Mesh::Draw(Shader &shader)
     {
         glActiveTexture(GL_TEXTURE0 + i); // activate texture unit, with an offset
         // get textures number
-        std::string number;
+        std::string number = "";
         std::string name = textures[i].type;
-        if(name == "texture_diffuse")
+        if(name == "diffuse")
             number = std::to_string(diffuseNr++);
-        else if(name == "texture_specular")
+        else if(name == "specular")
             number = std::to_string(specularNr++);
 
         shader.setFloat(("material." + name + number).c_str(), i);
@@ -75,4 +75,9 @@ void Mesh::Draw(Shader &shader)
 #if ENABLE_CULL_FACE_MODEL == 1
     glDisable(GL_CULL_FACE);
 #endif
+
+    GLenum error;
+    while ((error = glGetError()) != GL_NO_ERROR) {
+        LOG(ERROR, "OpenGL Mesh::Draw() Error: " << error);
+    }
 }

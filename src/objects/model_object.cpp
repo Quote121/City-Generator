@@ -5,7 +5,7 @@
 #include <resourceManager.hpp>
 #include <bounding_box.hpp>
 
-ModelObject::ModelObject(std::string& modelPath_in,   // Path to .obj
+ModelObject::ModelObject(const std::string& modelPath_in,   // Path to .obj
                          Shader *shader_in) :                        
                          BaseObject()
 {
@@ -36,6 +36,9 @@ ModelObject::~ModelObject()
     delete(model);
 }
 
+#include <scene.hpp> // TODO remove (to abstract lighting somewhere else)
+#include <camera.hpp>
+
 void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
 {
     if (isVisible)
@@ -56,6 +59,37 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
             objectShader->setMat4("model", result);
             // Set the local position based on the bounding box center
             objectShader->setVec3("localCenterPos", objectOriginPosition);
+
+            // Lighting
+            if (lightingEnable)
+            {
+                // TODO abstract the following code for shader setup
+                
+                // If lightingEnable is here then we assume the shader can take the following variables
+                
+                
+                // TEMP we go through all point lights and assign the values form it here
+                objectShader->setVec3("viewPos", Camera::getInstance()->Position);
+                objectShader->setFloat("material.shininess", 32.0f);
+                // For each point light set the corresponding values
+                for (long unsigned int i = 0; i < Scene::getInstance()->GetPointLightObjects().size(); i++)
+                {
+                    auto& light = Scene::getInstance()->GetPointLightObjects().at(i);
+                    std::string lightName = "pointLights[" + std::to_string(i) + "]";
+                    
+                    objectShader->setVec3((lightName + ".position"), light->GetPosition());
+                    objectShader->setVec3((lightName + ".ambient"), light->GetAmbient());
+                    objectShader->setVec3((lightName + ".diffuse"), light->GetDiffuse());
+                    objectShader->setVec3((lightName + ".specular"), light->GetSpecular());
+                    objectShader->setFloat((lightName + ".constant"), light->GetConstant());
+                    objectShader->setFloat((lightName + ".linear"), light->GetLinear());
+                    objectShader->setFloat((lightName + ".quadratic"), light->GetQuadratic());
+                }
+
+            }
+            
+
+
             model->Model::Draw();
         }
 

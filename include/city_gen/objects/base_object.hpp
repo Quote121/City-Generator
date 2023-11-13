@@ -10,6 +10,7 @@
 class BoundingBox;
 
 // The base class of an object for other objects to be created from
+template <class T>
 class BaseObject {
 
 // Only accessable by classes that inherit
@@ -25,10 +26,6 @@ protected:
     glm::vec3 objectOriginPosition = {0.0f, 0.0f, 0.0f}; // Position offset for spawning. E.g. when spawning at 0,0,0 the offset can be set
                                                          // to the center of the object or the center of the bottom so its easier to place
     
-    // TODO
-    // BoundingBox* base_boundingBox; // Info is local verticies
-    // bool showBoundingBox = true; // Will draw the outline of the bounding box on the model
-
     float scaleScalar = 1.0f;                   // Float to scale object in all directions
     bool isVisible = true;                      // Visability Flag
 
@@ -105,4 +102,16 @@ public:
         return scaleScalar;
     }
 
+
+    // Builders
+    T* SetPosition(glm::vec3 position_in);
+    T* SetRotation(glm::vec3 rotation_in);
+    // T* SetScale(glm::vec2 scale_in);
+    T* SetScale(float scale_in);
+    T* SetIsVisible(bool toggle);
+    // T* ShowBoundingBox(bool toggle);
 };
+
+// template class BaseObject<SpriteObject>;
+
+// #include "../src/objects/base_object.cpp"

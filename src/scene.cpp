@@ -34,7 +34,7 @@ ModelObject* Scene::addModel(std::string& modelPath_in,
 
 void Scene::addSprite(const SpriteObject& spriteObject)
 {
-    // TOOD
+    // TODO
 }
 
 SpriteObject* Scene::addSprite(std::string& spriteTexture_in,
@@ -80,6 +80,58 @@ LineObject* Scene::addLine(Shader* shader_in,
     return line;
 }
 
+// MIGHT BE UNUSED
+// LightObject* Scene::addLight(Shader* shader_in,
+//                              LightType lightTypeIn)
+// {
+    
+//     // LightObject* light = new LightObject(
+//     //     shader_in, lightTypeIn
+//     // );
+//     // // scene_light_objects.push_back(light);
+
+//     // lightCount++;
+
+//     // // Concatenate the light type onto the alias
+//     // std::string lightTypeStr = LightObject::GetStringLightType(lightTypeIn);
+
+//     // std::string name = "Light_" + lightTypeStr + "_" + std::to_string(lightCount);
+//     // light->SetAlias(&name);
+
+//     // return light;
+
+// }
+
+DirectionalLightObject* Scene::addDirectionalLight()
+{
+    DirectionalLightObject* light = new DirectionalLightObject();
+
+    scene_directionalLight_objects.push_back(light);
+
+    dirLightCount++;
+
+    std::string lightString = "Light_dir_" + std::to_string(dirLightCount);
+    light->SetAlias(&lightString);
+
+    return light;
+}
+
+PointLightObject* Scene::addPointLight()
+{
+    PointLightObject* light = new PointLightObject();
+
+    scene_pointLight_objects.push_back(light);
+
+    pointLightCount++;
+
+    std::string lightString = "Light_pnt_" + std::to_string(pointLightCount);
+    light->SetAlias(&lightString);
+    
+
+    return light;
+}
+
+
 // bool Scene::removeObject(BaseObject &obj)
 // {
 //     // TODO
@@ -95,7 +147,9 @@ LineObject* Scene::addLine(Shader* shader_in,
 //     // TODO
 // }
 
-bool Scene::SortByDistanceInv(BaseObject* a, BaseObject* b)
+// BaseObject is a class template and so we have to specify the objects we are comparing
+template<class T, class U>
+bool Scene::SortByDistanceInv(BaseObject<T>* a, BaseObject<U>* b)
 {   
     return a->GetDistanceFromCamera() > b->GetDistanceFromCamera();
 }
@@ -114,7 +168,9 @@ void Scene::drawSceneObjects(glm::mat4 view, glm::mat4 projection)
         obj->Draw(view, projection);
     }
 
-    std::sort(scene_sprite_objects.begin(), scene_sprite_objects.end(), SortByDistanceInv);
+    std::sort(scene_sprite_objects.begin(), scene_sprite_objects.end(),
+        SortByDistanceInv<SpriteObject,SpriteObject>);
+
     // Draw sprites
     for (auto& sprite : GetSpriteObjects())
     {

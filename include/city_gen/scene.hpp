@@ -27,7 +27,10 @@ private:
     std::vector<ModelObject*> scene_model_objects;
     std::vector<SpriteObject*> scene_sprite_objects;
     std::vector<LineObject*> scene_line_objects;
-    
+
+    std::vector<PointLightObject*> scene_pointLight_objects;
+    std::vector<DirectionalLightObject*> scene_directionalLight_objects;
+
     SkyBox* skybox; // The skybox object
 
 
@@ -45,7 +48,11 @@ private:
     int modelCount = 0;
     int spriteCount = 0;
 
-    static bool SortByDistanceInv(BaseObject* a, BaseObject* b);
+    int dirLightCount = 0;
+    int pointLightCount = 0;
+
+    template<class T, class U>
+    static bool SortByDistanceInv(BaseObject<T>* a, BaseObject<U>* b);
 
 public:
     // Singleton setup //  
@@ -53,10 +60,6 @@ public:
     void operator=(const Scene &) = delete;
     static Scene* getInstance();
     /////////////////////
-
-    // Object adding
-    // When we create from a derived class, we downcast to base when storing
-    void addObject(BaseObject* object_in) const;
 
     // 3D models
     void addModel(const ModelObject& modelObject);
@@ -75,17 +78,23 @@ public:
                  glm::vec3 point_b,
                  glm::vec3 colour_in = glm::vec3{1.0f, 1.0f, 1.0f});
 
+    // Light // UNUSED
+    // LightObject* addLight(Shader* shader_in,
+    //               LightType LightType_in);
+
+    DirectionalLightObject* addDirectionalLight();
+    PointLightObject* addPointLight();
+
 
     void CreateSkyBox(std::vector<std::string>* images);
     void DrawSkyBox(glm::mat4 view, glm::mat4 projection);
 
 
-    // Light
     // Particle
-    // Line
 
     // Returns true is found and removed, false otherwise
-    bool removeObject(BaseObject &obj);
+    template<class T>
+    bool removeObject(BaseObject<T> &obj);
     bool removeModel(ModelObject& obj);
     bool removeSprite(SpriteObject& obj);
     bool removeLine(LineObject& obj);
@@ -113,6 +122,11 @@ public:
     std::vector<LineObject*> const& GetLineObjects()
     {
         return scene_line_objects;
+    }
+
+    std::vector<PointLightObject*> const& GetPointLightObjects()
+    {
+        return scene_pointLight_objects;
     }
 
     // Draws all of the objects form each of the object vectors
