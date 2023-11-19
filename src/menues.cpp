@@ -108,15 +108,11 @@ void Menues::display(float deltaTime)
                     if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
                     {
                         ImGui::PushItemWidth(100);
-                        ImGui::Text("Position:");
-                        ImGui::SliderFloat("X##POS", &object->GetPositionImGui().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
-                        ImGui::SliderFloat("Y##POS", &object->GetPositionImGui().y, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
-                        ImGui::SliderFloat("Z##POS", &object->GetPositionImGui().z, POSITION_MIN, POSITION_MAX);
                         
                         ImGui::Text("Direction:");
-                        ImGui::SliderFloat("X##DIR", &object->GetDirectionImGui().x, 0.0f, 1.0f); ImGui::SameLine();
-                        ImGui::SliderFloat("Y##DIR", &object->GetDirectionImGui().y, 0.0f, 1.0f); ImGui::SameLine();
-                        ImGui::SliderFloat("Z##DIR", &object->GetDirectionImGui().z, 0.0f, 1.0f);
+                        ImGui::SliderFloat("X##DIR", &object->GetDirectionImGui().x, -1.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##DIR", &object->GetDirectionImGui().y, -1.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##DIR", &object->GetDirectionImGui().z, -1.0f, 1.0f);
 
                         ImGui::Text("Colour:");
                         ImGui::SliderFloat("X##COL", &object->GetLightColourImGui().x, 0.0f, 1.0f); ImGui::SameLine();

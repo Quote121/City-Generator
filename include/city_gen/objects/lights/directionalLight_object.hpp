@@ -1,10 +1,11 @@
 #pragma once
 
-#include <base_object.hpp>
-
-class DirectionalLightObject : public BaseObject<DirectionalLightObject>
+// Position is not needed so we are not inheriting from base class with this light
+class DirectionalLightObject
 {
 private:
+    std::string alias;
+
     glm::vec3 direction = {0.0f, 0.0f, 0.0f};
 
     glm::vec3 ambient = {0.5f, 0.5f, 0.5f};
@@ -18,6 +19,15 @@ public:
     DirectionalLightObject()
     {
 
+    }
+
+    void SetAlias(const std::string* alias_in)
+    {
+        alias = *alias_in;
+    }
+    inline std::string& GetAlias()
+    {
+        return alias;
     }
 
     // Getters

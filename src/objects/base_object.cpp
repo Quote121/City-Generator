@@ -4,7 +4,6 @@
 #include <bounding_box.hpp>
 #include <all.hpp>
 
-template class BaseObject<DirectionalLightObject>;
 template class BaseObject<PointLightObject>;
 template class BaseObject<SpriteObject>;
 template class BaseObject<LineObject>;

@@ -281,8 +281,7 @@ int main() {
     scene->addPointLight()
         ->SetPosition(glm::vec3{-10, 0, 0});
 
-    scene->addDirectionalLight()
-        ->SetPosition(glm::vec3{0,0,0});
+    scene->addDirectionalLight();
     
     // scene->addSprite(sunIcon, nullptr) 
     //     ->SetPosition(glm::vec3(0,0,0))
