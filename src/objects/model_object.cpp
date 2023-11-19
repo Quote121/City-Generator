@@ -89,6 +89,15 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
                     objectShader->setFloat((lightName + ".linear"), light->GetLinear());
                     objectShader->setFloat((lightName + ".quadratic"), light->GetQuadratic());
                 }
+
+                // Directional lights
+                DirectionalLightObject* dirLight = Scene::getInstance()->GetDirectionalLightObjects().at(0);
+                objectShader->setVec3(("dirLight.direction"), dirLight->GetDirection());
+
+                objectShader->setVec3(("dirLight.ambient"), dirLight->GetAmbient());
+                objectShader->setVec3(("dirLight.diffuse"), dirLight->GetDiffuse());
+                objectShader->setVec3(("dirLight.specular"), dirLight->GetSpecular());
+
             }
             model->Model::Draw();
         }

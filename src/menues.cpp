@@ -101,6 +101,47 @@ void Menues::display(float deltaTime)
             }
             if(ImGui::TreeNode("Direction Lights"))
             {
+                auto objects = scene->GetDirectionalLightObjects();
+                for (unsigned int i = 0; i < objects.size(); i++)
+                {
+                    DirectionalLightObject* object = objects[i];
+                    if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
+                    {
+                        ImGui::PushItemWidth(100);
+                        ImGui::Text("Position:");
+                        ImGui::SliderFloat("X##POS", &object->GetPositionImGui().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##POS", &object->GetPositionImGui().y, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##POS", &object->GetPositionImGui().z, POSITION_MIN, POSITION_MAX);
+                        
+                        ImGui::Text("Direction:");
+                        ImGui::SliderFloat("X##DIR", &object->GetDirectionImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##DIR", &object->GetDirectionImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##DIR", &object->GetDirectionImGui().z, 0.0f, 1.0f);
+
+                        ImGui::Text("Colour:");
+                        ImGui::SliderFloat("X##COL", &object->GetLightColourImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##COL", &object->GetLightColourImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##COL", &object->GetLightColourImGui().z, 0.0f, 1.0f);
+                        
+                        ImGui::Text("Ambient:");
+                        ImGui::SliderFloat("X##AMB", &object->GetAmbientImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##AMB", &object->GetAmbientImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##AMB", &object->GetAmbientImGui().z, 0.0f, 1.0f);
+                        
+                        ImGui::Text("Diffuse:");
+                        ImGui::SliderFloat("X##DIF", &object->GetDiffuseImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##DIF", &object->GetDiffuseImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##DIF", &object->GetDiffuseImGui().z, 0.0f, 1.0f);
+                        
+                        ImGui::Text("Specular:");
+                        ImGui::SliderFloat("X##SPC", &object->GetSpecularImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##SPC", &object->GetSpecularImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##SPC", &object->GetSpecularImGui().z, 0.0f, 1.0f);
+                        ImGui::PopItemWidth();
+
+                    ImGui::TreePop();
+                    }
+                }
                 ImGui::TreePop();
             }
             ImGui::TreePop();

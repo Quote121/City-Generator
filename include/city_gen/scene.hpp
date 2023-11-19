@@ -129,6 +129,11 @@ public:
         return scene_pointLight_objects;
     }
 
+    std::vector<DirectionalLightObject*> const& GetDirectionalLightObjects()
+    {
+        return scene_directionalLight_objects;
+    }
+
     // Draws all of the objects form each of the object vectors
     void drawSceneObjects(glm::mat4 view, glm::mat4 projection);
     
