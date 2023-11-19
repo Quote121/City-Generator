@@ -13,8 +13,6 @@ private:
     glm::vec3 scale = {1.0f, 1.0f, 1.0f};
     Model* model;
 
-    std::string modelName;
-
     // Will draw the outline of the bounding box on the model
     bool showBoundingBox = true;
 
@@ -46,7 +44,7 @@ public:
     ModelObject* SetModelOriginCenter();
 
     // Getters
-    std::string const& GetModelName() const;
+    std::string GetModelName() const;
     bool GetShowBoundingBox() const;
     
     // ImGui

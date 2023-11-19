@@ -15,12 +15,10 @@ ModelObject::ModelObject(const std::string& modelPath_in,   // Path to .obj
 {
     Shader* shader;
     // Get the model name
-    modelName = modelPath_in.substr(modelPath_in.find_last_of('/')+1, modelPath_in.size()-1);
-
+    
     // Create the default shader unless passed one
     if (shader_in == nullptr)
     {
-        LOG(WARN, "Object shader null -- Setting default shader");
         // Create heap object shader
         shader = ResourceManager::getInstance()->LoadShader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
     }
@@ -29,10 +27,7 @@ ModelObject::ModelObject(const std::string& modelPath_in,   // Path to .obj
         shader = shader_in;
     }
 
-
     model = ResourceManager::getInstance()->LoadModel(modelPath_in, shader);
-
-    // model = new Model(shader, modelPath_in, base_boundingBox);
 }
 
 ModelObject::~ModelObject()
@@ -184,9 +179,9 @@ ModelObject* ModelObject::SetModelOriginCenter()
 
 // Getters and setters
 
-std::string const& ModelObject::GetModelName() const
+std::string ModelObject::GetModelName() const
 {
-    return modelName;
+    return model->GetModelName();
 }
 
 bool ModelObject::GetShowBoundingBox() const

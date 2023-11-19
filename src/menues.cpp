@@ -1,4 +1,5 @@
 #include <menues.hpp>
+#include <resourceManager.hpp>
 
 #define POSITION_MAX 100.0f
 #define POSITION_MIN -100.0f
@@ -47,7 +48,48 @@ void Menues::display(float deltaTime)
 
     // Load assets
 
+    // Get loaded models from asset loader
+    std::vector<Model*> models = ResourceManager::getInstance()->GetLoadedModels();
+    
+    std::vector<std::string> modelNames; // Needed for a local pointer to a string
+
+    for (const auto& model : models) {
+        modelNames.push_back(model->GetModelName());
+    }
+
+    const char* items[modelNames.size()];
+    for (size_t i = 0; i < modelNames.size(); ++i) {
+        items[i] = modelNames[i].c_str();
+    }
+
+    static unsigned int item_current_idx = 0; // Here we store our selection data as an index.
+    const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
+    
+    if (ImGui::BeginCombo("combo 1", combo_preview_value))
+    {
+        for (unsigned int n = 0; n < models.size(); n++)
+        {
+            const bool is_selected = (item_current_idx == n);
+            if (ImGui::Selectable(items[n], is_selected))
+                item_current_idx = n;
+
+            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+    // If button pressed then we check the item_current_idx and act accordingly
+    bool spawn = ImGui::Button("Spawn");
+    if (spawn)
+    {
+        scene->addModel(models.at(item_current_idx)->GetModelPath());
+    }
+
+    ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui()); 
+
     // Show XYZ lines
+
 
     if(ImGui::TreeNode("Objects"))
     {
@@ -95,6 +137,12 @@ void Menues::display(float deltaTime)
                         ImGui::SliderFloat("Quadratic:", &object->GetQuadraticImGui(), 0.0f, 1.0f); ImGui::SameLine(); ImGui::NewLine();
                     
                         ImGui::TreePop();
+
+                        bool deleteBtn = ImGui::Button("Delete");
+                        if (deleteBtn)
+                        {
+                            scene->removePointLight(*object);
+                        }
                     }
                 }
                 ImGui::TreePop();
@@ -110,9 +158,9 @@ void Menues::display(float deltaTime)
                         ImGui::PushItemWidth(100);
                         
                         ImGui::Text("Direction:");
-                        ImGui::SliderFloat("X##DIR", &object->GetDirectionImGui().x, -1.0f, 1.0f); ImGui::SameLine();
-                        ImGui::SliderFloat("Y##DIR", &object->GetDirectionImGui().y, -1.0f, 1.0f); ImGui::SameLine();
-                        ImGui::SliderFloat("Z##DIR", &object->GetDirectionImGui().z, -1.0f, 1.0f);
+                        ImGui::SliderFloat("X##DIR", &object->GetDirectionImGui().x, ROTATION_MIN, ROTATION_MAX); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##DIR", &object->GetDirectionImGui().y, ROTATION_MIN, ROTATION_MAX); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##DIR", &object->GetDirectionImGui().z, ROTATION_MIN, ROTATION_MAX);
 
                         ImGui::Text("Colour:");
                         ImGui::SliderFloat("X##COL", &object->GetLightColourImGui().x, 0.0f, 1.0f); ImGui::SameLine();
@@ -135,7 +183,8 @@ void Menues::display(float deltaTime)
                         ImGui::SliderFloat("Z##SPC", &object->GetSpecularImGui().z, 0.0f, 1.0f);
                         ImGui::PopItemWidth();
 
-                    ImGui::TreePop();
+                        ImGui::TreePop();
+
                     }
                 }
                 ImGui::TreePop();
@@ -176,6 +225,12 @@ void Menues::display(float deltaTime)
                     ImGui::Checkbox("Lighting", &object->GetShowLightingImGui());
 
                     ImGui::TreePop();
+
+                    bool deleteBtn = ImGui::Button("Delete");
+                    if (deleteBtn)
+                    {
+                        scene->removeModel(*object);
+                    }
                 }
             }
             ImGui::TreePop();
@@ -212,6 +267,12 @@ void Menues::display(float deltaTime)
                     ImGui::Checkbox("Display ", &object->GetIsVisibleImGui());
 
                     ImGui::TreePop();
+                    
+                    bool deleteBtn = ImGui::Button("Delete");
+                    if (deleteBtn)
+                    {
+                        scene->removeSprite(*object);
+                    }
                 }
             }
             ImGui::TreePop();
@@ -243,6 +304,12 @@ void Menues::display(float deltaTime)
                     ImGui::PopItemWidth();
 
                     ImGui::TreePop();
+
+                    bool deleteBtn = ImGui::Button("Delete");
+                    if (deleteBtn)
+                    {
+                        scene->removeLine(*object);
+                    }
                 }
             }
             ImGui::TreePop();

@@ -255,6 +255,12 @@ int main() {
          ->ShowBoundingBox(true)
          ->SetLightingEnabled(true);
 
+    scene->addModel(backPackPath, &backpackShader)
+         ->SetModelOriginCenter()
+         ->SetPosition(glm::vec3{0.0f, 20.0f, 0.0f})
+         ->ShowBoundingBox(true)
+         ->SetLightingEnabled(true);
+
     scene->addPointLight()
         ->SetPosition(glm::vec3{0, 0, 0});
 
@@ -267,17 +273,6 @@ int main() {
     //     ->SetPosition(glm::vec3(0,0,0))
     //     ->SetModelOriginCenter()
     //     ->SetIsBillboard(true);
-
-    // X Y Z (R G B) Lines for the orientation
-    // X is Red
-    scene->addLine(glm::vec3{-1000.0, 0, 0}, glm::vec3{1000.0, 0, 0})
-        ->SetColour(glm::vec3{1, 0, 0});
-    // Y is Green
-    scene->addLine(glm::vec3{0, -1000.0, 0}, glm::vec3{0, 1000.0, 0})
-        ->SetColour(glm::vec3{0, 1, 0});
-    // Z is Blue
-    scene->addLine(glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0})
-        ->SetColour(glm::vec3{0, 0, 1});
 
     // IMGUI test
     IMGUI_CHECKVERSION();
@@ -326,10 +321,10 @@ int main() {
         // Remove translation from matrix by casting to mat3 then mat4
         glm::mat4 viewSB = glm::mat4(glm::mat3(camera->GetViewMatrix()));
         scene->DrawSkyBox(viewSB, projection);
-        scene->drawSceneObjects(view, projection);
+        scene->DrawSceneObjects(view, projection);
         
         
-        // ImGui::ShowDemoWindow();
+        ImGui::ShowDemoWindow();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

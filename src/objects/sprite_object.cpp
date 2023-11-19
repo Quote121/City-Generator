@@ -19,7 +19,6 @@ SpriteObject::SpriteObject(const std::string& spriteTexture_in,
     // Create the default shader unless passed one
     if (shader_in == nullptr)
     {
-        LOG(WARN, "Sprite shader passed null -- using default shader")
         // Create heap object shader
         shader = RM->LoadShader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
     }
@@ -53,6 +52,7 @@ void SpriteObject::Draw(glm::mat4 view, glm::mat4 projection)
             Camera* cam = Camera::getInstance();
             
             glm::vec3 objectToCamera = -glm::normalize(cam->Position - position);
+
             glm::vec3 right = glm::normalize(glm::cross(objectToCamera, cam->Up));
             glm::vec3 up = glm::normalize(glm::cross(right, objectToCamera));
             glm::mat4 rotation_new = glm::mat4(glm::vec4(right, 0.0f), glm::vec4(up, 0.0f), glm::vec4(-objectToCamera, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));

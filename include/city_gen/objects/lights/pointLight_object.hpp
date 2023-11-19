@@ -8,8 +8,8 @@
 class PointLightObject : public SpriteObject
 {
 private:
-    // TODO implement into shaders
     glm::vec3 lightColour = {1.0f, 1.0f, 1.0f};
+    // TODO incorporate this
     float intensity = 1.0f;
 
     // Make constructor for these values
@@ -30,7 +30,7 @@ public:
     // Pass light texture to where the light is
     PointLightObject() : SpriteObject(paths::light_icon_texture, nullptr)
     {
-        SetModelOriginCenter();
+        // SetModelOriginCenter();
         SetIsBillboard(true);
     }
 

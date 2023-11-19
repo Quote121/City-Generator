@@ -35,10 +35,7 @@ private:
     // the resourceManager should have a cleanup feature
 
     // For shaders we will use the vertex shader path as the lookup
-    
     std::unordered_map<std::string, Shader*> shader_map;
-    // std::unordered_map<unsigned int, Shader*> shader_map;
-
 
     // Seach with texture path and return texture struct
     std::unordered_map<std::string, TextureInfo*> texture_map;
@@ -118,13 +115,11 @@ public:
         if (shader_map.find(vertexShaderPath) != shader_map.end())
         {
             // Cache hit
-            LOG(STATUS, "LoadShader cache HIT");
             return shader_map.find(vertexShaderPath)->second;
         }
         // Cache miss
         else
         {
-            LOG(STATUS, "LoadShader cache MISS");
             Shader* shader = new Shader(vertexShaderPath.c_str(), fragmentShaderPath.c_str());
             shader_map.insert(std::make_pair(vertexShaderPath, shader));
             return shader;
@@ -151,13 +146,12 @@ public:
         if (texture_map.find(texturePath) != texture_map.end())
         {
             // hit
-            LOG(STATUS, "LoadTexture cache HIT");
             return texture_map.find(texturePath)->second;
         }
         // miss
         else
         {
-            LOG(STATUS, "LoadTexture cache MISS");
+            LOG(STATUS, "Loading texture : " << texturePath);
             unsigned int textureID;
             glGenTextures(1, &textureID);
 
@@ -219,9 +213,22 @@ public:
         // Miss
         else
         {
+            LOG(STATUS, "Loading model : " << modelPath_in);
             Model* model = new Model(modelShader_in, modelPath_in);
             model_map.insert(std::make_pair(modelPath_in, model));
             return model;
         }
     }
+
+    std::vector<Model*> GetLoadedModels()
+    {
+        std::vector<Model*> models;
+
+        for (auto& a : model_map)
+        {
+            models.push_back(a.second);
+        }
+        return models;
+    }
+
 };

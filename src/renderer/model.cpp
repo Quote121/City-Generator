@@ -5,6 +5,8 @@
 
 Model::Model(Shader* modelShader_in, const std::string& path)
 {
+    modelPath = path;
+
     modelBoundingBox = new BoundingBox();
     modelShader = modelShader_in;
     

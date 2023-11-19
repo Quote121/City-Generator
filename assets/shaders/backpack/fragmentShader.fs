@@ -70,7 +70,6 @@ void main()
     if (ShowLighting)
     {
         FragColor = vec4(result, 1.0);
-        
     }
     else
     {

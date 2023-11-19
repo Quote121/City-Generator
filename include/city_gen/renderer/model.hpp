@@ -23,6 +23,9 @@ private:
     Shader* modelShader = nullptr;
     BoundingBox* modelBoundingBox;
 
+    std::string modelPath;
+
+
     // model data
     std::vector<Mesh> meshes;
     std::string directory;
@@ -45,6 +48,17 @@ public:
     inline BoundingBox* GetBoundingBox()
     {
         return modelBoundingBox;
+    }
+
+    inline std::string const& GetModelPath() const
+    {
+        return modelPath;
+    }
+
+    inline std::string GetModelName() const
+    {
+        std::string name = modelPath.substr(modelPath.find_last_of('/')+1, modelPath.size()-1);
+        return name;
     }
 
     void Draw();

@@ -1,5 +1,6 @@
 #include <scene.hpp>
 #include <resourceManager.hpp>
+#include <algorithm>
 
 Scene* Scene::pinstance_{nullptr};
 
@@ -10,6 +11,20 @@ Scene* Scene::getInstance()
         pinstance_ = new Scene();
     }
     return pinstance_; 
+}
+
+Scene::Scene()
+{
+    // X Y Z (R G B) Lines for the orientation
+    // X is Red
+    this->addLineAxis(glm::vec3{-1000.0, 0, 0}, glm::vec3{1000.0, 0, 0})
+        ->SetColour(glm::vec3{1, 0, 0});
+    // Y is Green
+    this->addLineAxis(glm::vec3{0, -1000.0, 0}, glm::vec3{0, 1000.0, 0})
+        ->SetColour(glm::vec3{0, 1, 0});
+    // Z is Blue
+    this->addLineAxis(glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0})
+        ->SetColour(glm::vec3{0, 0, 1});
 }
 
 
@@ -88,6 +103,27 @@ LineObject* Scene::addLine(glm::vec3 point_a,
     return line;
 }
 
+LineObject* Scene::addLineAxis(glm::vec3 point_a,
+                           glm::vec3 point_b,
+                           const ShaderPath* shader_in)
+{
+    // If we have passed nullptr load default shader
+    Shader* shader = nullptr;
+    if (shader_in != nullptr)
+    {
+        shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
+    }
+
+    // Create line
+    LineObject* line = new LineObject(
+        shader, point_a, point_b
+    );
+    scene_axis_lines.push_back(line);
+
+    return line;
+}
+
+
 DirectionalLightObject* Scene::addDirectionalLight()
 {
     DirectionalLightObject* light = new DirectionalLightObject();
@@ -118,20 +154,43 @@ PointLightObject* Scene::addPointLight()
 }
 
 
-// bool Scene::removeObject(BaseObject &obj)
-// {
-//     // TODO
-// }
+// Remove objects
 
-// bool Scene::removeModel(ModelObject& obj)
-// {
-//     // TODO
-// }
+void Scene::removeModel(ModelObject& obj)
+{
+    auto it = std::find(scene_model_objects.begin(), scene_model_objects.end(), &obj);
+    if (it != scene_model_objects.end())
+    {
+        scene_model_objects.erase(it);
+    }
+}
 
-// bool Scene::removeSprite(SpriteObject& obj)
-// {
-//     // TODO
-// }
+void Scene::removeSprite(SpriteObject& obj)
+{
+    auto it = std::find(scene_sprite_objects.begin(), scene_sprite_objects.end(), &obj);
+    if (it != scene_sprite_objects.end())
+    {
+        scene_sprite_objects.erase(it);
+    }    
+}
+
+void Scene::removeLine(LineObject& obj)
+{
+    auto it = std::find(scene_line_objects.begin(), scene_line_objects.end(), &obj);
+    if (it != scene_line_objects.end())
+    {
+        scene_line_objects.erase(it);
+    }
+}
+
+void Scene::removePointLight(PointLightObject& obj)
+{
+    auto it = std::find(scene_pointLight_objects.begin(), scene_pointLight_objects.end(), &obj);
+    if (it != scene_pointLight_objects.end())
+    {
+        scene_pointLight_objects.erase(it);
+    }
+}
 
 // BaseObject is a class template and so we have to specify the objects we are comparing
 template<class T, class U>
@@ -140,7 +199,7 @@ bool Scene::SortByDistanceInv(BaseObject<T>* a, BaseObject<U>* b)
     return a->GetDistanceFromCamera() > b->GetDistanceFromCamera();
 }
 
-void Scene::drawSceneObjects(glm::mat4 view, glm::mat4 projection)
+void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
 {
     // Draw lines
     for (auto& line : GetLineObjects())
@@ -148,6 +207,15 @@ void Scene::drawSceneObjects(glm::mat4 view, glm::mat4 projection)
         line->Draw(view, projection);
     }
 
+    // Axis
+    if (showSceneAxis)
+    {
+        for (auto& line : scene_axis_lines)
+        {
+            line->Draw(view, projection);
+        }
+    }
+    
     // Draw objects
     for (auto& obj : GetModelObjects())
     {

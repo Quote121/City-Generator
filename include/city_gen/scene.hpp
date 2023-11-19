@@ -32,10 +32,13 @@ private:
     std::vector<PointLightObject*> scene_pointLight_objects;
     std::vector<DirectionalLightObject*> scene_directionalLight_objects;
 
+    
+    std::vector<LineObject*> scene_axis_lines;
+    bool showSceneAxis = true;
+
     SkyBox* skybox; // The skybox object
 
-
-    Scene() {}
+    Scene();
 
     ~Scene()
     {
@@ -54,6 +57,11 @@ private:
 
     template<class T, class U>
     static bool SortByDistanceInv(BaseObject<T>* a, BaseObject<U>* b);
+
+    // Private axis add
+    LineObject* addLineAxis(glm::vec3 point_a,
+                            glm::vec3 point_b,
+                            const ShaderPath* shader_in = nullptr);
 
 public:
     // Singleton setup //  
@@ -86,11 +94,10 @@ public:
     // Particle
 
     // Returns true is found and removed, false otherwise
-    template<class T>
-    bool removeObject(BaseObject<T> &obj);
-    bool removeModel(ModelObject& obj);
-    bool removeSprite(SpriteObject& obj);
-    bool removeLine(LineObject& obj);
+    void removeModel(ModelObject& obj);
+    void removeSprite(SpriteObject& obj);
+    void removeLine(LineObject& obj);
+    void removePointLight(PointLightObject& obj);
 
 
     // Get scene objects
@@ -120,6 +127,19 @@ public:
         return scene_directionalLight_objects;
     }
 
+    // Builders
+    Scene* ShowSceneAxis(bool visible)
+    {
+        showSceneAxis = visible;
+        return this;
+    }
+
+    // ImGui handle
+    bool& GetShowSceneAxisImGui()
+    {
+        return showSceneAxis;
+    }
+
     // Draws all of the objects form each of the object vectors
-    void drawSceneObjects(glm::mat4 view, glm::mat4 projection);
+    void DrawSceneObjects(glm::mat4 view, glm::mat4 projection);
 };
