@@ -1,5 +1,13 @@
 #include <menues.hpp>
 
+#define POSITION_MAX 100.0f
+#define POSITION_MIN -100.0f
+
+#define ROTATION_MAX 6.28318f // 2PI
+#define ROTATION_MIN -6.28318f // -2PI
+
+#define SCALE_MAX 10.0f
+#define SCALE_MIN 0.01f
 
 
 void Menues::display(float deltaTime)
@@ -26,123 +34,183 @@ void Menues::display(float deltaTime)
     ImGui::Text("FPS %.2f", fpsValue);
     ImGui::Text("Pitch | Yaw: %.3f %.3f", cam->Pitch, cam->Yaw);
     ImGui::Text("[x,y,z] : %.3f, %.3f, %.3f",cam->Position.x, cam->Position.y, cam->Position.z);
-
     ImGui::End();
     //////////////////////////////////////////////////////////////
     
     Scene* scene = Scene::getInstance();
     
+
     // Later on with the resource manager, the user will be able to select from a list of things to spawn into the world
 
-    // int i = 0;
-    // ImGui::Begin("Game objects");
-    // if(ImGui::TreeNode("Objects"))
-    // {
-        
-    //     std::vector<BaseObject*> objects;
-    //     objects.insert(objects.end(), scene->GetLineObjects().begin(), scene->GetLineObjects().end());
-    //     objects.insert(objects.end(), scene->GetModelObjects().begin(), scene->GetModelObjects().end());
-    //     objects.insert(objects.end(), scene->GetSpriteObjects().begin(), scene->GetSpriteObjects().end());
 
-    //     for (BaseObject* object : objects)
-    //     {
-    //         if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
-    //         {
-    //             // General base class info
+    ImGui::Begin("World");
 
-    //             ImGui::Text("Position : [X:Y:Z] =  %.3f,%.3f,%.3f", object->GetPosition().x, object->GetPosition().y, object->GetPosition().z);
-    //             ImGui::Text("%s is %.3f units away from you.", object->GetAlias().c_str(), glm::length(object->GetPosition()-cam->Position));
+    // Load assets
 
-    //             // Object specific controls
-    //             if (ModelObject* modelObject = dynamic_cast<ModelObject*>(object))
-    //             {
-    //                 std::string nameString = "\nModel : " + modelObject->GetModelName();
-    //                 // ImGui::Text(nameString.c_str());
-    //                 ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f}, "%s", nameString.c_str());
+    // Show XYZ lines
 
-    //                 ImGui::Text("Scale:\n");
-    //                 ImGui::SliderFloat("X scale", &modelObject->GetScaleImGui().x, 0.1f, 10.0f);
-    //                 ImGui::SliderFloat("Y scale", &modelObject->GetScaleImGui().y, 0.1f, 10.0f);
-    //                 ImGui::SliderFloat("Z scale", &modelObject->GetScaleImGui().z, 0.1f, 10.0f);
-    //                 ImGui::SliderFloat("Scale", &modelObject->GetScaleScalarImGui(), 0.1f, 10.0f);
-    //                 ImGui::Checkbox("Display AABB", &modelObject->GetShowBoundingBoxImGui());
-    //             }
-    //             // Sprite specific controls
-    //             else if (SpriteObject* spriteObject = dynamic_cast<SpriteObject*>(object))
-    //             {
-    //                 std::string nameString = "\nSprite : " + spriteObject->GetSpriteName();
-    //                 ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f}, "%s", nameString.c_str());
+    if(ImGui::TreeNode("Objects"))
+    {
+        if(ImGui::TreeNode("Lights"))
+        {
+            if(ImGui::TreeNode("Point Lights"))
+            {
+                auto objects = scene->GetPointLightObjects();
+                for (unsigned int i = 0; i < objects.size(); i++)
+                {
+                    PointLightObject* object = objects[i];
+                    if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
+                    {
+                        ImGui::PushItemWidth(100);
+                        ImGui::Text("Position:");
+                        ImGui::SliderFloat("X##POS", &object->GetPositionImGui().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##POS", &object->GetPositionImGui().y, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##POS", &object->GetPositionImGui().z, POSITION_MIN, POSITION_MAX);
+                        
+                        ImGui::Text("Colour:");
+                        ImGui::SliderFloat("X##COL", &object->GetLightColourImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##COL", &object->GetLightColourImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##COL", &object->GetLightColourImGui().z, 0.0f, 1.0f);
+                        
+                        ImGui::Text("Ambient:");
+                        ImGui::SliderFloat("X##AMB", &object->GetAmbientImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##AMB", &object->GetAmbientImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##AMB", &object->GetAmbientImGui().z, 0.0f, 1.0f);
+                        
+                        ImGui::Text("Diffuse:");
+                        ImGui::SliderFloat("X##DIF", &object->GetDiffuseImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##DIF", &object->GetDiffuseImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##DIF", &object->GetDiffuseImGui().z, 0.0f, 1.0f);
+                        
+                        ImGui::Text("Specular:");
+                        ImGui::SliderFloat("X##SPC", &object->GetSpecularImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Y##SPC", &object->GetSpecularImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                        ImGui::SliderFloat("Z##SPC", &object->GetSpecularImGui().z, 0.0f, 1.0f);
+                        ImGui::PopItemWidth();
 
-    //                 ImGui::Text("Scale:\n");
-    //                 ImGui::SliderFloat("X scale", &spriteObject->GetScaleImGui().x, 0.1f, 10.0f);
-    //                 ImGui::SliderFloat("Y scale", &spriteObject->GetScaleImGui().y, 0.1f, 10.0f);
-    //                 ImGui::SliderFloat("Scale", &spriteObject->GetScaleScalarImGui(), 0.1f, 10.0f);
+                        ImGui::SliderFloat("Constant:", &object->GetConstantImGui(), 0.0f, 1.0f); ImGui::SameLine(); ImGui::NewLine();
 
-    //                 ImGui::Checkbox("Toggle billboard", &spriteObject->GetIsBillboardImGui());
+                        ImGui::SliderFloat("Linear:", &object->GetLinearImGui(), 0.0f, 1.0f); ImGui::SameLine(); ImGui::NewLine();
 
-    //             }
-    //             // Line specific controls
-    //             else if (LineObject* lineObject = dynamic_cast<LineObject*>(object))
-    //             {
+                        ImGui::SliderFloat("Quadratic:", &object->GetQuadraticImGui(), 0.0f, 1.0f); ImGui::SameLine(); ImGui::NewLine();
+                    
+                        ImGui::TreePop();
+                    }
+                }
+                ImGui::TreePop();
+            }
+            if(ImGui::TreeNode("Direction Lights"))
+            {
+                ImGui::TreePop();
+            }
+            ImGui::TreePop();
+        }
+        // 3D objects
+        if(ImGui::TreeNode("objects"))
+        {
+            auto objects = scene->GetModelObjects();
+            for (unsigned int i = 0; i < objects.size(); i++)
+            {
+                ModelObject* object = objects[i];
+                if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
+                {
+                    ImGui::TextColored(ImVec4{1.0f, 0.2f, 0.2f, 1.0f},"%s is %.3f units away from you.", object->GetModelName().c_str(), glm::length(object->GetPosition()-cam->Position));
 
-    //                 ImGui::Text("Scale:\n");
-    //                 ImGui::SliderFloat("X scale", &lineObject->GetScaleImGui().x, 0.1f, 10.0f);
-    //                 ImGui::SliderFloat("Y scale", &lineObject->GetScaleImGui().y, 0.1f, 10.0f);
-    //                 ImGui::SliderFloat("Z scale", &lineObject->GetScaleImGui().z, 0.1f, 10.0f);
-    //                 ImGui::SliderFloat("Scale", &lineObject->GetScaleScalarImGui(), 0.1f, 10.0f);
+                    ImGui::PushItemWidth(100);
+                    ImGui::Text("Position:");
+                    ImGui::SliderFloat("X##POS", &object->GetPositionImGui().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Y##POS", &object->GetPositionImGui().y, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Z##POS", &object->GetPositionImGui().z, POSITION_MIN, POSITION_MAX);
+                                        
+                    ImGui::Text("Rotation:");
+                    ImGui::SliderFloat("X##ROT", &object->GetRotationImGui().x, ROTATION_MIN, ROTATION_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Y##ROT", &object->GetRotationImGui().y, ROTATION_MIN, ROTATION_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Z##ROT", &object->GetRotationImGui().z, ROTATION_MIN, ROTATION_MAX);
+                    
+                    ImGui::Text("Scale:");
+                    ImGui::SliderFloat("X##SCL", &object->GetScaleImGui().x, SCALE_MIN, SCALE_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Y##SCL", &object->GetScaleImGui().y, SCALE_MIN, SCALE_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Z##SCL", &object->GetScaleImGui().z, SCALE_MIN, SCALE_MAX); 
+                    ImGui::SliderFloat("Scale", &object->GetScaleScalarImGui(), SCALE_MIN, SCALE_MAX); 
+                    ImGui::PopItemWidth();
 
-    //                 ImGui::Text("Point A:\n");
-    //                 ImGui::SliderFloat("X", &lineObject->GetPointAImGui().x, -100.0f, 100.0f);
-    //                 ImGui::SliderFloat("Y", &lineObject->GetPointAImGui().y, -100.0f, 100.0f);
-    //                 ImGui::SliderFloat("Z", &lineObject->GetPointAImGui().z, -100.0f, 100.0f);
+                    ImGui::Checkbox("Display AABB", &object->GetShowBoundingBoxImGui()); 
+                    ImGui::Checkbox("Display ", &object->GetIsVisibleImGui()); 
+                    ImGui::Checkbox("Lighting", &object->GetShowLightingImGui());
 
-    //                 ImGui::Text("Point B:\n");
-    //                 ImGui::SliderFloat("X", &lineObject->GetPointBImGui().x, -100.0f, 100.0f);
-    //                 ImGui::SliderFloat("Y", &lineObject->GetPointBImGui().y, -100.0f, 100.0f);
-    //                 ImGui::SliderFloat("Z", &lineObject->GetPointBImGui().z, -100.0f, 100.0f);
+                    ImGui::TreePop();
+                }
+            }
+            ImGui::TreePop();
+        }
+        // 2D sprites
+        if(ImGui::TreeNode("Sprites"))
+        {
+            auto objects = scene->GetSpriteObjects();
+            for (unsigned int i = 0; i < objects.size(); i++)
+            {
+                SpriteObject* object = objects[i];
+                if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
+                {
+                    ImGui::TextColored(ImVec4{1.0f, 0.2f, 0.2f, 1.0f},"%s is %.3f units away from you.", object->GetSpriteName().c_str(), glm::length(object->GetPosition()-cam->Position));
 
-    //                 ImGui::Text("Colour:\n");
-    //                 ImGui::SliderFloat("R", &lineObject->GetColourImGui().x, 0.0f, 1.0f);
-    //                 ImGui::SliderFloat("G", &lineObject->GetColourImGui().y, 0.0f, 1.0f);
-    //                 ImGui::SliderFloat("B", &lineObject->GetColourImGui().z, 0.0f, 1.0f);
-    //             }
-    //             // Light specific controls
-    //             // else if (LightObject* object = dynamic_cast<LightObject*>(sceneObj))
-    //             // {
-    //             //     LOG(ERROR, "Light object not yet implemented");
+                    ImGui::PushItemWidth(100);
+                    ImGui::Text("Position:");
+                    ImGui::SliderFloat("X##POS", &object->GetPositionImGui().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Y##POS", &object->GetPositionImGui().y, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Z##POS", &object->GetPositionImGui().z, POSITION_MIN, POSITION_MAX);
+                                        
+                    ImGui::Text("Rotation:");
+                    ImGui::SliderFloat("X##ROT", &object->GetRotationImGui().x, ROTATION_MIN, ROTATION_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Y##ROT", &object->GetRotationImGui().y, ROTATION_MIN, ROTATION_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Z##ROT", &object->GetRotationImGui().z, ROTATION_MIN, ROTATION_MAX);
+                    
+                    ImGui::Text("Scale:");
+                    ImGui::SliderFloat("X##SCL", &object->GetScaleImGui().x, SCALE_MIN, SCALE_MAX); ImGui::SameLine();
+                    ImGui::SliderFloat("Y##SCL", &object->GetScaleImGui().y, SCALE_MIN, SCALE_MAX); 
+                    ImGui::SliderFloat("Scale", &object->GetScaleScalarImGui(), SCALE_MIN, SCALE_MAX);
+                    ImGui::PopItemWidth();
 
-    //             // }
-    //             // Particle specific controls
-    //             // else if (ParticleObject* particleObject = dynamic_cast<ParticleObject*>(object))
-    //             // {
-    //             //     LOG(ERROR, "Particle object not yet implemented");
-    //             // }
-    //             // Error cant cast the object
-    //             else
-    //             {
-    //                 LOG(ERROR, "Unrecognized object: " << i << " name : ");
-    //             }
+                    ImGui::Checkbox("Toggle billboard", &object->GetIsBillboardImGui());
+                    ImGui::Checkbox("Display ", &object->GetIsVisibleImGui());
 
+                    ImGui::TreePop();
+                }
+            }
+            ImGui::TreePop();
+        }
+        // Lines
+        if(ImGui::TreeNode("Lines"))
+        {
+            auto objects = scene->GetLineObjects();
+            for (unsigned int i = 0; i < objects.size(); i++)
+            {
+                LineObject* object = objects[i];
+                if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
+                {
+                    ImGui::PushItemWidth(100);
+                    ImGui::Text("Point A:");
+                    ImGui::SliderFloat("X##A", &object->GetPointAImGui().x, -100.0f, 100.0f); ImGui::SameLine();
+                    ImGui::SliderFloat("Y##A", &object->GetPointAImGui().y, -100.0f, 100.0f); ImGui::SameLine();
+                    ImGui::SliderFloat("Z##A", &object->GetPointAImGui().z, -100.0f, 100.0f);
 
-    //             ImGui::NewLine();
-    //             ImGui::Text("Position:\n");
-    //             ImGui::SliderFloat("X pos: ", &object->GetPositionImGui().x, -200.0f, 200.0f);
-    //             ImGui::SliderFloat("Y pos: ", &object->GetPositionImGui().y, -200.0f, 200.0f);
-    //             ImGui::SliderFloat("Z pos: ", &object->GetPositionImGui().z, -200.0f, 200.0f);
-    //             ImGui::NewLine();
-    //             ImGui::Text("Rotation:\n");
-    //             ImGui::SliderFloat("X rot: ", &object->GetRotationImGui().x, -5.0f, 5.0f);
-    //             ImGui::SliderFloat("Y rot: ", &object->GetRotationImGui().y, -5.0f, 5.0f);
-    //             ImGui::SliderFloat("Z rot: ", &object->GetRotationImGui().z, -5.0f, 5.0f);
+                    ImGui::Text("Point B:\n");
+                    ImGui::SliderFloat("X##B", &object->GetPointBImGui().x, -100.0f, 100.0f); ImGui::SameLine();
+                    ImGui::SliderFloat("Y##B", &object->GetPointBImGui().y, -100.0f, 100.0f); ImGui::SameLine();
+                    ImGui::SliderFloat("Z##B", &object->GetPointBImGui().z, -100.0f, 100.0f);
 
-    //             ImGui::Checkbox("Visible", &object->GetIsVisibleImGui());
+                    ImGui::Text("Colour:\n");
+                    ImGui::SliderFloat("R", &object->GetColourImGui().x, 0.0f, 1.0f);
+                    ImGui::SliderFloat("G", &object->GetColourImGui().y, 0.0f, 1.0f);
+                    ImGui::SliderFloat("B", &object->GetColourImGui().z, 0.0f, 1.0f);
+                    ImGui::PopItemWidth();
 
-
-    //             ImGui::TreePop();
-    //         }
-    //         i++;
-    //     }
-    //     ImGui::TreePop();
-    // }
-    // ImGui::End();
+                    ImGui::TreePop();
+                }
+            }
+            ImGui::TreePop();
+        }
+        ImGui::TreePop();
+    }
+    ImGui::End();
 }

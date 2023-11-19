@@ -5,6 +5,10 @@
 #include <resourceManager.hpp>
 #include <bounding_box.hpp>
 
+// Lighting shader
+#include <scene.hpp>
+#include <camera.hpp>
+
 ModelObject::ModelObject(const std::string& modelPath_in,   // Path to .obj
                          Shader *shader_in) :                        
                          BaseObject()
@@ -36,8 +40,6 @@ ModelObject::~ModelObject()
     delete(model);
 }
 
-#include <scene.hpp> // TODO remove (to abstract lighting somewhere else)
-#include <camera.hpp>
 
 void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
 {
@@ -59,20 +61,22 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
             objectShader->setMat4("model", result);
             // Set the local position based on the bounding box center
             objectShader->setVec3("localCenterPos", objectOriginPosition);
-
+            
+            // Tells the shader wether to show the lighting or just the base ambient texture
+            objectShader->setBool("ShowLighting", lightingEnable);
             // Lighting
             if (lightingEnable)
             {
-                // TODO abstract the following code for shader setup
-                
-                // If lightingEnable is here then we assume the shader can take the following variables
-                
-                
                 // TEMP we go through all point lights and assign the values form it here
                 objectShader->setVec3("viewPos", Camera::getInstance()->Position);
-                objectShader->setFloat("material.shininess", 32.0f);
+                objectShader->setFloat("material.shininess", 10.0f);
+                
+                size_t pointLightSize = Scene::getInstance()->GetPointLightObjects().size();
+                
+                objectShader->setInt("NumValidPointLights", pointLightSize);
+
                 // For each point light set the corresponding values
-                for (long unsigned int i = 0; i < Scene::getInstance()->GetPointLightObjects().size(); i++)
+                for (long unsigned int i = 0; i < pointLightSize; i++)
                 {
                     auto& light = Scene::getInstance()->GetPointLightObjects().at(i);
                     std::string lightName = "pointLights[" + std::to_string(i) + "]";
@@ -85,11 +89,7 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
                     objectShader->setFloat((lightName + ".linear"), light->GetLinear());
                     objectShader->setFloat((lightName + ".quadratic"), light->GetQuadratic());
                 }
-
             }
-            
-
-
             model->Model::Draw();
         }
 
@@ -109,11 +109,8 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
 }
 
 
+// Model specific builders
 
-
-
-
-// Builders
 ModelObject* ModelObject::SetPosition(glm::vec3 position_in)
 {
     position = position_in;
@@ -141,6 +138,12 @@ ModelObject* ModelObject::SetScale(float scale_in)
 ModelObject* ModelObject::IsVisible(bool toggle)
 {
     isVisible = toggle;
+    return this;
+}
+
+ModelObject* ModelObject::SetLightingEnabled(bool toggle)
+{
+    lightingEnable = toggle;
     return this;
 }
 
@@ -192,4 +195,9 @@ glm::vec3& ModelObject::GetScaleImGui()
 bool& ModelObject::GetShowBoundingBoxImGui()
 {
     return showBoundingBox;
+}
+
+bool& ModelObject::GetShowLightingImGui()
+{
+    return lightingEnable;
 }

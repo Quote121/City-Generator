@@ -13,7 +13,7 @@ private:
 
     // Make constructor for these values
     // glm::vec3 ambient = {0.05f, 0.05f, 0.05f};
-    glm::vec3 ambient = {0.5f, 0.5f, 0.5f};
+    glm::vec3 ambient = {0.4f, 0.4f, 0.4f};
 
     glm::vec3 diffuse = {0.08f, 0.08f, 0.08f};
     glm::vec3 specular = {1.0f, 1.0f, 1.0f};
@@ -35,17 +35,17 @@ public:
     // Getters
     glm::vec3 GetAmbient()
     {
-        return ambient;
+        return lightColour * ambient;
     }
 
     glm::vec3 GetDiffuse()
     {
-        return diffuse;
+        return lightColour * diffuse;
     }
 
     glm::vec3 GetSpecular()
     {
-        return specular;
+        return lightColour * specular;
     }
 
     float GetConstant()
@@ -64,5 +64,46 @@ public:
     }
 
     // TODO add builders for light properties
+
+    // ImGui handle getters
+    glm::vec3& GetLightColourImGui()
+    {
+        return lightColour;
+    }
+
+    glm::vec3& GetAmbientImGui()
+    {
+        return ambient;
+    }
+
+    glm::vec3& GetDiffuseImGui()
+    {
+        return diffuse;
+    }
+
+    glm::vec3& GetSpecularImGui()
+    {
+        return specular;
+    }
+
+    float& GetIntensityImGui()
+    {
+        return intensity;
+    }
+
+    float& GetConstantImGui()
+    {
+        return constant;
+    }
+
+    float& GetLinearImGui()
+    {
+        return linear;
+    }
+
+    float& GetQuadraticImGui()
+    {
+        return quadratic;
+    }
 
 };

@@ -18,7 +18,7 @@ private:
     // Will draw the outline of the bounding box on the model
     bool showBoundingBox = true;
 
-    bool lightingEnable = true;
+    bool lightingEnable = false;
 
 public:
     // modelPath_in -- Path to the model's .obj
@@ -38,6 +38,7 @@ public:
     ModelObject* SetScale(glm::vec3 scale_in);
     ModelObject* SetScale(float scale_in);
     ModelObject* IsVisible(bool toggle);
+    ModelObject* SetLightingEnabled(bool toggle);
 
     ModelObject* ShowBoundingBox(bool toggle);
     ModelObject* SetSpawnOffset(glm::vec3 vec3);
@@ -51,4 +52,5 @@ public:
     // ImGui
     glm::vec3& GetScaleImGui();
     bool& GetShowBoundingBoxImGui();
+    bool& GetShowLightingImGui();
 };

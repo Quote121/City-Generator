@@ -27,16 +27,19 @@ struct PointLight {
     float quadratic;
 };
 
-#define NR_POINT_LIGHTS 4
+#define MAX_NR_POINT_LIGHTS 4 // Max number we can have
 
 in vec2 TexCoord;
 in vec3 FragPos;
 in vec3 Normal;
 
+
 uniform vec3 viewPos;
 uniform DirLight dirLight;
-uniform PointLight pointLights[NR_POINT_LIGHTS];
+uniform PointLight pointLights[MAX_NR_POINT_LIGHTS];
 uniform Material material;
+uniform int NumValidPointLights; // Max number there are
+uniform bool ShowLighting;
 
 // function prototypes
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
@@ -44,8 +47,6 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
 {
-    
-
     // properties
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - FragPos);
@@ -57,26 +58,24 @@ void main()
     // this fragment's final color.
     // == =====================================================
     // phase 1: directional lighting
+
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
     // phase 2: point lights
 
-    
+    for(int i = 0; i < NumValidPointLights; i++)
+        result += 10 * CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
 
-    for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);  
-
-
-    vec3 diffuse = vec3(texture(material.diffuse, TexCoord));
-    vec3 specular = vec3(texture(material.specular, TexCoord));
-
-    result = CalcPointLight(pointLights[0], norm, FragPos, viewDir);  
-    // FragColor = vec4((diffuse+specular), 1.0);
-
-    FragColor = vec4(result*10, 1.0);
-    
-    //  * texture(texture_diffuse1, TexCoord)
-    // FragColor = texture(texture_diffuse1, TexCoord);
-
+    // Hacky fix
+    // If there are no lighting effects applied then we show the modells default diffuse
+    if (ShowLighting)
+    {
+        FragColor = vec4(result, 1.0);
+        
+    }
+    else
+    {
+        FragColor = texture(material.diffuse, TexCoord);
+    }
 }
 
 // calculates the color when using a directional light.

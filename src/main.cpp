@@ -157,6 +157,8 @@ int main() {
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_rt.jpg");
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_lf.jpg");
 
+
+
     scene->CreateSkyBox(&skyBoxImages);
 
 
@@ -173,6 +175,8 @@ int main() {
 
     std::string terrain = "../assets/models/Terrain/Terrain_first.obj";
     std::string tree = "../assets/textures/tree_2_cropped.png";
+    std::string sunIcon = "../assets/textures/sun_icon.jpg";
+
 
     std::string building1 = "../assets/models/Buildings/NoTextureStarter/CellPhoneBuilding_01.obj";
     std::string building2 = "../assets/models/Buildings/NoTextureStarter/LargeRectangle.obj";
@@ -197,9 +201,10 @@ int main() {
         ->ShowBoundingBox(false);
 
 
-    scene->addModel(terrain, nullptr)
+    scene->addModel(terrain, &backpackShader)
         ->SetModelOriginCenterBottom()
-        ->ShowBoundingBox(false);
+        ->ShowBoundingBox(false)
+        ->SetLightingEnabled(false);
 
     scene->addSprite(tree, nullptr)
         ->SetModelOriginCenterBottom()
@@ -267,11 +272,22 @@ int main() {
     scene->addModel(backPackPath, &backpackShader)
          ->SetModelOriginCenter()
          ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
-         ->ShowBoundingBox(false);
+         ->ShowBoundingBox(true)
+         ->SetLightingEnabled(false);
 
     scene->addPointLight()
         ->SetPosition(glm::vec3{10, 10, -5});
+
+    scene->addPointLight()
+        ->SetPosition(glm::vec3{-10, 0, 0});
+
+    scene->addDirectionalLight()
+        ->SetPosition(glm::vec3{0,0,0});
     
+    // scene->addSprite(sunIcon, nullptr) 
+    //     ->SetPosition(glm::vec3(0,0,0))
+    //     ->SetModelOriginCenter()
+    //     ->SetIsBillboard(true);
 
     // X Y Z (R G B) Lines for the orientation
     // X is Red
@@ -304,7 +320,7 @@ int main() {
 
         glfwPollEvents();
 
-        // ImGui::ShowDemoWindow();
+
 
         // Call the input processer each loop to check if the esc key is pressed
         InputHandler::process(window, deltaTime);
@@ -331,7 +347,7 @@ int main() {
         scene->drawSceneObjects(view, projection);
         
         
-
+        // ImGui::ShowDemoWindow();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
