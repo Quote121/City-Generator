@@ -65,7 +65,48 @@ public:
         return quadratic;
     }
 
-    // TODO add builders for light properties
+    // builders for light properties
+    PointLightObject* SetLightColour(glm::vec3 colour_in)
+    {
+        lightColour = colour_in;
+        return this;
+    }
+
+    PointLightObject* SetAmbient(glm::vec3 ambient_in)
+    {
+        ambient = ambient_in;
+        return this;
+    }
+    
+    PointLightObject* SetDiffuse(glm::vec3 diffuse_in)
+    {
+        diffuse = diffuse_in;
+        return this;
+    }
+
+    PointLightObject* SetSpecular(glm::vec3 specular_in)
+    {
+        specular = specular_in;
+        return this;
+    }
+
+    PointLightObject* SetConstant(float constant_in)
+    {
+        constant = constant_in;
+        return this;
+    }
+    
+    PointLightObject* SetLinear(float linear_in)
+    {
+        linear = linear_in;
+        return this;
+    }
+
+    PointLightObject* SetQuadratic(float quadratic_in)
+    {
+        quadratic = quadratic_in;
+        return this;
+    }
 
     // ImGui handle getters
     glm::vec3& GetLightColourImGui()

@@ -77,8 +77,39 @@ public:
         return specular;
     }
 
-    // TODO Builders
+    // Builders
 
+    DirectionalLightObject* SetDirection(glm::vec3 direction_in)
+    {
+        direction = direction_in;
+        return this;
+    }
+
+
+    DirectionalLightObject* SetColour(glm::vec3 colour_in)
+    {
+        lightColour = colour_in;
+        return this;
+    }
+
+
+    DirectionalLightObject* SetAmbient(glm::vec3 ambient_in)
+    {
+        ambient = ambient_in;
+        return this;
+    }
     
 
+    DirectionalLightObject* SetDiffuse(glm::vec3 diffuse_in)
+    {
+        diffuse = diffuse_in;
+        return this;
+    }
+
+
+    DirectionalLightObject* SetSpecular(glm::vec3 specular_in)
+    {
+        specular = specular_in;
+        return this;
+    }
 };

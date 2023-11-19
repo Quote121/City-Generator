@@ -46,49 +46,52 @@ void Menues::display(float deltaTime)
 
     ImGui::Begin("World");
 
-    // Load assets
-
-    // Get loaded models from asset loader
-    std::vector<Model*> models = ResourceManager::getInstance()->GetLoadedModels();
-    
-    std::vector<std::string> modelNames; // Needed for a local pointer to a string
-
-    for (const auto& model : models) {
-        modelNames.push_back(model->GetModelName());
-    }
-
-    const char* items[modelNames.size()];
-    for (size_t i = 0; i < modelNames.size(); ++i) {
-        items[i] = modelNames[i].c_str();
-    }
-
-    static unsigned int item_current_idx = 0; // Here we store our selection data as an index.
-    const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
-    
-    if (ImGui::BeginCombo("combo 1", combo_preview_value))
-    {
-        for (unsigned int n = 0; n < models.size(); n++)
-        {
-            const bool is_selected = (item_current_idx == n);
-            if (ImGui::Selectable(items[n], is_selected))
-                item_current_idx = n;
-
-            // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndCombo();
-    }
-    // If button pressed then we check the item_current_idx and act accordingly
-    bool spawn = ImGui::Button("Spawn");
-    if (spawn)
-    {
-        scene->addModel(models.at(item_current_idx)->GetModelPath());
-    }
-
+    // Show XYZ lines
     ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui()); 
 
-    // Show XYZ lines
+    if(ImGui::TreeNode("Spawning"))
+    {
+        // Get loaded models from asset loader
+        std::vector<Model*> models = ResourceManager::getInstance()->GetLoadedModels();
+        
+        std::vector<std::string> modelNames; // Needed for a local pointer to a string
+
+        for (const auto& model : models) {
+            modelNames.push_back(model->GetModelName());
+        }
+
+        const char* items[modelNames.size()];
+        for (size_t i = 0; i < modelNames.size(); ++i) {
+            items[i] = modelNames[i].c_str();
+        }
+
+        static unsigned int item_current_idx = 0; // Here we store our selection data as an index.
+        const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
+        
+        if (ImGui::BeginCombo("combo 1", combo_preview_value))
+        {
+            for (unsigned int n = 0; n < models.size(); n++)
+            {
+                const bool is_selected = (item_current_idx == n);
+                if (ImGui::Selectable(items[n], is_selected))
+                    item_current_idx = n;
+
+                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+        // If button pressed then we check the item_current_idx and act accordingly
+        bool spawn = ImGui::Button("Spawn");
+        if (spawn)
+        {
+            scene->addModel(models.at(item_current_idx)->GetModelPath());
+        }
+
+        ImGui::TreePop();
+    }
+
 
 
     if(ImGui::TreeNode("Objects"))
@@ -108,11 +111,12 @@ void Menues::display(float deltaTime)
                         ImGui::SliderFloat("X##POS", &object->GetPositionImGui().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
                         ImGui::SliderFloat("Y##POS", &object->GetPositionImGui().y, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
                         ImGui::SliderFloat("Z##POS", &object->GetPositionImGui().z, POSITION_MIN, POSITION_MAX);
+                        ImGui::PopItemWidth();
                         
-                        ImGui::Text("Colour:");
-                        ImGui::SliderFloat("X##COL", &object->GetLightColourImGui().x, 0.0f, 1.0f); ImGui::SameLine();
-                        ImGui::SliderFloat("Y##COL", &object->GetLightColourImGui().y, 0.0f, 1.0f); ImGui::SameLine();
-                        ImGui::SliderFloat("Z##COL", &object->GetLightColourImGui().z, 0.0f, 1.0f);
+                        ImGui::PushItemWidth(300);
+                        ImGui::ColorEdit4("Color", &object->GetLightColourImGui().x); ImGui::PopItemWidth();
+
+                        ImGui::PushItemWidth(100);
                         
                         ImGui::Text("Ambient:");
                         ImGui::SliderFloat("X##AMB", &object->GetAmbientImGui().x, 0.0f, 1.0f); ImGui::SameLine();
@@ -156,17 +160,16 @@ void Menues::display(float deltaTime)
                     if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
                     {
                         ImGui::PushItemWidth(100);
-                        
                         ImGui::Text("Direction:");
                         ImGui::SliderFloat("X##DIR", &object->GetDirectionImGui().x, ROTATION_MIN, ROTATION_MAX); ImGui::SameLine();
                         ImGui::SliderFloat("Y##DIR", &object->GetDirectionImGui().y, ROTATION_MIN, ROTATION_MAX); ImGui::SameLine();
                         ImGui::SliderFloat("Z##DIR", &object->GetDirectionImGui().z, ROTATION_MIN, ROTATION_MAX);
+                        ImGui::PopItemWidth();
 
-                        ImGui::Text("Colour:");
-                        ImGui::SliderFloat("X##COL", &object->GetLightColourImGui().x, 0.0f, 1.0f); ImGui::SameLine();
-                        ImGui::SliderFloat("Y##COL", &object->GetLightColourImGui().y, 0.0f, 1.0f); ImGui::SameLine();
-                        ImGui::SliderFloat("Z##COL", &object->GetLightColourImGui().z, 0.0f, 1.0f);
-                        
+                        ImGui::PushItemWidth(300);
+                        ImGui::ColorEdit4("Color", &object->GetLightColourImGui().x); ImGui::PopItemWidth();
+
+                        ImGui::PushItemWidth(100);
                         ImGui::Text("Ambient:");
                         ImGui::SliderFloat("X##AMB", &object->GetAmbientImGui().x, 0.0f, 1.0f); ImGui::SameLine();
                         ImGui::SliderFloat("Y##AMB", &object->GetAmbientImGui().y, 0.0f, 1.0f); ImGui::SameLine();
@@ -296,12 +299,10 @@ void Menues::display(float deltaTime)
                     ImGui::SliderFloat("X##B", &object->GetPointBImGui().x, -100.0f, 100.0f); ImGui::SameLine();
                     ImGui::SliderFloat("Y##B", &object->GetPointBImGui().y, -100.0f, 100.0f); ImGui::SameLine();
                     ImGui::SliderFloat("Z##B", &object->GetPointBImGui().z, -100.0f, 100.0f);
-
-                    ImGui::Text("Colour:\n");
-                    ImGui::SliderFloat("R", &object->GetColourImGui().x, 0.0f, 1.0f);
-                    ImGui::SliderFloat("G", &object->GetColourImGui().y, 0.0f, 1.0f);
-                    ImGui::SliderFloat("B", &object->GetColourImGui().z, 0.0f, 1.0f);
                     ImGui::PopItemWidth();
+
+                    ImGui::PushItemWidth(300);
+                    ImGui::ColorEdit4("Color", &object->GetColourImGui().x); ImGui::PopItemWidth();
 
                     ImGui::TreePop();
 

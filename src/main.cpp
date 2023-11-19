@@ -176,7 +176,7 @@ int main() {
 
     std::string terrain = "../assets/models/Terrain/Terrain_first.obj";
     std::string tree = "../assets/textures/tree_2_cropped.png";
-    std::string sunIcon = "../assets/textures/sun_icon.jpg";
+    std::string sunIcon = "../assets/textures/sun_icon.png";
 
 
     std::string building1 = "../assets/models/Buildings/NoTextureStarter/CellPhoneBuilding_01.obj";
@@ -267,7 +267,8 @@ int main() {
     scene->addPointLight()
         ->SetPosition(glm::vec3{-10, 0, 0});
 
-    scene->addDirectionalLight();
+    scene->addDirectionalLight()
+        ->SetDirection(glm::vec3(-1, -4, -1));
     
     // scene->addSprite(sunIcon, nullptr) 
     //     ->SetPosition(glm::vec3(0,0,0))
