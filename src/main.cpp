@@ -204,32 +204,7 @@ int main() {
     scene->addModel(terrain, &backpackShader)
         ->SetModelOriginCenterBottom()
         ->ShowBoundingBox(false)
-        ->SetLightingEnabled(false);
-
-    scene->addSprite(tree, nullptr)
-        ->SetModelOriginCenterBottom()
-        ->SetIsVisible(true)
-        ->SetIsBillboard(true)
-        ->SetPosition(glm::vec3{0, 0, 1})
-        ->SetScale(2.0f);
-    scene->addSprite(tree, nullptr)
-        ->SetModelOriginCenterBottom()
-        ->SetIsVisible(true)
-        ->SetIsBillboard(true)
-        ->SetPosition(glm::vec3{0, 0, 3})
-        ->SetScale(2.0f);
-    scene->addSprite(tree, nullptr)
-        ->SetModelOriginCenterBottom()
-        ->SetIsVisible(true)
-        ->SetIsBillboard(true)
-        ->SetPosition(glm::vec3{0, 0, 5})
-        ->SetScale(2.0f);
-    scene->addSprite(tree, nullptr)
-        ->SetModelOriginCenterBottom()
-        ->SetIsVisible(true)
-        ->SetIsBillboard(true)
-        ->SetPosition(glm::vec3{0, 0, 7})
-        ->SetScale(2.0f);
+        ->SetLightingEnabled(true);
 
 
 
@@ -273,7 +248,7 @@ int main() {
          ->SetModelOriginCenter()
          ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
          ->ShowBoundingBox(true)
-         ->SetLightingEnabled(false);
+         ->SetLightingEnabled(true);
 
     scene->addPointLight()
         ->SetPosition(glm::vec3{10, 10, -5});

@@ -168,11 +168,18 @@ void Scene::drawSceneObjects(glm::mat4 view, glm::mat4 projection)
         obj->Draw(view, projection);
     }
 
-    std::sort(scene_sprite_objects.begin(), scene_sprite_objects.end(),
-        SortByDistanceInv<SpriteObject,SpriteObject>);
+    // Get the sprites and point light sprites and order both by distance to 
+    // avoid alpha bug, this inner vector also avoids bug of ImGui menu displaying
+    // sprites in order of distance from camera
+    std::vector<SpriteObject*> sprites;
+    sprites.insert(sprites.end(), scene_sprite_objects.begin(), scene_sprite_objects.end());
+    sprites.insert(sprites.end(), 
+            scene_pointLight_objects.begin(), 
+            scene_pointLight_objects.end());
 
-    // Draw sprites
-    for (auto& sprite : GetSpriteObjects())
+    std::sort(sprites.begin(), sprites.end(), SortByDistanceInv<SpriteObject, SpriteObject>);
+
+    for (auto& sprite : sprites)
     {
         sprite->Draw(view, projection);
     }
