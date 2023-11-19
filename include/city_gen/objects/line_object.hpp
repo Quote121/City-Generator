@@ -19,8 +19,7 @@ private:
 public:
     LineObject(Shader* shader_in,
                glm::vec3 point_a,
-               glm::vec3 point_b,
-               glm::vec3 colour_in);
+               glm::vec3 point_b);
 
     ~LineObject();
 

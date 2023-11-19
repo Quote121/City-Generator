@@ -18,6 +18,7 @@
 
 #include <objects/all.hpp>
 #include <skybox.hpp>
+#include <shader.hpp>
 
 class Scene
 {
@@ -62,25 +63,17 @@ public:
     /////////////////////
 
     // 3D models
-    void addModel(const ModelObject& modelObject);
-    ModelObject* addModel(std::string& modelPath_in,
-                          Shader* shader_in);
+    ModelObject* addModel(const std::string& modelPath_in,
+                          const ShaderPath* shader_in = nullptr);
 
     // 2D sprites
-    void addSprite(const SpriteObject& spriteObject);
     SpriteObject* addSprite(std::string& spriteTexture_in,
-                            Shader *shader_in);
+                            const ShaderPath* shader_in = nullptr);
 
     // Line
-    void addLine(const LineObject& lineObject);
-    LineObject* addLine(Shader* shader_in,
-                 glm::vec3 point_a,
-                 glm::vec3 point_b,
-                 glm::vec3 colour_in = glm::vec3{1.0f, 1.0f, 1.0f});
-
-    // Light // UNUSED
-    // LightObject* addLight(Shader* shader_in,
-    //               LightType LightType_in);
+    LineObject* addLine(glm::vec3 point_a,
+                        glm::vec3 point_b,
+                        const ShaderPath* shader_in = nullptr);
 
     DirectionalLightObject* addDirectionalLight();
     PointLightObject* addPointLight();
@@ -99,13 +92,6 @@ public:
     bool removeSprite(SpriteObject& obj);
     bool removeLine(LineObject& obj);
 
-    // Light
-    // particle
-
-    // std::vector<BaseObject*> const& getObjects()
-    // {
-    //     return scene_objects;
-    // }
 
     // Get scene objects
     std::vector<ModelObject*> const& GetModelObjects()
@@ -136,5 +122,4 @@ public:
 
     // Draws all of the objects form each of the object vectors
     void drawSceneObjects(glm::mat4 view, glm::mat4 projection);
-    
 };

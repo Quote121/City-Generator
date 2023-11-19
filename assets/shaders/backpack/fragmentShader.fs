@@ -63,7 +63,7 @@ void main()
     // phase 2: point lights
 
     for(int i = 0; i < NumValidPointLights; i++)
-        result += 10 * CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
+        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
 
     // Hacky fix
     // If there are no lighting effects applied then we show the modells default diffuse

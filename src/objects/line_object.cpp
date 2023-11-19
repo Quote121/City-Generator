@@ -5,10 +5,8 @@
 
 LineObject::LineObject(Shader* shader_in,
             glm::vec3 point_a,
-            glm::vec3 point_b,
-            glm::vec3 colour_in) :
+            glm::vec3 point_b) :
             BaseObject(),
-            colour{colour_in},
             a{point_a},
             b{point_b}
 {

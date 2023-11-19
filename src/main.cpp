@@ -128,7 +128,8 @@ int main() {
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
     // Shader ourShader("assets/shaders/texture/shader1.vs", "assets/shaders/texture/shader1.fs");
-    Shader backpackShader("../assets/shaders/backpack/vertexShader.vs", "../assets/shaders/backpack/fragmentShader.fs");
+    ShaderPath backpackShader{"../assets/shaders/backpack/vertexShader.vs", "../assets/shaders/backpack/fragmentShader.fs"};
+
     // Shader ratShader("assets/shaders/square/vertexShader.vert", "assets/shaders/square/fragmentShader.frag");
     Shader missing("../assets/shaders/default/missing.vert", "../assets/shaders/default/missing.frag");
 
@@ -182,23 +183,27 @@ int main() {
     std::string building2 = "../assets/models/Buildings/NoTextureStarter/LargeRectangle.obj";
     std::string building3 = "../assets/models/Buildings/NoTextureStarter/AngledRoofHouse.obj";
 
-    scene->addModel(building1, nullptr)
+    scene->addModel(building1)
         ->SetModelOriginCenterBottom()
         ->SetPosition(glm::vec3{10, 0, 0})
         ->ShowBoundingBox(false);
         
 
 
-    scene->addModel(building2, nullptr)
+    scene->addModel(building2)
         ->SetModelOriginCenterBottom()
         ->SetPosition(glm::vec3{10, 0, 10})
         ->ShowBoundingBox(false);
 
 
-    scene->addModel(building3, nullptr)
+    scene->addModel(building3)
         ->SetModelOriginCenterBottom()
         ->SetPosition(glm::vec3{10, 0, -10})
         ->ShowBoundingBox(false);
+
+    std::string backPathVertShader = "../assets/shaders/backpack/vertexShader.vs";
+    std::string backPathFragShader = "../assets/shaders/backpack/fragmentShader.fs";
+
 
 
     scene->addModel(terrain, &backpackShader)
@@ -236,7 +241,7 @@ int main() {
 
     for (int i = 0; i < 100; i++)
     {
-        scene->addSprite(tree, nullptr)
+        scene->addSprite(tree)
             ->SetModelOriginCenterBottom()
             ->SetIsVisible(true)
             ->SetIsBillboard(true)
@@ -251,7 +256,7 @@ int main() {
          ->SetLightingEnabled(true);
 
     scene->addPointLight()
-        ->SetPosition(glm::vec3{10, 10, -5});
+        ->SetPosition(glm::vec3{0, 0, 0});
 
     scene->addPointLight()
         ->SetPosition(glm::vec3{-10, 0, 0});
@@ -265,11 +270,14 @@ int main() {
 
     // X Y Z (R G B) Lines for the orientation
     // X is Red
-    scene->addLine(nullptr, glm::vec3{-1000.0, 0, 0}, glm::vec3{1000.0, 0, 0}, glm::vec3{1, 0, 0});
+    scene->addLine(glm::vec3{-1000.0, 0, 0}, glm::vec3{1000.0, 0, 0})
+        ->SetColour(glm::vec3{1, 0, 0});
     // Y is Green
-    scene->addLine(nullptr, glm::vec3{0, -1000.0, 0}, glm::vec3{0, 1000.0, 0}, glm::vec3{0, 1, 0});
+    scene->addLine(glm::vec3{0, -1000.0, 0}, glm::vec3{0, 1000.0, 0})
+        ->SetColour(glm::vec3{0, 1, 0});
     // Z is Blue
-    scene->addLine(nullptr, glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0}, glm::vec3{0, 0, 1});
+    scene->addLine(glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0})
+        ->SetColour(glm::vec3{0, 0, 1});
 
     // IMGUI test
     IMGUI_CHECKVERSION();

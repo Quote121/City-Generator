@@ -1,4 +1,5 @@
 #include <scene.hpp>
+#include <resourceManager.hpp>
 
 Scene* Scene::pinstance_{nullptr};
 
@@ -11,16 +12,19 @@ Scene* Scene::getInstance()
     return pinstance_; 
 }
 
-void Scene::addModel(const ModelObject& modelObject)
-{
-    // TODO
-}
 
-ModelObject* Scene::addModel(std::string& modelPath_in,
-                             Shader* shader_in)
+ModelObject* Scene::addModel(const std::string& modelPath_in,
+                      const ShaderPath* shader_in)
 {
+    // If we have passed nullptr load default shader
+    Shader* shader = nullptr;
+    if (shader_in != nullptr)
+    {
+        shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
+    }
+
     ModelObject* model = new ModelObject(
-        modelPath_in, shader_in
+        modelPath_in, shader
     );
     scene_model_objects.push_back(model);
 
@@ -32,17 +36,21 @@ ModelObject* Scene::addModel(std::string& modelPath_in,
     return model;
 }
 
-void Scene::addSprite(const SpriteObject& spriteObject)
-{
-    // TODO
-}
+
 
 SpriteObject* Scene::addSprite(std::string& spriteTexture_in,
-                Shader *shader_in)
+                               const ShaderPath* shader_in)
 {
+    // If we have passed nullptr load default shader
+    Shader* shader = nullptr;
+    if (shader_in != nullptr)
+    {
+        shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
+    }
+
     // Create sprite, allocate memory and put in list
     SpriteObject* sprite = new SpriteObject(
-        spriteTexture_in, shader_in
+        spriteTexture_in, shader
     );
     scene_sprite_objects.push_back(sprite);
     
@@ -55,20 +63,20 @@ SpriteObject* Scene::addSprite(std::string& spriteTexture_in,
 }
 
 
-void Scene::addLine(const LineObject& LineObject)
+LineObject* Scene::addLine(glm::vec3 point_a,
+                           glm::vec3 point_b,
+                           const ShaderPath* shader_in)
 {
-    // TODO
-}
+    // If we have passed nullptr load default shader
+    Shader* shader = nullptr;
+    if (shader_in != nullptr)
+    {
+        shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
+    }
 
-
-LineObject* Scene::addLine(Shader* shader_in,
-               glm::vec3 point_a,
-               glm::vec3 point_b,
-               glm::vec3 colour_in)
-{
     // Create line
     LineObject* line = new LineObject(
-        shader_in, point_a, point_b, colour_in
+        shader, point_a, point_b
     );
     scene_line_objects.push_back(line);
 
@@ -79,28 +87,6 @@ LineObject* Scene::addLine(Shader* shader_in,
 
     return line;
 }
-
-// MIGHT BE UNUSED
-// LightObject* Scene::addLight(Shader* shader_in,
-//                              LightType lightTypeIn)
-// {
-    
-//     // LightObject* light = new LightObject(
-//     //     shader_in, lightTypeIn
-//     // );
-//     // // scene_light_objects.push_back(light);
-
-//     // lightCount++;
-
-//     // // Concatenate the light type onto the alias
-//     // std::string lightTypeStr = LightObject::GetStringLightType(lightTypeIn);
-
-//     // std::string name = "Light_" + lightTypeStr + "_" + std::to_string(lightCount);
-//     // light->SetAlias(&name);
-
-//     // return light;
-
-// }
 
 DirectionalLightObject* Scene::addDirectionalLight()
 {

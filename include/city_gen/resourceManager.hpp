@@ -35,7 +35,10 @@ private:
     // the resourceManager should have a cleanup feature
 
     // For shaders we will use the vertex shader path as the lookup
+    
     std::unordered_map<std::string, Shader*> shader_map;
+    // std::unordered_map<unsigned int, Shader*> shader_map;
+
 
     // Seach with texture path and return texture struct
     std::unordered_map<std::string, TextureInfo*> texture_map;
@@ -127,6 +130,7 @@ public:
             return shader;
         }
     }
+
 
     // Load texture
     TextureInfo* LoadTexture(const std::string& textureName, bool flip_texture_vertically, const std::string* directory = nullptr)

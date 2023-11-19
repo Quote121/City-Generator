@@ -10,6 +10,13 @@
 
 #include <config.hpp>
 
+// Simple struct for passing shader location info
+struct ShaderPath
+{
+	std::string vertex;
+	std::string fragment;
+};
+
 class Shader {
 public:
 	// Program ID (set when we create a shader instance)
