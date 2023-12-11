@@ -33,6 +33,8 @@
 #include <Reputeless/PerlinNoise.hpp>
 
 
+#include <road.hpp>
+
 // Prototypes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -178,6 +180,7 @@ int main() {
     std::string tree = "../assets/textures/tree_2_cropped.png";
     std::string sunIcon = "../assets/textures/sun_icon.png";
 
+    std::string roadMdl = "../assets/models/demo_01/road/road_asphalt.obj";
 
     std::string building1 = "../assets/models/Buildings/NoTextureStarter/CellPhoneBuilding_01.obj";
     std::string building2 = "../assets/models/Buildings/NoTextureStarter/LargeRectangle.obj";
@@ -204,6 +207,12 @@ int main() {
     std::string backPathVertShader = "../assets/shaders/backpack/vertexShader.vs";
     std::string backPathFragShader = "../assets/shaders/backpack/fragmentShader.fs";
 
+
+    scene->addModel(roadMdl)
+        ->SetModelOriginCenter()
+        ->SetPosition(glm::vec3{0,0.01,0})
+        ->ShowBoundingBox(false);
+        
 
 
     scene->addModel(terrain, &backpackShader)
@@ -269,6 +278,19 @@ int main() {
 
     scene->addDirectionalLight()
         ->SetDirection(glm::vec3(-1, -4, -1));
+
+    
+    Shader lineShader("../assets/shaders/default/line/line_shader.frag",
+                     "../assets/shaders/default/line/line_shader.frag");
+
+    Road* r = new Road(&lineShader);
+    r->UpdateVertices(glm::vec3(1, 0, 6), glm::vec3(8, 0, 13));
+    r->UpdateVertices(glm::vec3(80, 0, 13), glm::vec3(1, 4, 6));
+
+
+    // BUG passing line shader reference here will result in a failure
+    LineObject* LO = new LineObject(&lineShader, glm::vec3(4, 0, 6), glm::vec3(8, 0, 13));
+    LO->SetColour(glm::vec3{0.0f, 0.0f, 1.0f});
     
     // scene->addSprite(sunIcon, nullptr) 
     //     ->SetPosition(glm::vec3(0,0,0))
@@ -322,9 +344,9 @@ int main() {
         // Remove translation from matrix by casting to mat3 then mat4
         glm::mat4 viewSB = glm::mat4(glm::mat3(camera->GetViewMatrix()));
         scene->DrawSkyBox(viewSB, projection);
-        scene->DrawSceneObjects(view, projection);
-        
-        
+        // scene->DrawSceneObjects(view, projection);
+        r->Draw(view, projection);
+        LO->Draw(view, projection);
         ImGui::ShowDemoWindow();
 
         ImGui::Render();

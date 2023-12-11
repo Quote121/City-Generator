@@ -4,10 +4,14 @@
 #include <bounding_box.hpp>
 #include <all.hpp>
 
+#include <road_object.hpp>
+
 // template class BaseObject<PointLightObject>;
 template class BaseObject<SpriteObject>;
 template class BaseObject<LineObject>;
 template class BaseObject<ModelObject>;
+template class BaseObject<RoadObject>;
+
 
 
 

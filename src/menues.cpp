@@ -223,7 +223,7 @@ void Menues::display(float deltaTime)
                     ImGui::SliderFloat("Scale", &object->GetScaleScalarImGui(), SCALE_MIN, SCALE_MAX); 
                     ImGui::PopItemWidth();
 
-                    ImGui::Checkbox("Display AABB", &object->GetShowBoundingBoxImGui()); 
+                    ImGui::Checkbox("Display AA-BB", &object->GetShowBoundingBoxImGui()); 
                     ImGui::Checkbox("Display ", &object->GetIsVisibleImGui()); 
                     ImGui::Checkbox("Lighting", &object->GetShowLightingImGui());
 

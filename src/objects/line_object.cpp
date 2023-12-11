@@ -18,10 +18,13 @@ LineObject::LineObject(Shader* shader_in,
 
     if (shader_in == nullptr)
     {
+        LOG(WARN, "Using default shader");
+
         shader = ResourceManager::getInstance()->LoadShader(paths::line_defaultVertShaderPath, paths::line_defaultFragShaderPath);
     }
     else
     {
+        LOG(WARN, "Using provided shader");
         shader = shader_in;
     }
     line_obj = new Line(shader);
