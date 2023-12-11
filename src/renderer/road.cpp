@@ -34,54 +34,83 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b)
     LOG(STATUS, "NORM: " << norm.x << " " << norm.y << " " << norm.z);
 
     // Divisions on the line
-    int divs = 90;
+    // Number has to be odd (will deal with this)
+    int divs = 50;
+    // Units thick the paths are
+    float unitsThick = 0.5;
+    
     glm::vec3 sections = (point_b - point_a); sections /= divs;
     
-    std::vector<float> vertices;
+    std::vector<float> vertices = {};
+
+    /*
+        Future Idea we could use GL_triangle fan for the tips of the road
+        This would make them smooth rounded and intersecting with one another
+        would look more fluid.
+    */
 
     // Main line
     vertices.insert(vertices.end(), {point_a.x, point_a.y, point_a.z});
-    vertices.insert(vertices.end(), {point_b.x, point_b.y, point_b.z});
+    
 
     // Get unit vector then tangent and number
     glm::vec3 unitVecAB = glm::normalize(point_b-point_a);
-    LOG(STATUS, "Unit vec : " << unitVecAB.x << " " << unitVecAB.y << " " << unitVecAB.z);
+    
 
     // Save point_a from modification
     glm::vec3 start = point_a;
+    
+
+    glm::vec3 newVec = glm::normalize(glm::vec3{1/unitVecAB.x, unitVecAB.y, 1/unitVecAB.z});
+    newVec *= unitsThick;
+    
+    
 
     glm::vec3 newSec = start + sections;
-    for (int i = 0; i < divs-1 ; i ++)
+    vertices.insert(vertices.end(), {newVec.x + newSec.x , newSec.y, -newVec.z + newSec.z}); // This to box the end off
+
+    for (int i = 0; i < divs-1; i ++)
     {
-        vertices.insert(vertices.end(), {newSec.x, newSec.y, newSec.z});
-        vertices.insert(vertices.end(), {newSec.x, newSec.y+10, newSec.z});
-
-        // float value = gradient * 2;
-        float value = 0;
-        glm::vec3 newVec = glm::normalize(glm::vec3{1/unitVecAB.x, unitVecAB.y, 1/unitVecAB.z});
-        newVec *= 3;
-
         // Even
         if (i % 2 == 0)
         {
             vertices.insert(vertices.end(), {-newVec.x + newSec.x , newSec.y, newVec.z + newSec.z});
-            vertices.insert(vertices.end(), {-newVec.x + newSec.x, newSec.y+5, newVec.z + newSec.z});
-
         }
         // Odd
         else
         {
             vertices.insert(vertices.end(), {newVec.x + newSec.x , newSec.y, -newVec.z + newSec.z});
-            vertices.insert(vertices.end(), {newVec.x + newSec.x, newSec.y+5, -newVec.z + newSec.z});
         }
+
+
+        // For final addition to box it off
+        if (i == divs-2) // -2 becuase we want 1 less before and then for loop is not inclusive
+        {
+            if (i % 2 == 0)
+            {
+                vertices.insert(vertices.end(), {newVec.x + newSec.x , newSec.y, -newVec.z + newSec.z});
+            }
+            else
+            {
+                vertices.insert(vertices.end(), {-newVec.x + newSec.x , newSec.y, newVec.z + newSec.z});
+            }
+            LOG(STATUS, "start of end")
+        }
+        LOG(STATUS, "end")
         newSec = newSec + sections;
     }
 
-
+    
+    
+    // END
+    vertices.insert(vertices.end(), {point_b.x, point_b.y, point_b.z});
 
     roadVertices = vertices.size();
 
-
+    for (int i = 0; i < vertices.size()/3; i++)
+    {
+        // LOG(STATUS, "Vert [" << i << "] : " << vertices[i*3 + 0] << ", " << vertices[i*3+1] << ", " << vertices[i*3+2]);
+    }
 
     glBindVertexArray(VAO);
     
@@ -116,9 +145,11 @@ void Road::Draw(glm::mat4 view, glm::mat4 projection)
     objectShader->setVec3("colour", glm::vec3{1.0f, 0.0f, 0.0f});
 
     // TEMP
-    glLineWidth(500.0f);
+    glLineWidth(50.0f);
     glBindVertexArray(VAO);
-    glDrawArrays(GL_LINES, 0, roadVertices);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, roadVertices/3);
+    // glDrawArrays(GL_LINES, 0, roadVertices);
+
     glBindVertexArray(0);
 
     GLenum error;

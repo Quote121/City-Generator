@@ -284,13 +284,14 @@ int main() {
                      "../assets/shaders/default/line/line_shader.frag");
 
     Road* r = new Road(&lineShader);
-    r->UpdateVertices(glm::vec3(1, 0, 6), glm::vec3(8, 0, 13));
-    r->UpdateVertices(glm::vec3(80, 0, 13), glm::vec3(1, 4, 6));
+    // r->UpdateVertices(glm::vec3(1, 0, 6), glm::vec3(8, 0, 13));
+    r->UpdateVertices(glm::vec3(30, 0, 13), glm::vec3(1, 0, 6));
+    Road* j = new Road(&lineShader);
+    j->UpdateVertices(glm::vec3(1, 0    , 6), glm::vec3(-20, 0, 30));
 
-
-    // BUG passing line shader reference here will result in a failure
-    LineObject* LO = new LineObject(&lineShader, glm::vec3(4, 0, 6), glm::vec3(8, 0, 13));
-    LO->SetColour(glm::vec3{0.0f, 0.0f, 1.0f});
+    // // BUG passing line shader reference here will result in a failure
+    // LineObject* LO = new LineObject(&lineShader, glm::vec3(4, 0, 6), glm::vec3(8, 0, 13));
+    // LO->SetColour(glm::vec3{0.0f, 0.0f, 1.0f});  
     
     // scene->addSprite(sunIcon, nullptr) 
     //     ->SetPosition(glm::vec3(0,0,0))
@@ -346,7 +347,7 @@ int main() {
         scene->DrawSkyBox(viewSB, projection);
         // scene->DrawSceneObjects(view, projection);
         r->Draw(view, projection);
-        LO->Draw(view, projection);
+        // j->Draw(view, projection);
         ImGui::ShowDemoWindow();
 
         ImGui::Render();
