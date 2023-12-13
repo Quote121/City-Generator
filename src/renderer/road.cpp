@@ -39,6 +39,8 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b)
     // Units thick the paths are
     float unitsThick = 0.5;
     
+    // divs could be determined 
+
     glm::vec3 sections = (point_b - point_a); sections /= divs;
     
     std::vector<float> vertices = {};

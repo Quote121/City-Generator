@@ -347,7 +347,7 @@ int main() {
         scene->DrawSkyBox(viewSB, projection);
         // scene->DrawSceneObjects(view, projection);
         r->Draw(view, projection);
-        // j->Draw(view, projection);
+        j->Draw(view, projection);
         ImGui::ShowDemoWindow();
 
         ImGui::Render();
