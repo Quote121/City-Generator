@@ -10,6 +10,7 @@ class Road
 private:
     unsigned int VAO, VBO;
     unsigned int roadVertices;
+    unsigned int roadCurveSides;
     Shader* roadShader;
 public:
 

@@ -284,10 +284,19 @@ int main() {
                      "../assets/shaders/default/line/line_shader.frag");
 
     Road* r = new Road(&lineShader);
-    // r->UpdateVertices(glm::vec3(1, 0, 6), glm::vec3(8, 0, 13));
-    r->UpdateVertices(glm::vec3(30, 0, 13), glm::vec3(1, 0, 6));
-    Road* j = new Road(&lineShader);
-    j->UpdateVertices(glm::vec3(1, 0    , 6), glm::vec3(-20, 0, 30));
+    r->UpdateVertices(glm::vec3(1, 7, 6), glm::vec3(1, 0, 13));
+    // r->UpdateVertices(glm::vec3(7, 0, 6), glm::vec3(1, 0, 1));
+    // r->UpdateVertices(glm::vec3(3, 0, 5), glm::vec3(1, 0, 6));
+    // r->UpdateVertices(glm::vec3(12, 0, 6), glm::vec3(3, 3, 15));
+    // r->UpdateVertices(glm::vec3(1, 0, 6), glm::vec3(3, 0, 7));
+    // r->UpdateVertices(glm::vec3(1, 0, 1), glm::vec3(1, 0, 6));
+
+    // Wireframe for debugging
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
+
+    // Road* j = new Road(&lineShader);
+    // j->UpdateVertices(glm::vec3(1, 0    , 6), glm::vec3(-20, 0, 30));
 
     // // BUG passing line shader reference here will result in a failure
     // LineObject* LO = new LineObject(&lineShader, glm::vec3(4, 0, 6), glm::vec3(8, 0, 13));
@@ -347,7 +356,7 @@ int main() {
         scene->DrawSkyBox(viewSB, projection);
         // scene->DrawSceneObjects(view, projection);
         r->Draw(view, projection);
-        j->Draw(view, projection);
+        // j->Draw(view, projection);
         ImGui::ShowDemoWindow();
 
         ImGui::Render();
