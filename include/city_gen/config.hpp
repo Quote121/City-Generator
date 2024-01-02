@@ -29,6 +29,11 @@ extern const char* object_defaultFragShaderPath;
 extern const char* line_defaultVertShaderPath;
 extern const char* line_defaultFragShaderPath;
 
+// Road shaders
+extern const char* road_defaultVertShaderPath;
+extern const char* road_defaultFragShaderPath;
+
+
 // Bounding box shaders
 extern const char* bb_defaultVertShaderPath;
 extern const char* bb_defaultFragShaderPath;

@@ -284,8 +284,8 @@ int main() {
                      "../assets/shaders/default/line/line_shader.frag");
 
     Road* r = new Road(&lineShader);
-    r->UpdateVertices(glm::vec3(1, 7, 6), glm::vec3(1, 0, 13));
-    // r->UpdateVertices(glm::vec3(7, 0, 6), glm::vec3(1, 0, 1));
+    // r->UpdateVertices(glm::vec3(1, 7, 6), glm::vec3(1, 0, 13));
+    r->UpdateVertices(glm::vec3(7, 0, 6), glm::vec3(1, 0, 1));
     // r->UpdateVertices(glm::vec3(3, 0, 5), glm::vec3(1, 0, 6));
     // r->UpdateVertices(glm::vec3(12, 0, 6), glm::vec3(3, 3, 15));
     // r->UpdateVertices(glm::vec3(1, 0, 6), glm::vec3(3, 0, 7));
