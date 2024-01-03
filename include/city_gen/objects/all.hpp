@@ -7,3 +7,4 @@
 #include <sprite_object.hpp>
 #include <lights/directionalLight_object.hpp>
 #include <lights/pointLight_object.hpp>
+#include <road_object.hpp>

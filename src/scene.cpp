@@ -51,6 +51,29 @@ ModelObject* Scene::addModel(const std::string& modelPath_in,
     return model;
 }
 
+// Roads
+RoadObject* Scene::addRoad(glm::vec3 point_a,
+                           glm::vec3 point_b,
+                           const ShaderPath* shader_in)
+{
+    Shader* shader = nullptr;
+    if (shader_in != nullptr)
+    {
+        shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
+    }
+
+    RoadObject* road = new RoadObject(
+        point_a, point_b, shader
+    );
+    scene_road_objects.push_back(road);
+    roadCount++;
+
+    std::string name = "Road_" + std::to_string(roadCount);
+    road->SetAlias(name);
+
+    return road;
+}
+
 
 
 SpriteObject* Scene::addSprite(std::string& spriteTexture_in,
@@ -218,6 +241,12 @@ void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
     
     // Draw objects
     for (auto& obj : GetModelObjects())
+    {
+        obj->Draw(view, projection);
+    }
+
+    // Draw roads
+    for (auto& obj : GetRoadObjects())
     {
         obj->Draw(view, projection);
     }

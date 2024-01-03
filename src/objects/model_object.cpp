@@ -45,7 +45,7 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
 
         if (objectShader == nullptr)
         {
-            std::cerr << "NO SHADER LOADED TO OBJECT CLASS" << std::endl;
+            LOG(ERROR, "NO SHADER LOADED TO OBJECT CLASS");
         }
         else
         {

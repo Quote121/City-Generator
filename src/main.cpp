@@ -283,16 +283,26 @@ int main() {
     Shader lineShader("../assets/shaders/default/line/line_shader.frag",
                      "../assets/shaders/default/line/line_shader.frag");
 
-    Road* r = new Road(&lineShader);
-    // r->UpdateVertices(glm::vec3(1, 7, 6), glm::vec3(1, 0, 13));
-    r->UpdateVertices(glm::vec3(7, 0, 6), glm::vec3(1, 0, 1));
+
+    // scene->addRoad(glm::vec3{1, 7, 6}, glm::vec3{12, 0.5, 6});
+    // scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{4, 7, 12});
+    // scene->addRoad(glm::vec3{4, 7.01, 12}, glm::vec3{10, 7, 100});
+    scene->addRoad(glm::vec3{1, 0, 1}, glm::vec3{7, 0, 1});
+
+        // ->SetWidth(3.0f)
+        // ->SetCurveSides(40);
+
+
+    // Road* r = new Road(&lineShader);
+    // r->UpdateVertices(glm::vec3(1, 7, 6), glm::vec3(1, 7, 6));
+    // r->UpdateVertices(glm::vec3(7, 0, 6), glm::vec3(1, 0, 1));
     // r->UpdateVertices(glm::vec3(3, 0, 5), glm::vec3(1, 0, 6));
     // r->UpdateVertices(glm::vec3(12, 0, 6), glm::vec3(3, 3, 15));
     // r->UpdateVertices(glm::vec3(1, 0, 6), glm::vec3(3, 0, 7));
     // r->UpdateVertices(glm::vec3(1, 0, 1), glm::vec3(1, 0, 6));
 
     // Wireframe for debugging
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
 
     // Road* j = new Road(&lineShader);
@@ -354,9 +364,7 @@ int main() {
         // Remove translation from matrix by casting to mat3 then mat4
         glm::mat4 viewSB = glm::mat4(glm::mat3(camera->GetViewMatrix()));
         scene->DrawSkyBox(viewSB, projection);
-        // scene->DrawSceneObjects(view, projection);
-        r->Draw(view, projection);
-        // j->Draw(view, projection);
+        scene->DrawSceneObjects(view, projection);
         ImGui::ShowDemoWindow();
 
         ImGui::Render();

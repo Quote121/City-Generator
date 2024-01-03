@@ -17,6 +17,7 @@
 #include <algorithm>
 
 #include <objects/all.hpp>
+
 #include <skybox.hpp>
 #include <shader.hpp>
 
@@ -28,6 +29,7 @@ private:
     std::vector<ModelObject*> scene_model_objects;
     std::vector<SpriteObject*> scene_sprite_objects;
     std::vector<LineObject*> scene_line_objects;
+    std::vector<RoadObject*> scene_road_objects;
 
     std::vector<PointLightObject*> scene_pointLight_objects;
     std::vector<DirectionalLightObject*> scene_directionalLight_objects;
@@ -51,6 +53,7 @@ private:
     int lineCount = 0;
     int modelCount = 0;
     int spriteCount = 0;
+    int roadCount = 0;
 
     int dirLightCount = 0;
     int pointLightCount = 0;
@@ -83,8 +86,14 @@ public:
                         glm::vec3 point_b,
                         const ShaderPath* shader_in = nullptr);
 
+    // Roads
+    RoadObject* addRoad(glm::vec3 point_a,
+                        glm::vec3 point_b,
+                        const ShaderPath* shader_in = nullptr);
+
     DirectionalLightObject* addDirectionalLight();
     PointLightObject* addPointLight();
+
 
 
     void CreateSkyBox(std::vector<std::string>* images);
@@ -104,6 +113,11 @@ public:
     std::vector<ModelObject*> const& GetModelObjects()
     {
         return scene_model_objects;
+    }
+
+    std::vector<RoadObject*> const& GetRoadObjects()
+    {
+        return scene_road_objects;
     }
 
     std::vector<SpriteObject*> const& GetSpriteObjects()

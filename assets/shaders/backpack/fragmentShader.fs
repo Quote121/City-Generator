@@ -33,7 +33,7 @@ in vec2 TexCoord;
 in vec3 FragPos;
 in vec3 Normal;
 
-
+// Camera position
 uniform vec3 viewPos;
 uniform DirLight dirLight;
 uniform PointLight pointLights[MAX_NR_POINT_LIGHTS];

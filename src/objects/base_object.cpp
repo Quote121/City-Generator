@@ -10,7 +10,7 @@
 template class BaseObject<SpriteObject>;
 template class BaseObject<LineObject>;
 template class BaseObject<ModelObject>;
-template class BaseObject<RoadObject>;
+// template class BaseObject<RoadObject>;
 
 
 

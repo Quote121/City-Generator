@@ -8,7 +8,7 @@
 
 Road::Road(Shader* shader)
 {
-    roadShader = ResourceManager::getInstance()->LoadShader(paths::road_defaultVertShaderPath, paths::road_defaultFragShaderPath);
+    roadShader = shader;
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -29,19 +29,17 @@ glm::vec3 inline getCross(glm::vec3 a, glm::vec3 b)
 
 void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b)
 {
-    // Move to the constructor of road
-    const float width = 3.0f;
-    const int numberOfSides = 160; // Must be multiple of 4
+    int numberOfSides = roadCurveSides;
 
     const float radius = width/2;
-    const float theta = (2*M_PI)/numberOfSides; // radians
-
-    // By moving the values to constructor can remove this
-    roadCurveSides = numberOfSides;
+    float theta = (2*M_PI)/roadCurveSides; // radians
 
     // To add to offset of circle angle
     const float lineAngle = glm::atan((point_b.z - point_a.z)/(point_b.x - point_a.x));
     // const float lineAngle = glm::atan((point_a.z - point_b.z)/(point_a.x - point_b.x));
+
+
+
 
     // Flip if we switch sides, this will flip the direction that the semi-circles will be facing
     int flip = 1;
@@ -123,6 +121,9 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b)
     glm::vec3 threeNorm = getCross(glm::vec3{rightA.x, point_a.y, rightA.z}, glm::vec3{leftB.x, point_b.y, leftB.z});
     // 3 and 6
     glm::vec3 fourNorm = getCross(glm::vec3{leftA.x, point_a.y, leftA.z}, glm::vec3{rightB.x, point_b.y, rightB.z});
+    LOG(STATUS, "ThreeNorm: [" << threeNorm.x << "," << threeNorm.y << "," << threeNorm.z << "]")
+    LOG(STATUS, "FourNorm: [" << fourNorm.x << "," << fourNorm.y << "," << fourNorm.z << "]")
+
 
     // Adjacent to point A
     verts.insert(verts.end(), {leftALine.x, point_a.y, leftALine.z});           // 1
@@ -157,7 +158,7 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b)
 
 
     // Needed for draw
-    roadVertices = verts.size(); 
+    unsigned int roadVertices = verts.size(); 
 
     glBindVertexArray(VAO);
     
@@ -180,18 +181,8 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b)
 
 void Road::Draw(glm::mat4 view, glm::mat4 projection)
 {
-    // TEMP
-    glm::mat4 result = glm::mat4(1.0f);
-    Shader* objectShader = GetRoadShader();
 
-    objectShader->use();
-    objectShader->setMat4("view", view);
-    objectShader->setMat4("projection", projection);
-    objectShader->setMat4("model", result);
 
-    objectShader->setVec3("colour", glm::vec3{1.0f, 0.0f, 0.0f});
-
-    // TEMP
     // glLineWidth(3.0f);
     glBindVertexArray(VAO);
 

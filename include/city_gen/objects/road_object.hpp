@@ -1,10 +1,11 @@
 #pragma once
 
 #include <base_object.hpp>
+// #include <shader.hpp>
 #include <road.hpp> 
 
 // Line object
-class RoadObject : public BaseObject<RoadObject>
+class RoadObject
 {
 private:
 
@@ -14,13 +15,36 @@ private:
 
     Road* road_obj;
 
+    std::string alias;
+    bool enableLighting = true;
+
 public:
-    RoadObject(Shader* shader_in,
-               glm::vec3 point_a,
-               glm::vec3 point_b);
+    RoadObject(glm::vec3 point_a,
+               glm::vec3 point_b,
+               Shader* shader_in);
 
     ~RoadObject();
 
-    void Draw(glm::mat4 view, glm::mat4 projection) override;
+    void Draw(glm::mat4 view, glm::mat4 projection);
+
+    // Builders for width and road curve vertices
+    // an update will be needed for this
+    RoadObject* SetWidth(float width);
+    RoadObject* SetCurveSides(unsigned int sides);
+
+    // ImGui
+    float& GetWidthImGui(void);
+    unsigned int& GetCurveSidesImGui(void);
+
+    // Other getters and setters
+    void SetAlias(std::string& name)
+    {
+        alias = name;
+    }
+
+    std::string GetAlias(void) const
+    {
+        return alias;
+    }
 
 };
