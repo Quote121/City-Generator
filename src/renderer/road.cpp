@@ -22,9 +22,9 @@ Road::~Road()
 }
 
 // Helper function for getting cross products and normalizing
-glm::vec3 inline getCross(glm::vec3 a, glm::vec3 b)
-{
-    return glm::normalize(glm::cross(a, b));
+glm::vec3 inline getCross(glm::vec3 origin, glm::vec3 a, glm::vec3 b)
+{   
+    return glm::normalize(glm::cross(a-origin, b-origin));
 }
 
 void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b)
@@ -84,14 +84,19 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b)
     /*
     //
     // This is the layout of the road where each number is a vertex and A B are the two points
-    //
-    //  __ 1_3_________________5_7 __
-    // /  |  |                 |  |  \ 
-    // | A|  |                 |  |B |
-    // \__|__|_________________|__|__/
-    //     2 4                 6 8
+    //   -z |      
+    //      |       __ 1_3_________________5_7 __
+    //      |      /  |  |                 |  |  \ 
+    //      |      | A|  |                 |  |B |
+    //      |      \__|__|_________________|__|__/
+    //      |          2 4                 6 8
+    //      |      
+    //   +z |___________________________________________                   
+    //       -x                                     +x
     //
     // The verts.insert() are each labeled by a number
+    //
+    // Left hand rule, index finger 1st vector, thumb 2nd vector; middle finger is cross result
     //
     ////////////////////////////
     // Draw 3 boxes for the road
@@ -117,42 +122,51 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b)
     glm::vec3 leftB = point_b_offset + (invUnitVecAB * radius);
     glm::vec3 rightB = point_b_offset - (invUnitVecAB * radius);
 
-    // 4 and 5
-    glm::vec3 threeNorm = getCross(glm::vec3{rightA.x, point_a.y, rightA.z}, glm::vec3{leftB.x, point_b.y, leftB.z});
-    // 3 and 6
-    glm::vec3 fourNorm = getCross(glm::vec3{leftA.x, point_a.y, leftA.z}, glm::vec3{rightB.x, point_b.y, rightB.z});
-    LOG(STATUS, "ThreeNorm: [" << threeNorm.x << "," << threeNorm.y << "," << threeNorm.z << "]")
-    LOG(STATUS, "FourNorm: [" << fourNorm.x << "," << fourNorm.y << "," << fourNorm.z << "]")
+    glm::vec3 one = {leftALine.x, point_a.y, leftALine.z};
+    glm::vec3 two = {rightALine.x, point_a.y, rightALine.z};
+    glm::vec3 three = {leftA.x, point_a.y, leftA.z};
+    glm::vec3 four = {rightA.x, point_a.y, rightA.z};
+    glm::vec3 five = {leftB.x, point_b.y, leftB.z};
+    glm::vec3 six = {rightB.x, point_b.y, rightB.z};
+    glm::vec3 seven = {leftBLine.x, point_b.y, leftBLine.z};
+    glm::vec3 eight = {rightBLine.x, point_b.y, rightBLine.z};
 
-
+    // Done -'ve in front of normals since the z axis is the other way around
+    // 4 5 from point 3
+    glm::vec3 threeNormal = -getCross(three, four, five);
+    // 6 3 from point 4
+    glm::vec3 fourNormal = -getCross(four, six, three);
+    // 3 6 from point 5
+    glm::vec3 fiveNormal = -getCross(five, three, six);
+    // 5 4 from point 6
+    glm::vec3 sixNormal = -getCross(six, five, four);
+    
     // Adjacent to point A
-    verts.insert(verts.end(), {leftALine.x, point_a.y, leftALine.z});           // 1
+    verts.insert(verts.end(), {one.x, one.y, one.z});                           // 1
     verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
 
-    verts.insert(verts.end(), {rightALine.x, point_a.y, rightALine.z});         // 2
+    verts.insert(verts.end(), {two.x, two.y, two.z});                           // 2
     verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
 
     // Left and right
-    verts.insert(verts.end(), {leftA.x, point_a.y, leftA.z});                   // 3
-    verts.insert(verts.end(), {threeNorm.x, threeNorm.y, threeNorm.z});
+    verts.insert(verts.end(), {three.x, three.y, three.z});                     // 3
+    verts.insert(verts.end(), {threeNormal.x, threeNormal.y, threeNormal.z});
 
-    verts.insert(verts.end(), {rightA.x, point_a.y, rightA.z});                 // 4
-    verts.insert(verts.end(), {fourNorm.x, fourNorm.y, fourNorm.z});
-
+    verts.insert(verts.end(), {four.x, four.y, four.z});                        // 4
+    verts.insert(verts.end(), {fourNormal.x, fourNormal.y, fourNormal.z});
 
     // Left and right
-    verts.insert(verts.end(), {leftB.x, point_b.y, leftB.z});                   // 5
-    verts.insert(verts.end(), {fourNorm.x, fourNorm.y, fourNorm.z});
+    verts.insert(verts.end(), {five.x, five.y, five.z});                        // 5
+    verts.insert(verts.end(), {fiveNormal.x, fiveNormal.y, fiveNormal.z});
 
     verts.insert(verts.end(), {rightB.x, point_b.y, rightB.z});                 // 6
-    verts.insert(verts.end(), {threeNorm.x, threeNorm.y, threeNorm.z});
-
+    verts.insert(verts.end(), {sixNormal.x, sixNormal.y, sixNormal.z});
 
     // Adjacent to point B
-    verts.insert(verts.end(), {leftBLine.x, point_b.y, leftBLine.z});           // 7
+    verts.insert(verts.end(), {seven.x, seven.y, seven.z});                     // 7
     verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
 
-    verts.insert(verts.end(), {rightBLine.x, point_b.y, rightBLine.z});         // 8
+    verts.insert(verts.end(), {eight.x, eight.y, eight.z});                     // 8
     verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
     //========================//
 

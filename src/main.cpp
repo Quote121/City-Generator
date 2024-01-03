@@ -284,22 +284,13 @@ int main() {
                      "../assets/shaders/default/line/line_shader.frag");
 
 
-    // scene->addRoad(glm::vec3{1, 7, 6}, glm::vec3{12, 0.5, 6});
     // scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{4, 7, 12});
     // scene->addRoad(glm::vec3{4, 7.01, 12}, glm::vec3{10, 7, 100});
-    scene->addRoad(glm::vec3{1, 0, 1}, glm::vec3{7, 0, 1});
+    scene->addRoad(glm::vec3{1, 3, 1}, glm::vec3{7, 3, 1});
+    scene->addRoad(glm::vec3{1, 7, 6}, glm::vec3{12, 0.5, 6});
+    scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{-20, 7, 12});
+    scene->addRoad(glm::vec3{-20, 7.01, 12}, glm::vec3{-15, 7, 30});
 
-        // ->SetWidth(3.0f)
-        // ->SetCurveSides(40);
-
-
-    // Road* r = new Road(&lineShader);
-    // r->UpdateVertices(glm::vec3(1, 7, 6), glm::vec3(1, 7, 6));
-    // r->UpdateVertices(glm::vec3(7, 0, 6), glm::vec3(1, 0, 1));
-    // r->UpdateVertices(glm::vec3(3, 0, 5), glm::vec3(1, 0, 6));
-    // r->UpdateVertices(glm::vec3(12, 0, 6), glm::vec3(3, 3, 15));
-    // r->UpdateVertices(glm::vec3(1, 0, 6), glm::vec3(3, 0, 7));
-    // r->UpdateVertices(glm::vec3(1, 0, 1), glm::vec3(1, 0, 6));
 
     // Wireframe for debugging
     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
