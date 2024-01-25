@@ -11,14 +11,11 @@ RoadObject::RoadObject(glm::vec3 point_a,
 
     if (shader_in == nullptr)
     {
-        LOG(WARN, "Using default shader");
-
         // shader = ResourceManager::getInstance()->LoadShader(paths::line_defaultVertShaderPath, paths::line_defaultFragShaderPath);
         shader = ResourceManager::getInstance()->LoadShader(paths::road_defaultVertShaderPath, paths::road_defaultFragShaderPath);
     }
     else
     {
-        LOG(WARN, "Using provided shader");
         shader = shader_in;
     }
     road_obj = new Road(shader);

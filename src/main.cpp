@@ -35,13 +35,15 @@
 
 #include <road.hpp>
 
+
+
 // Prototypes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 
-void joystick_callback(int jid, int event);
+void joystick_callback(int jid, int event); 
 
 // Window constatns
 const unsigned int WINDOW_WIDTH = 1280;
@@ -287,8 +289,8 @@ int main() {
     // scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{4, 7, 12});
     // scene->addRoad(glm::vec3{4, 7.01, 12}, glm::vec3{10, 7, 100});
     scene->addRoad(glm::vec3{1, 3, 1}, glm::vec3{7, 3, 1});
-    scene->addRoad(glm::vec3{1, 7, 6}, glm::vec3{12, 0.5, 6});
-    scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{-20, 7, 12});
+    scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6});
+    scene->addRoad(glm::vec3{1, 7, 6}, glm::vec3{-20, 7, 12});
     scene->addRoad(glm::vec3{-20, 7.01, 12}, glm::vec3{-15, 7, 30});
 
 
@@ -320,6 +322,39 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 460");
 
+
+        
+    // =============== POST-PROCESSING ===================
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Testing fbo
+    // GLuint fbo;
+    // glGenFramebuffers(1, &fbo);
+
+    // float factor = 20.0f;
+    // int WINDOW_WIDTH_REDUCED = WINDOW_WIDTH / factor;
+    // int WINDOW_HEIGHT_REDUCED = WINDOW_HEIGHT / factor;
+
+    // GLuint texture;
+    // glGenTextures(1, &texture);
+    // glBindTexture(GL_TEXTURE_2D, texture);
+    // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, WINDOW_WIDTH_REDUCED, WINDOW_HEIGHT_REDUCED, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texture, 0);
+
+    // // Check if the framebuffer is complete
+    // if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+    //     // Handle error
+    // }
+
+    // // Attach the default framebuffer's color buffer to the FBO
+    // glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, 0, 0);
+
+    // // Reset framebuffer binding
+    // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
     // bool show_demo_window = true;
     // Render loop to keep rendering until the program is closed
     // If GLFW has been instructed to close then run this function
@@ -336,10 +371,25 @@ int main() {
         // Call the input processer each loop to check if the esc key is pressed
         InputHandler::process(window, deltaTime);
         
+
+        // =============== POST-PROCESSING ===================
+        // // Bind the FBO
+        // glBindFramebuffer(GL_READ_FRAMEBUFFER, 0); // Bind the default framebuffer as the source
+        // glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo); // Bind your FBO as the destination
+        // ===================================================
+
+
         // Clearing colour buffer
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
+
+
+
         
+
+
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
@@ -356,10 +406,23 @@ int main() {
         glm::mat4 viewSB = glm::mat4(glm::mat3(camera->GetViewMatrix()));
         scene->DrawSkyBox(viewSB, projection);
         scene->DrawSceneObjects(view, projection);
+
+        // =============== POST-PROCESSING ===================
+        // glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        // glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0, WINDOW_WIDTH_REDUCED, WINDOW_HEIGHT_REDUCED, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        // Unbind the FBO
+        //////////////////////////////////////////////////////
+
+
+
+
         ImGui::ShowDemoWindow();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        // Perform the blit to copy from the default framebuffer to your FBO
+
 
         // Will swap the colour buffers (2d buffer that contains colour values for each pixel in GLFW window)
         glfwSwapBuffers(window);
