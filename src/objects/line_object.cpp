@@ -18,13 +18,10 @@ LineObject::LineObject(Shader* shader_in,
 
     if (shader_in == nullptr)
     {
-        LOG(WARN, "Using default shader");
-
         shader = ResourceManager::getInstance()->LoadShader(paths::line_defaultVertShaderPath, paths::line_defaultFragShaderPath);
     }
     else
     {
-        LOG(WARN, "Using provided shader");
         shader = shader_in;
     }
     line_obj = new Line(shader);
@@ -67,6 +64,8 @@ LineObject* LineObject::SetColour(glm::vec3 colour_in)
     colour = colour_in;
     return this;
 }
+
+// TODO SetColour (COLOUR::BLACK) allow to use a list of enums to set the colour
 
 LineObject* LineObject::SetPosition(glm::vec3 position_in)
 {

@@ -1,5 +1,6 @@
 // Glad has to be before glfw as it contains certain headers that will clash otherwise
 // Glad/GLFW
+#include <emmintrin.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -25,17 +26,13 @@
 #include <shader.hpp> // Custom shader header
 #include <camera.hpp> // Camera class
 #include <resourceManager.hpp>
-#include <inputHandler.hpp>
-#include <menues.hpp>
-#include <scene.hpp>
-
-// Perlin noise generator
-#include <Reputeless/PerlinNoise.hpp>
+#include <inputHandler.hpp> 
+#include <menues.hpp> // ImGui menues
+#include <scene.hpp> // The scene that holds all objects
+#include <generator.hpp> // For general generators
 
 
 #include <road.hpp>
-
-
 
 // Prototypes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -223,32 +220,23 @@ int main() {
         ->SetLightingEnabled(true);
 
 
+    generator::generateRoads();
+   
+    for (auto& road : Scene::getInstance()->GetRoadObjects())
+    {
+        LOG(WARN, "Roads: " << road->GetAlias() << " A: [" << road->getPointA().x
+                                                        << " " << road->getPointA().y
+                                                        << " " << road->getPointA().z
+                                                        << "] | B: [" << road->getPointB().x
+                                                        << " " << road->getPointB().y
+                                                        << " " << road->getPointB().z << "]");
+    }
 
-    // const siv::PerlinNoise::seed_type seed = 123456u;
-	// const siv::PerlinNoise perlin{ seed };
-	// for (int y = 0; y < 160; ++y)
-	// {
-	// 	for (int x = 0; x < 160; ++x)
-	// 	{
-	// 		const double noise = perlin.noise2D_01((x), (y));
-
-    //         if (noise > 0.7)
-    //         {
-    //             scene->addModel(building1, nullptr)
-    //                 ->SetModelOriginCenterBottom()
-    //                 ->SetPosition(glm::vec3{(x-80)*2, 0, (y-80)*2})
-    //                 ->ShowBoundingBox(true);
-    //         }
-	// 	}
-	// }
-
-
-    // Note for terrain generation the terrain asset is 160 by 160
-
-
+    // Tree asset generation
     std::random_device rd; // obtain a random number from hardware
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(-160, 160); // define the range
+   
 
     for (int i = 0; i < 100; i++)
     {
@@ -384,11 +372,9 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
+    
 
-
-
-        
-
+        scene->GetRoadObjects();
 
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();

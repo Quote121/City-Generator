@@ -5,8 +5,9 @@
 
 RoadObject::RoadObject(glm::vec3 point_a,
                        glm::vec3 point_b,
-                       Shader* shader_in)
+                       Shader* shader_in) : a(point_a), b(point_b)
 {
+
     Shader* shader;
 
     if (shader_in == nullptr)

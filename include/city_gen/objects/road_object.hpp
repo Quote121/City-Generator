@@ -3,6 +3,7 @@
 #include <base_object.hpp>
 // #include <shader.hpp>
 #include <road.hpp> 
+#include <sstream>
 
 // Line object
 class RoadObject
@@ -45,6 +46,30 @@ public:
     std::string GetAlias(void) const
     {
         return alias;
+    }
+
+    glm::vec3 getPointA(void) const
+    {
+        return a; 
+    }
+
+    glm::vec3 getPointB(void) const
+    {
+        return b;
+    }
+
+    std::string GetPointAString(void) const
+    {
+        std::stringstream ss;
+        ss << "[" << a.x << " " << a.y << " " << a.z << "]";
+        return ss.str();
+    }
+
+    std::string GetPointBString(void) const
+    {
+        std::stringstream ss;
+        ss << "[" << b.x << " " << b.y << " " << b.z << "]";
+        return ss.str();
     }
 
 };

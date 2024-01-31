@@ -34,6 +34,8 @@ public:
     LineObject* IsVisible(bool toggle);
     LineObject* SetSpawnOffset(glm::vec3 vec3);
 
+    // TODO, add thickness builder for openGL line thickness change when rendering
+
     // ImGui
     glm::vec3& GetScaleImGui();
     glm::vec3& GetPointAImGui();
