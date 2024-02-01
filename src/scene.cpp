@@ -62,14 +62,9 @@ RoadObject* Scene::addRoad(glm::vec3 point_a,
         shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
     }
 
-    LOG(STATUS, "addRoad() point a and b arguments : " << point_a.x << " " << point_a.y << " " << point_a.z << " | " << point_b.x
-            << " " << point_b.y << " " << point_b.z);
-
     RoadObject* road = new RoadObject(
         point_a, point_b, shader
     );
-
-    LOG(STATUS, "addRoad() : road : " << road->GetPointAString() << " " << road->GetPointBString())
 
     scene_road_objects.push_back(road);
     roadCount++;

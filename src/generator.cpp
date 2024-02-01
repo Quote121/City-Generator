@@ -4,8 +4,13 @@
 #include <stack>
 #include <set>
 
+#include <stopwatch.hpp>
+
 void generator::generateRoads(void)
 {
+    auto roadGenerateStartTime = StopWatch::GetCurrentTimePoint();
+
+
     LOG(STATUS, "generateRoads() started...");
     std::vector<glm::vec3> points;
 
@@ -44,9 +49,9 @@ void generator::generateRoads(void)
     // nodes close to one another will be joined up
 
     // grammar
-    std::string treeGrammar = "";
-    generator::LSystemGen(&treeGrammar, 4); // Get 2 iterations on the grammar
-
+    std::string treeGrammar = "F"; // Needs to be changed based on what our grammar is
+    generator::LSystemGen(&treeGrammar, 3); // Get 2 iterations on the grammar
+    LOG(STATUS, "Grammar: " << treeGrammar)
     // // Using the same seed as before
     // srand(seed);
     // 
@@ -60,16 +65,6 @@ void generator::generateRoads(void)
     //     
     // }
     //
-
-
-    // F[-X]
-    // F - foward n units
-    // - left n degrees
-    // + right n degrees
-    // X forward (end node)
-    // [ push point to stack
-    // ] pop point to stack
-
     std::stack<road_gen_point> pointStack;
     // std::vector<road_gen_point> endPoints; // End nodes of the tree
     std::set<road_gen_point> endPoints; // End nodes of the tree
@@ -79,8 +74,20 @@ void generator::generateRoads(void)
     glm::vec3 startPoint = {0.0, 0.0, 0.0};
     road_gen_point currentPoint = {startPoint, 0.0f}; // Heading of 0 radians
     float length = 10.0f;
-    float degree = M_PI / 4.0f; // 45 degrees
+    
+    float degrees = 45.0f;
+    float degreeRadians = degrees * (M_PI/180);
+    
 
+    // Key:
+    // 
+    // F[-X]
+    // F Foward n units
+    // - Left n degrees
+    // + Right n degrees
+    // X Forward (end node)
+    // [ Push point to stack
+    // ] Pop point to stack
 
     for (char symbol : treeGrammar)
     {
@@ -88,20 +95,13 @@ void generator::generateRoads(void)
         {
         case 'F':
         {
-            LOG(STATUS, "== F ==")
             // Go forward relative to its angle
-
-            LOG(STATUS, "Current point " << currentPoint.point.x << " " << currentPoint.point.y << " " << currentPoint.point.z);
-
             glm::vec3 nextPoint = {
                 currentPoint.point.x + (length * glm::sin(currentPoint.degreeHeading)),
                 currentPoint.point.y,
                 currentPoint.point.z + (length * glm::cos(currentPoint.degreeHeading))
             };
 
-            LOG(STATUS, currentPoint.degreeHeading);              
-            
-            LOG(STATUS, "Current point " << currentPoint.point.x << " " << currentPoint.point.y << " " << currentPoint.point.z);
             // Scene::getInstance()->addRoad({0,0,0}, {0, 0, 10});
             Scene::getInstance()->addRoad(currentPoint.point, nextPoint);
             currentPoint.point = nextPoint; // Update current point, no change to bearing
@@ -110,7 +110,6 @@ void generator::generateRoads(void)
         }
         case 'X':
         {
-            LOG(STATUS, "== X ==")
             // Go forward relative to its angle
             glm::vec3 nextPoint = {
                 currentPoint.point.x + (length * glm::sin(currentPoint.degreeHeading)),
@@ -128,28 +127,24 @@ void generator::generateRoads(void)
         }
         case '-':
         {
-            LOG(STATUS, "== - ==")
-            currentPoint.degreeHeading +=  degree;
+            currentPoint.degreeHeading +=  degreeRadians;
             // Turn left n degrees
             break;
         }
         case '+':
         {
-            LOG(STATUS, "== + ==")
-            currentPoint.degreeHeading -= degree;
+            currentPoint.degreeHeading -= degreeRadians;
             // Turn right n degrees
             break;
         }
         case '[':
         {
-            LOG(STATUS, "== [ ==")
             pointStack.push(currentPoint);
             // Push point to stack
             break;
         }
         case ']':
         {
-            LOG(STATUS, "== ] ==")
             currentPoint = pointStack.top(); // Read
             pointStack.pop(); // pop
             // Pop point from stack
@@ -165,24 +160,27 @@ void generator::generateRoads(void)
 
     // When generating, we could give a radius from 0,0 for roads to be permitted, this would give a good effect IMO
 
-    LOG(STATUS, "generateRoads() done.");
+    uint64_t timeElapsed = StopWatch::GetTimeElapsed(roadGenerateStartTime);
+    LOG(STATUS, "generateRoads() finished in " << timeElapsed << "ms");
 }
 
 void generator::LSystemGen(std::string *axiom, uint iterations)
 {
+    if (*axiom == "")
+    {
+        LOG(WARN, "Axiom is empty, nothing will be generated");
+        return;
+    }
+
     for (int j = 0; j < iterations; j++)
     {
         std::stringstream ss;
         // Current L system grammar
         std::map<const std::string, const std::string> grammar =
 
-            {{"X", "F[+X]F[-X]F[-X]F[+X]F"}}; 
-
-        // If our Lsystem is empty we'll add the starting part
-        if (*axiom == "")
-        {
-            ss << "X";
-        }
+            // {{"X", "F[+X]F[-X]F[-X]F[+X]F"},
+             // {"F", "FF"}}; 
+            {{"F", "F-F++F-F"}};
 
         for (int i = 0; i < axiom->size(); i++)
         {

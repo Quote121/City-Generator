@@ -12,8 +12,6 @@
 // STD
 #include <stdlib.h> // Clearing cmd for fps
 #include <iostream>
-#include <cmath> 
-#include <memory>
 // temp test with randomness
 #include <random>
 
@@ -217,26 +215,16 @@ int main() {
     scene->addModel(terrain, &backpackShader)
         ->SetModelOriginCenterBottom()
         ->ShowBoundingBox(false)
-        ->SetLightingEnabled(true);
-
+        ->SetLightingEnabled(true)
+        ->SetIsVisible(false);
 
     generator::generateRoads();
    
-    for (auto& road : Scene::getInstance()->GetRoadObjects())
-    {
-        LOG(WARN, "Roads: " << road->GetAlias() << " A: [" << road->getPointA().x
-                                                        << " " << road->getPointA().y
-                                                        << " " << road->getPointA().z
-                                                        << "] | B: [" << road->getPointB().x
-                                                        << " " << road->getPointB().y
-                                                        << " " << road->getPointB().z << "]");
-    }
 
     // Tree asset generation
     std::random_device rd; // obtain a random number from hardware
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(-160, 160); // define the range
-   
 
     for (int i = 0; i < 100; i++)
     {
