@@ -48,6 +48,15 @@ void Menues::display(float deltaTime)
 
     // Show XYZ lines
     ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui()); 
+    
+
+    ImGui::PushItemWidth(100);
+    ImGui::Text("Camera Position:");
+    ImGui::SliderFloat("X##POS", &cam->GetPositionHandle().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+    ImGui::SliderFloat("Y##POS", &cam->GetPositionHandle().y, POSITION_MIN, POSITION_MAX+600); ImGui::SameLine();
+    ImGui::SliderFloat("Z##POS", &cam->GetPositionHandle().z, POSITION_MIN, POSITION_MAX);
+    ImGui::PopItemWidth();
+
 
     if(ImGui::TreeNode("Spawning"))
     {

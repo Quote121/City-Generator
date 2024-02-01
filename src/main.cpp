@@ -1,6 +1,5 @@
 // Glad has to be before glfw as it contains certain headers that will clash otherwise
 // Glad/GLFW
-#include <emmintrin.h>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -24,13 +23,17 @@
 #include <shader.hpp> // Custom shader header
 #include <camera.hpp> // Camera class
 #include <resourceManager.hpp>
-#include <inputHandler.hpp> 
-#include <menues.hpp> // ImGui menues
-#include <scene.hpp> // The scene that holds all objects
-#include <generator.hpp> // For general generators
+#include <inputHandler.hpp>
+#include <menues.hpp>
+#include <scene.hpp>
 
+// Perlin noise generator
+#include <Reputeless/PerlinNoise.hpp>
+#include <generator.hpp>
 
 #include <road.hpp>
+
+
 
 // Prototypes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -112,10 +115,6 @@ int main() {
     //////////////////
     
     // int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
-    glfwSetJoystickCallback(joystick_callback);
-
-    // glfwSwapInterval(0); // This will disable vsync and remove frame rate cap
-    
 
     // Initalise GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -218,11 +217,14 @@ int main() {
         ->SetLightingEnabled(true)
         ->SetIsVisible(false);
 
+
+    // Tree asset generation
     generator::generateRoads();
-   
+
 
     // Tree asset generation
     std::random_device rd; // obtain a random number from hardware
+   
     std::mt19937 gen(rd()); // seed the generator
     std::uniform_int_distribution<> distr(-160, 160); // define the range
 
@@ -390,7 +392,7 @@ int main() {
 
 
 
-        ImGui::ShowDemoWindow();
+        // ImGui::ShowDemoWindow();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

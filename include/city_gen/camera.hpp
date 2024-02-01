@@ -114,6 +114,11 @@ public:
 			Zoom = 45.0f;
 	}
 
+    glm::vec3& GetPositionHandle(void)
+    {
+        return Position;
+    }
+
 private:
 	// Private the default constructor
 	Camera() = default;

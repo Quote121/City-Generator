@@ -49,9 +49,9 @@ void generator::generateRoads(void)
     // nodes close to one another will be joined up
 
     // grammar
-    std::string treeGrammar = "F"; // Needs to be changed based on what our grammar is
+    std::string treeGrammar = "X"; // Needs to be changed based on what our grammar is
     generator::LSystemGen(&treeGrammar, 3); // Get 2 iterations on the grammar
-    LOG(STATUS, "Grammar: " << treeGrammar)
+
     // // Using the same seed as before
     // srand(seed);
     // 
@@ -177,10 +177,9 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
         std::stringstream ss;
         // Current L system grammar
         std::map<const std::string, const std::string> grammar =
-
-            // {{"X", "F[+X]F[-X]F[-X]F[+X]F"},
-             // {"F", "FF"}}; 
-            {{"F", "F-F++F-F"}};
+            {{"X", "F[+X]F[-X]F[-X]F[+X]F"},
+             {"F", "FF"}}; 
+            // {{"F", "F-F++F-F"}};
 
         for (int i = 0; i < axiom->size(); i++)
         {
