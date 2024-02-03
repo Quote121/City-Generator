@@ -1,5 +1,7 @@
+#include "imgui/imgui.h"
 #include <menues.hpp>
 #include <resourceManager.hpp>
+#include <generator.hpp>
 
 #define POSITION_MAX 100.0f
 #define POSITION_MIN -100.0f
@@ -41,10 +43,24 @@ void Menues::display(float deltaTime)
     Scene* scene = Scene::getInstance();
     
 
+    ImGui::Begin("Generator settings");
+
+    // Settings for the road Generator
+    ImGui::Text("Road generator settings");
+
+    // generator::generateRoads(int iterations, float roadLength, float roadWidth, float roadAngleDegrees) 
+
+    ImGui::Button("Generate.");
+
+    ImGui::End();
+
+
+
+
+
     // Later on with the resource manager, the user will be able to select from a list of things to spawn into the world
 
-
-    ImGui::Begin("World");
+    ImGui::Begin("World controls");
 
     // Show XYZ lines
     ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui()); 

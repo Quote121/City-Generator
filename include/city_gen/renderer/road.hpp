@@ -9,40 +9,23 @@ class Road
 {
 private:
     unsigned int VAO, VBO;
-    unsigned int roadCurveSides = 40; // This value will be times by 4 within the draw method
-    float width = 3.0f;
+    // as to be multiple of 4, at least 4 (Will createa point at the end of the road at 4)
+    // TODO In future this could be set to ranges based on level of detail (close more vertices, further the less)
+    unsigned int roadCurveSides = 4;//0;     
 
     Shader* roadShader;
 public:
     // So that we can access the private values without extra getters for ImGui
     friend class RoadObject;
 
-    void UpdateVertices(glm::vec3 point_a, glm::vec3 point_b);
+    // Pass both point and road width to recalculate the vertices of the road
+    void UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width);
 
     // Make the opengl draw calls
     void Draw(glm::mat4 view, glm::mat4 projection);
 
     Road(Shader* shader);
     ~Road();
-
-
-    // Getters and setters
-    void SetRoadWidth(float width_in)
-    {
-        if (width_in > 0)
-        {
-            width = width_in;
-        }
-        else
-        {
-            width = 0.1f;
-        }
-    }
-
-    inline float GetRoadWidth(void)
-    {
-        return width;
-    }
 
 
     void SetRoadCurveSides(unsigned int sides)

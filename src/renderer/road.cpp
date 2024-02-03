@@ -27,7 +27,7 @@ glm::vec3 inline getCross(glm::vec3 origin, glm::vec3 a, glm::vec3 b)
     return glm::normalize(glm::cross(a-origin, b-origin));
 }
 
-void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b)
+void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 {
     int numberOfSides = roadCurveSides;
 

@@ -30,8 +30,13 @@ inline bool operator<(const road_gen_point& lhs, const road_gen_point& rhs)
 
 namespace generator
 {
-    // Method for the road generation pass, uses LSystemGen internally to generate a grammar string
-    void generateRoads(void);
+    // @brief Method for the road generation pass, uses LSystemGen internally to generate a grammar string
+    //
+    // @args Iterations - number of grammar iterations
+    // @args RoadLength - length of the road when generating
+    // @args RoadWidth - width of the roads
+    // @args roadAngleDegrees - the +/- angles when generating from the grammar
+    void generateRoads(int iterations, float roadLength, float roadWidth, float roadAngleDegrees);
 
     // Axiom, is the string to have the grammar effect
     // Iterations is amount of iterations on string

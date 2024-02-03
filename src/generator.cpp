@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <generator.hpp>
 #include <map>
 #include <sstream>    
@@ -6,77 +7,57 @@
 
 #include <stopwatch.hpp>
 
-void generator::generateRoads(void)
+void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, float roadWidth = 3.0f, float roadAngleDegrees = 90.0f)
 {
     auto roadGenerateStartTime = StopWatch::GetCurrentTimePoint();
 
 
     LOG(STATUS, "generateRoads() started...");
-    std::vector<glm::vec3> points;
-
-    // TODO, when working we should have a menu handle to tweak all these values and then to generate. That would be cool
-
-    // Procedural generation of roads here
+    // std::vector<glm::vec3> points;
     //
-    // Scene::getInstance()->addRoad(glm::vec3{0, 0, 0}, glm::vec3{5, 0, 5});
+    // // TODO, when working we should have a menu handle to tweak all these values and then to generate. That would be cool
     //
-
-    // Seed should be changed based on system time, seed can be saved to replicate the generation
-    const siv::PerlinNoise::seed_type seed = 123456u;
-    const siv::PerlinNoise perlin{ seed };
-
-    // Note for terrain generation the terrain asset is 160 by 160
-    for (int y = 0; y < 160; ++y)
-    {
-        for (int x = 0; x < 160; ++x)
-        {
-            const double noise = perlin.normalizedOctave2D_01((x), (y), 4);
-
-            // Random threshold to create a 
-            if (noise > 0.65)
-            {
-                float xPos, yPos;
-                xPos = (2*x)-160;
-                yPos = (2*y)-160;
-                
-                // Get Starting points
-                points.push_back(glm::vec3{xPos, 0, yPos});
-            }
-        }
-    }
-
+    // // Procedural generation of roads here
+    // // Seed should be changed based on system time, seed can be saved to replicate the generation
+    // const siv::PerlinNoise::seed_type seed = 123456u;
+    // const siv::PerlinNoise perlin{ seed };
+    //
+    // // Note for terrain generation the terrain asset is 160 by 160
+    // for (int y = 0; y < 160; ++y)
+    // {
+    //     for (int x = 0; x < 160; ++x)
+    //     {
+    //         const double noise = perlin.normalizedOctave2D_01((x), (y), 4);
+    //
+    //         // Random threshold to create a 
+    //         if (noise > 0.65)
+    //         {
+    //             float xPos, yPos;
+    //             xPos = (2*x)-160;
+    //             yPos = (2*y)-160;
+    //             
+    //             // Get Starting points
+    //             points.push_back(glm::vec3{xPos, 0, yPos});
+    //         }
+    //     }
+    // }
+    //
     // Now we will select several points from the vector of points to begin our L-system and any 
     // nodes close to one another will be joined up
 
     // grammar
     std::string treeGrammar = "X"; // Needs to be changed based on what our grammar is
-    generator::LSystemGen(&treeGrammar, 3); // Get 2 iterations on the grammar
+    generator::LSystemGen(&treeGrammar, iterations); // Get 2 iterations on the grammar
 
-    // // Using the same seed as before
-    // srand(seed);
-    // 
-    // // Number of points we pick
-    // int startingPoints = 4;
-    // for (int i = 0; i < startingPoints; i++)
-    // {
-    //     // Get random point
-    //     glm::vec3 point = points.at(rand() % points.size());
-    //     // We perfrom the grammar on it. At each node we push it into a stack       
-    //     
-    // }
-    //
     std::stack<road_gen_point> pointStack;
     // std::vector<road_gen_point> endPoints; // End nodes of the tree
     std::set<road_gen_point> endPoints; // End nodes of the tree
 
-
     // Test point
     glm::vec3 startPoint = {0.0, 0.0, 0.0};
     road_gen_point currentPoint = {startPoint, 0.0f}; // Heading of 0 radians
-    float length = 10.0f;
-    
-    float degrees = 45.0f;
-    float degreeRadians = degrees * (M_PI/180);
+        
+    float degreeRadians = roadAngleDegrees * (M_PI/180);
     
 
     // Key:
@@ -97,9 +78,9 @@ void generator::generateRoads(void)
         {
             // Go forward relative to its angle
             glm::vec3 nextPoint = {
-                currentPoint.point.x + (length * glm::sin(currentPoint.degreeHeading)),
+                currentPoint.point.x + (roadLength * glm::sin(currentPoint.degreeHeading)),
                 currentPoint.point.y,
-                currentPoint.point.z + (length * glm::cos(currentPoint.degreeHeading))
+                currentPoint.point.z + (roadLength * glm::cos(currentPoint.degreeHeading))
             };
 
             // Scene::getInstance()->addRoad({0,0,0}, {0, 0, 10});
@@ -112,9 +93,9 @@ void generator::generateRoads(void)
         {
             // Go forward relative to its angle
             glm::vec3 nextPoint = {
-                currentPoint.point.x + (length * glm::sin(currentPoint.degreeHeading)),
+                currentPoint.point.x + (roadLength * glm::sin(currentPoint.degreeHeading)),
                 currentPoint.point.y,
-                currentPoint.point.z + (length * glm::cos(currentPoint.degreeHeading))
+                currentPoint.point.z + (roadLength * glm::cos(currentPoint.degreeHeading))
             };
             
             Scene::getInstance()->addRoad(currentPoint.point, nextPoint);
@@ -159,7 +140,6 @@ void generator::generateRoads(void)
     }
 
     // When generating, we could give a radius from 0,0 for roads to be permitted, this would give a good effect IMO
-
     uint64_t timeElapsed = StopWatch::GetTimeElapsed(roadGenerateStartTime);
     LOG(STATUS, "generateRoads() finished in " << timeElapsed << "ms");
 }
@@ -172,7 +152,7 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
         return;
     }
 
-    for (int j = 0; j < iterations; j++)
+    for (size_t j = 0; j < iterations; j++)
     {
         std::stringstream ss;
         // Current L system grammar
@@ -181,7 +161,7 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
              {"F", "FF"}}; 
             // {{"F", "F-F++F-F"}};
 
-        for (int i = 0; i < axiom->size(); i++)
+        for (size_t i = 0; i < axiom->size(); i++)
         {
             // If we have something from the grammar then we need to replace it with the value from the key
             auto value = grammar.find(std::string(1, (*axiom)[i])); // Turn 1 char to string 

@@ -54,6 +54,7 @@ ModelObject* Scene::addModel(const std::string& modelPath_in,
 // Roads
 RoadObject* Scene::addRoad(glm::vec3 point_a,
                            glm::vec3 point_b,
+                           float road_width,
                            const ShaderPath* shader_in)
 {
     Shader* shader = nullptr;
@@ -62,8 +63,14 @@ RoadObject* Scene::addRoad(glm::vec3 point_a,
         shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
     }
 
+    // Make sure we cant have a negative or too small road width
+    if (road_width < 0.1)
+    {
+        road_width = 0.1;
+    }
+
     RoadObject* road = new RoadObject(
-        point_a, point_b, shader
+        point_a, point_b, road_width, shader
     );
 
     scene_road_objects.push_back(road);

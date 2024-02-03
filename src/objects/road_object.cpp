@@ -3,9 +3,10 @@
 #include "camera.hpp"
 #include "scene.hpp"
 
-RoadObject::RoadObject(glm::vec3 point_a,
-                       glm::vec3 point_b,
-                       Shader* shader_in) : a(point_a), b(point_b)
+RoadObject::RoadObject(const glm::vec3 point_a,
+                       const glm::vec3 point_b,
+                       const float roadWidth_in,
+                       Shader* shader_in) : a(point_a), b(point_b), roadWidth(roadWidth_in) 
 {
 
     Shader* shader;
@@ -20,7 +21,8 @@ RoadObject::RoadObject(glm::vec3 point_a,
         shader = shader_in;
     }
     road_obj = new Road(shader);
-    road_obj->UpdateVertices(point_a, point_b);
+    // Initaliser list will be processed before constructor, but we pass these values
+    road_obj->UpdateVertices(point_a, point_b, roadWidth_in);
 }
 
 RoadObject::~RoadObject()
@@ -84,13 +86,21 @@ void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
     road_obj->Draw(view, projection);
 }
 
+// Require a vertice update for the builders
 // Builders
 RoadObject* RoadObject::SetWidth(float width_in)
 {
-    road_obj->SetRoadWidth(width_in);
+    if (width_in < 0.1)
+    {
+        roadWidth = 0.1;
+    }
+    else {
+        roadWidth = width_in;
+    }
     return this;
 }
 
+// This could be removed later on as we implement LOD
 RoadObject* RoadObject::SetCurveSides(unsigned int sides)
 {
     road_obj->SetRoadCurveSides(sides);
@@ -100,10 +110,11 @@ RoadObject* RoadObject::SetCurveSides(unsigned int sides)
 // ImGui
 float& RoadObject::GetWidthImGui(void)
 {
-    return road_obj->width;
+    return roadWidth;
 }
 
 unsigned int& RoadObject::GetCurveSidesImGui(void)
 {
     return road_obj->roadCurveSides;
 }
+

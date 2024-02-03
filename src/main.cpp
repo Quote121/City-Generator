@@ -181,36 +181,36 @@ int main() {
     std::string building1 = "../assets/models/Buildings/NoTextureStarter/CellPhoneBuilding_01.obj";
     std::string building2 = "../assets/models/Buildings/NoTextureStarter/LargeRectangle.obj";
     std::string building3 = "../assets/models/Buildings/NoTextureStarter/AngledRoofHouse.obj";
-
-    scene->addModel(building1)
-        ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, 0})
-        ->ShowBoundingBox(false);
-        
-
-
-    scene->addModel(building2)
-        ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, 10})
-        ->ShowBoundingBox(false);
-
-
-    scene->addModel(building3)
-        ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, -10})
-        ->ShowBoundingBox(false);
-
+    //
+    // scene->addModel(building1)
+    //     ->SetModelOriginCenterBottom()
+    //     ->SetPosition(glm::vec3{10, 0, 0})
+    //     ->ShowBoundingBox(false);
+    //     
+    //
+    //
+    // scene->addModel(building2)
+    //     ->SetModelOriginCenterBottom()
+    //     ->SetPosition(glm::vec3{10, 0, 10})
+    //     ->ShowBoundingBox(false);
+    //
+    //
+    // scene->addModel(building3)
+    //     ->SetModelOriginCenterBottom()
+    //     ->SetPosition(glm::vec3{10, 0, -10})
+    //     ->ShowBoundingBox(false);
+    //
     std::string backPathVertShader = "../assets/shaders/backpack/vertexShader.vs";
     std::string backPathFragShader = "../assets/shaders/backpack/fragmentShader.fs";
-
-
-    scene->addModel(roadMdl)
-        ->SetModelOriginCenter()
-        ->SetPosition(glm::vec3{0,0.01,0})
-        ->ShowBoundingBox(false);
-        
-
-
+    //
+    //
+    // scene->addModel(roadMdl)
+    //     ->SetModelOriginCenter()
+    //     ->SetPosition(glm::vec3{0,0.01,0})
+    //     ->ShowBoundingBox(false);
+    //     
+    //
+    //
     scene->addModel(terrain, &backpackShader)
         ->SetModelOriginCenterBottom()
         ->ShowBoundingBox(false)
@@ -219,37 +219,37 @@ int main() {
 
 
     // Tree asset generation
-    generator::generateRoads();
+    generator::generateRoads(3, 10.0f, 3.0f, 90.0f);
 
 
     // Tree asset generation
-    std::random_device rd; // obtain a random number from hardware
-   
-    std::mt19937 gen(rd()); // seed the generator
-    std::uniform_int_distribution<> distr(-160, 160); // define the range
-
-    for (int i = 0; i < 100; i++)
-    {
-        scene->addSprite(tree)
-            ->SetModelOriginCenterBottom()
-            ->SetIsVisible(true)
-            ->SetIsBillboard(true)
-            ->SetPosition(glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))})
-            ->SetScale(2.0f);
-    }
-
-    scene->addModel(backPackPath, &backpackShader)
-         ->SetModelOriginCenter()
-         ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
-         ->ShowBoundingBox(true)
-         ->SetLightingEnabled(true);
-
-    scene->addModel(backPackPath, &backpackShader)
-         ->SetModelOriginCenter()
-         ->SetPosition(glm::vec3{0.0f, 20.0f, 0.0f})
-         ->ShowBoundingBox(true)
-         ->SetLightingEnabled(true);
-
+   //  std::random_device rd; // obtain a random number from hardware
+   // 
+   //  std::mt19937 gen(rd()); // seed the generator
+   //  std::uniform_int_distribution<> distr(-160, 160); // define the range
+   //
+    // for (int i = 0; i < 100; i++)
+    // {
+    //     scene->addSprite(tree)
+    //         ->SetModelOriginCenterBottom()
+    //         ->SetIsVisible(true)
+    //         ->SetIsBillboard(true)
+    //         ->SetPosition(glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))})
+    //         ->SetScale(2.0f);
+    // }
+    //
+    // scene->addModel(backPackPath, &backpackShader)
+    //      ->SetModelOriginCenter()
+    //      ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
+    //      ->ShowBoundingBox(true)
+    //      ->SetLightingEnabled(true);
+    //
+    // scene->addModel(backPackPath, &backpackShader)
+    //      ->SetModelOriginCenter()
+    //      ->SetPosition(glm::vec3{0.0f, 20.0f, 0.0f})
+    //      ->ShowBoundingBox(true)
+    //      ->SetLightingEnabled(true);
+    //
     scene->addPointLight()
         ->SetPosition(glm::vec3{0, 0, 0});
 
@@ -264,12 +264,7 @@ int main() {
                      "../assets/shaders/default/line/line_shader.frag");
 
 
-    // scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{4, 7, 12});
-    // scene->addRoad(glm::vec3{4, 7.01, 12}, glm::vec3{10, 7, 100});
-    scene->addRoad(glm::vec3{1, 3, 1}, glm::vec3{7, 3, 1});
-    scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6});
-    scene->addRoad(glm::vec3{1, 7, 6}, glm::vec3{-20, 7, 12});
-    scene->addRoad(glm::vec3{-20, 7.01, 12}, glm::vec3{-15, 7, 30});
+    scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f);
 
 
     // Wireframe for debugging
