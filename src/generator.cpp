@@ -83,7 +83,7 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
             };
 
             // Scene::getInstance()->addRoad({0,0,0}, {0, 0, 10});
-            Scene::getInstance()->addRoad(currentPoint.point, nextPoint);
+            Scene::getInstance()->addRoad(currentPoint.point, nextPoint, roadWidth);
             currentPoint.point = nextPoint; // Update current point, no change to bearing
 
             break;
@@ -97,7 +97,7 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
                 currentPoint.point.z + (roadLength * glm::cos(currentPoint.degreeHeading))
             };
             
-            Scene::getInstance()->addRoad(currentPoint.point, nextPoint);
+            Scene::getInstance()->addRoad(currentPoint.point, nextPoint, roadWidth);
             
             endPoints.insert({{nextPoint, currentPoint.degreeHeading}}); // Add to the set of end points
 

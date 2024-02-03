@@ -4,6 +4,9 @@
 
     This header is for managing assets throughout the program
 
+    Please note that the deletion methods in the resourceManager are purely for assets such as object files and textures
+    Not the scene object, that is dealt with by the scene class in scene.hpp 
+
     By loading all assets once into memory we can save on memory and startup time
     This will manage textures, shaders, objects
 
@@ -26,7 +29,6 @@ struct TextureInfo{
     int height;             // height of texture
     std::string fileName;   // Name of texture
 };
-
 
 
 class ResourceManager{
@@ -87,16 +89,6 @@ private:
         }
     }
 
-    // Scene deletion
-    void deleteLights()
-    {
-        
-    }
-
-    void deleteRoads()
-    {
-
-    }
 
 public:
     ResourceManager(ResourceManager &other) = delete;

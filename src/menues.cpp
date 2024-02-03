@@ -51,6 +51,19 @@ void Menues::display(float deltaTime)
     
     // generator::generateRoads(int iterations, float roadLength, float roadWidth, float roadAngleDegrees) 
 
+    // iterations
+    static int gen_iterations = 1;
+    ImGui::SliderInt("Iterations", &gen_iterations, 1, 10);
+
+    static float gen_roadLength = 1.0f;
+    ImGui::SliderFloat("Road Length", &gen_roadLength, 1.0f, 20.0f);
+
+    static float gen_roadWidth = 3.0f;
+    ImGui::SliderFloat("Road Width", &gen_roadWidth, 1.0f, 10.0f);
+
+    static float gen_roadAngle = 90.0f;
+    ImGui::SliderFloat("Road Angle", &gen_roadAngle, 0.0f, 180.0f);
+
     bool removeRoads = ImGui::Button("Clear roads.");
     if (removeRoads)
     {
@@ -58,9 +71,10 @@ void Menues::display(float deltaTime)
     }
     
     bool generateRoads = ImGui::Button("Generate.");
+
     if (generateRoads)
     {
-        generator::generateRoads(3, 10.0f, 3.0f, 90.0f);
+        generator::generateRoads(gen_iterations, gen_roadLength, gen_roadWidth, gen_roadAngle);
     }
 
     ImGui::End();
