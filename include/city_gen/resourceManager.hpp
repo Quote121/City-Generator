@@ -18,7 +18,7 @@
 #include <shader.hpp>
 #include <model.hpp>
 
-
+       
 // Texture struct
 struct TextureInfo{
     unsigned int textureID; // Texture ID to bind
@@ -87,6 +87,16 @@ private:
         }
     }
 
+    // Scene deletion
+    void deleteLights()
+    {
+        
+    }
+
+    void deleteRoads()
+    {
+
+    }
 
 public:
     ResourceManager(ResourceManager &other) = delete;
@@ -171,6 +181,7 @@ public:
                     format = GL_RGBA;
                 else 
                 {
+                    format = GL_RGB;
                     LOG(ERROR, "ResourceManager::LoadTexture() image format unrecognised. nrComponents : " << nrComponents);
                 }
     
@@ -232,3 +243,4 @@ public:
     }
 
 };
+

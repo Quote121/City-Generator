@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include <glm/glm.hpp>
+
 // Position is not needed so we are not inheriting from base class with this light
 class DirectionalLightObject
 {

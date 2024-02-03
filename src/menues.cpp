@@ -48,14 +48,22 @@ void Menues::display(float deltaTime)
     // Settings for the road Generator
     ImGui::Text("Road generator settings");
 
+    
     // generator::generateRoads(int iterations, float roadLength, float roadWidth, float roadAngleDegrees) 
 
-    ImGui::Button("Generate.");
+    bool removeRoads = ImGui::Button("Clear roads.");
+    if (removeRoads)
+    {
+        scene->removeAllRoads();
+    }
+    
+    bool generateRoads = ImGui::Button("Generate.");
+    if (generateRoads)
+    {
+        generator::generateRoads(3, 10.0f, 3.0f, 90.0f);
+    }
 
     ImGui::End();
-
-
-
 
 
     // Later on with the resource manager, the user will be able to select from a list of things to spawn into the world

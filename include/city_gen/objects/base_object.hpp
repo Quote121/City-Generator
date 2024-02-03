@@ -30,7 +30,7 @@ protected:
     bool isVisible = true;                      // Visability Flag
 
     BaseObject();
-    ~BaseObject();
+    virtual ~BaseObject();
 
     // No definition just a virtual function for derived objects
     virtual void Draw(glm::mat4 view, glm::mat4 projection) {};

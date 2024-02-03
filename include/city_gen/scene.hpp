@@ -12,6 +12,8 @@
 ////////////////
 #pragma once
 
+#include "lights/directionalLight_object.hpp"
+#include "road_object.hpp"
 #include <vector>
 
 #include <objects/all.hpp>
@@ -39,11 +41,7 @@ private:
     SkyBox* skybox; // The skybox object
 
     Scene();
-
-    ~Scene()
-    {
-        delete(pinstance_);
-    }
+    ~Scene();
 
     static Scene* pinstance_;
 
@@ -101,12 +99,21 @@ public:
 
     // Particle
 
-    // Returns true is found and removed, false otherwise
+    // Remove individual objects
     void removeModel(ModelObject& obj);
     void removeSprite(SpriteObject& obj);
     void removeLine(LineObject& obj);
     void removePointLight(PointLightObject& obj);
+    void removeDirectionalLight(DirectionalLightObject& obj);
+    void removeRoad(RoadObject& obj);
 
+    // Clear types of objects (delete them all)
+    void removeAllModels(void);
+    void removeAllSprites(void);
+    void removeAllLines(void);
+    void removeAllPointLights(void);
+    void removeAllDirectionalLights(void);
+    void removeAllRoads(void);
 
     // Get scene objects
     std::vector<ModelObject*> const& GetModelObjects()

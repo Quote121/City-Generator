@@ -1,3 +1,5 @@
+#include "lights/directionalLight_object.hpp"
+#include "road_object.hpp"
 #include <scene.hpp>
 #include <resourceManager.hpp>
 #include <algorithm>
@@ -25,6 +27,21 @@ Scene::Scene()
     // Z is Blue
     this->addLineAxis(glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0})
         ->SetColour(glm::vec3{0, 0, 1});
+}
+
+
+// Deallocate all created objects
+Scene::~Scene()
+{
+    delete(pinstance_);
+
+    // Free all allocated objects
+    removeAllModels();
+    removeAllSprites();
+    removeAllLines();
+    removeAllPointLights();
+    removeAllDirectionalLights();
+    removeAllRoads();
 }
 
 
@@ -186,7 +203,6 @@ PointLightObject* Scene::addPointLight()
 
 
 // Remove objects
-
 void Scene::removeModel(ModelObject& obj)
 {
     auto it = std::find(scene_model_objects.begin(), scene_model_objects.end(), &obj);
@@ -222,6 +238,84 @@ void Scene::removePointLight(PointLightObject& obj)
         scene_pointLight_objects.erase(it);
     }
 }
+
+void Scene::removeDirectionalLight(DirectionalLightObject& obj)
+{
+    auto it = std::find(scene_directionalLight_objects.begin(), scene_directionalLight_objects.end(), &obj);
+    if (it != scene_directionalLight_objects.end())
+    {
+        scene_directionalLight_objects.erase(it);
+    }
+}
+
+void Scene::removeRoad(RoadObject& obj)
+{
+    auto it = std::find(scene_road_objects.begin(), scene_road_objects.end(), &obj);
+    if (it != scene_road_objects.end())
+    {
+        scene_road_objects.erase(it);
+    }
+}
+
+
+// Method implementations for removing all objects from each vector
+// None of the removeAll.. methods are thread safe
+void Scene::removeAllModels(void)
+{
+    // Call destructor for each object
+    for (auto& obj : scene_model_objects)
+    {
+        delete(obj);
+    }
+    // Then empty the vector
+    scene_model_objects.clear();
+}
+
+void Scene::removeAllSprites(void)
+{
+    for (auto& obj : scene_sprite_objects)
+    {
+        delete(obj);
+    }
+    scene_sprite_objects.clear();
+}
+
+void Scene::removeAllLines(void)
+{
+    for (auto& obj : scene_line_objects)
+    {
+        delete(obj);
+    }
+    scene_line_objects.clear();
+}
+
+void Scene::removeAllPointLights(void)
+{
+    for (auto& obj : scene_pointLight_objects)
+    {
+        delete(obj);
+    }
+    scene_pointLight_objects.clear();
+}
+
+void Scene::removeAllDirectionalLights(void)
+{
+    for (auto& obj : scene_directionalLight_objects)
+    {
+        delete(obj);
+    }
+    scene_directionalLight_objects.clear();
+}
+
+void Scene::removeAllRoads(void)
+{
+    for (auto& obj : scene_road_objects)
+    {
+        delete(obj);
+    }
+    scene_road_objects.clear();
+}
+
 
 // BaseObject is a class template and so we have to specify the objects we are comparing
 template<class T, class U>

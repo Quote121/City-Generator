@@ -125,15 +125,7 @@ int main() {
     }
     glViewport(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
 
-    // Shader ourShader("assets/shaders/texture/shader1.vs", "assets/shaders/texture/shader1.fs");
-    ShaderPath backpackShader{"../assets/shaders/backpack/vertexShader.vs", "../assets/shaders/backpack/fragmentShader.fs"};
-
-    // Shader ratShader("assets/shaders/square/vertexShader.vert", "assets/shaders/square/fragmentShader.frag");
-    Shader missing("../assets/shaders/default/missing.vert", "../assets/shaders/default/missing.frag");
-
-    // 1,2 are width. 3,4 are height. 5,6 are near and far plane distance
-
-    // Z buffer for displaying correct trianges
+       // Z buffer for displaying correct trianges
     glEnable(GL_DEPTH_TEST);
 
     // To enable the alpha part of the color.
@@ -145,6 +137,8 @@ int main() {
     
     Scene* scene = Scene::getInstance();
 
+
+    // Skybox creation ////
     std::vector<std::string> skyBoxImages;
     
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_ft.jpg");
@@ -156,10 +150,15 @@ int main() {
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_rt.jpg");
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_lf.jpg");
 
-
-
     scene->CreateSkyBox(&skyBoxImages);
+    ////////////////////////
 
+
+
+
+    ShaderPath backpackShader{"../assets/shaders/backpack/vertexShader.vs", "../assets/shaders/backpack/fragmentShader.fs"};
+
+    Shader missing("../assets/shaders/default/missing.vert", "../assets/shaders/default/missing.frag");
 
     std::string modelPath = "../assets/models/Box/cube.obj";
     std::string backPackPath = "../assets/models/Backpack/backpack.obj";
@@ -219,7 +218,7 @@ int main() {
 
 
     // Tree asset generation
-    generator::generateRoads(3, 10.0f, 3.0f, 90.0f);
+    // generator::generateRoads(3, 10.0f, 3.0f, 90.0f);
 
 
     // Tree asset generation
@@ -263,9 +262,11 @@ int main() {
     Shader lineShader("../assets/shaders/default/line/line_shader.frag",
                      "../assets/shaders/default/line/line_shader.frag");
 
-
+    
+    // Using builder rather than constructor will have larger overhead as object will be created then modified
+    // Builder WILL DO a second UpdateVertices() call as it will need to recalculate based on new width
     scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f);
-
+    scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
 
     // Wireframe for debugging
     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
