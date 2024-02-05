@@ -15,14 +15,16 @@ private:
     // unsigned int roadCurveSides = 4;//0;     
 
     Shader* roadShader;
+
+    // Private as we want certain road object values to be updated before
+    // Pass both point and road width to recalculate the vertices of the road
+    void UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width);
+
 public:
     // So that we can access the private values without extra getters for ImGui
     friend class RoadObject;
 
-    // Pass both point and road width to recalculate the vertices of the road
-    void UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width);
-
-    // Make the opengl draw calls
+       // Make the opengl draw calls
     void Draw(glm::mat4 view, glm::mat4 projection);
 
     Road(Shader* shader);

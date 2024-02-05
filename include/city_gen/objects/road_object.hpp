@@ -5,6 +5,7 @@
 #include <road.hpp> 
 #include <sstream>
 
+
 // Line object
 class RoadObject
 {
@@ -13,13 +14,14 @@ private:
     // The two vertices that describe the line
     glm::vec3 a; 
     glm::vec3 b;
-    
+ 
     // Width (diameter of the road)
     float roadWidth;
 
     Road* road_obj;
 
     std::string alias;
+    glm::vec3 roadColour = DEFAULT_ROAD_COLOUR; // Light grey
     bool enableLighting = true;
 
 public:
@@ -33,11 +35,9 @@ public:
     void Draw(glm::mat4 view, glm::mat4 projection);
 
     // Builders for width and road curve vertices
-    // an update will be needed for this by calling updateVertices
-    // this could be done (double overhead for road creation)
-    // or could be added to constructor with a default value
-    RoadObject* SetWidth(float width);
-    RoadObject* SetCurveSides(unsigned int sides);
+    RoadObject* SetWidth(float width);               // Calls a vertice update
+    RoadObject* SetCurveSides(unsigned int sides);   
+    RoadObject* SetColour(glm::vec3 colour);
 
     // ImGui
     float& GetWidthImGui(void);

@@ -1,9 +1,6 @@
 #pragma once
 #include <iostream>
-#include <string>
 #include <glm/glm.hpp>
-#include <string>
-#include <sstream>
 
 #include <stopwatch.hpp>
 
@@ -48,7 +45,26 @@ extern const char* skybox_defaultFragShaderPath;
 extern const char* light_icon_texture;
 
 }
+
+
+
+// Glm::vec3 output definition
+inline std::ostream& operator<<(std::ostream& stream, const glm::vec3& vector)
+{
+    stream << "[" << vector.x << ", " << vector.y << ", " << vector.z << "]";
+    return stream;
+}
+
+
 /////////////////////////////////////////
+
+// Some basic colour definitions
+#define RED   glm::vec3{1, 0, 0}
+#define GREEN glm::vec3{0, 1, 0}
+#define BLUE  glm::vec3{0, 0, 1}
+
+#define DEFAULT_ROAD_COLOUR glm::vec3{0.325490196f, 0.329411765f, 0.309803922f}
+
 
 //////////// Logging system ////////////
 #define LOG(log_type, b) std::cout << "[" << StopWatch::GetTimeElapsed() << " ms]" \

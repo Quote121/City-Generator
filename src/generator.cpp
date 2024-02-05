@@ -1,3 +1,4 @@
+#include "config.hpp"
 #include <generator.hpp>
 #include <map>
 #include <sstream>    
@@ -5,6 +6,7 @@
 #include <set>
 
 #include <stopwatch.hpp>
+
 
 void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, float roadWidth = 3.0f, float roadAngleDegrees = 90.0f)
 {
@@ -171,7 +173,7 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     }
 
     // Remove duplicate roads
-    unsigned int removedRoads = roadsVector.size();
+    unsigned int removedRoadsDupes = roadsVector.size();
     // For each road
     for (unsigned int i = 0; i < roadsVector.size(); i++)
     {
@@ -185,24 +187,72 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
             }
         }
     }
-    removedRoads -= roadsVector.size();
+    removedRoadsDupes -= roadsVector.size();
 
     // The numbers will alter based on the length of the roads due to the grammar
-    LOG(STATUS, removedRoads << " roads removed due to duplicates");
+    LOG(STATUS, removedRoadsDupes << " roads removed due to duplicates");
 
     
     // TODO remove intersecting roads, check for each if they are crossing over one another (done during generation)
     // TODO join end nodes up with one another based on if they are close enough and do not cross any other roads.
 
+    // Debug
+    Scene::getInstance()->addRoad({1,0,1}, {1,0,6}, 0.5)->SetColour(BLUE);
+    Scene::getInstance()->addRoad({-4, 0, 3}, {4, 0, 3}, 0.5)->SetColour(BLUE);
+
+    // For all the remaining roads we now have to calculate their line properties to determine if they intersect
+    for (auto& road : roadsVector)
+    {
+        road.UpdateLineProps();
+    }
+
+    // unsigned int removedRoadsIntersect = roadsVector.size();
+    unsigned int removedRoadsIntersect = 0; 
+
+    // Check for intersecting roads and mark them a diffent colour
+    bool markIntersectingRoads = true;
+    if (markIntersectingRoads)
+    {
+        // TODO consider doing this in reverse as we are more likley to cull small branches than main roads
+
+        // For each road in roads if they cross another road mark them
+        // Make sure roads that join at the points are not being classed as intersecting
+        for (int i = 0; i < roadsVector.size(); i++)
+        {
+            for (int j = i + 1; j < roadsVector.size(); j++)
+            {
+                if (roadsVector[i].isIntercepting(roadsVector[j]))
+                {
+                    removedRoadsIntersect++;
+                    roadsVector[i].colour = RED;
+                    LOG(STATUS, "=============== " << removedRoadsIntersect << " ===============")
+                    LOG(STATUS, "i: " << i << "         j: " << j)
+                    LOG(STATUS, "Intersect info: i: a: " << roadsVector[i].a << " b: " << roadsVector[i].b);
+                    LOG(STATUS, "Intersect info: j: a: " << roadsVector[j].a << " b: " << roadsVector[j].b);
+                    // roadsVector.erase(roadsVector.begin() + i);
+                    LOG(STATUS, "=============== " << removedRoadsIntersect << " ===============")
+                }
+            }
+        }
+    }
+    // removedRoadsIntersect -= roadsVector.size(); 
+    LOG(STATUS, removedRoadsIntersect << " roads marked due to intersections");
 
 
     // Then we add to the scene
     for (auto& road : roadsVector)
     {
-        Scene::getInstance()->addRoad(road.a, road.b, road.width); 
+        if (road.colour == DEFAULT_ROAD_COLOUR)
+        {
+            Scene::getInstance()->addRoad(road.a, road.b, road.width);
+        }
+        else{
+            // In hindsight this has minimal overhead but this will only be here temp TODO re-evaluate if this is the best way to go about it
+            Scene::getInstance()->addRoad(road.a, road.b, road.width)
+                ->SetColour(road.colour);
+        }
     }
-
-
+    
     // Get road number
     size_t numberOfRoads = Scene::getInstance()->GetRoadObjects().size();
     LOG(STATUS, "Number of roads generated: " << numberOfRoads)

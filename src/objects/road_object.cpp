@@ -42,7 +42,7 @@ void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
     objectShader->setMat4("projection", projection);
     objectShader->setMat4("model", result);
 
-    objectShader->setVec3("colour", glm::vec3{0.325490196f, 0.329411765f, 0.309803922f});
+    objectShader->setVec3("colour", roadColour); 
 
     objectShader->setBool("ShowLighting", enableLighting);
 
@@ -86,6 +86,7 @@ void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
     road_obj->Draw(view, projection);
 }
 
+
 // Require a vertice update for the builders
 // Builders
 RoadObject* RoadObject::SetWidth(float width_in)
@@ -97,6 +98,7 @@ RoadObject* RoadObject::SetWidth(float width_in)
     else {
         roadWidth = width_in;
     }
+    road_obj->UpdateVertices(a, b, roadWidth);
     return this;
 }
 
@@ -104,6 +106,12 @@ RoadObject* RoadObject::SetWidth(float width_in)
 RoadObject* RoadObject::SetCurveSides(unsigned int sides)
 {
     road_obj->SetRoadCurveSides(sides);
+    return this;
+}
+
+RoadObject* RoadObject::SetColour(glm::vec3 colour)
+{
+    roadColour = colour;
     return this;
 }
 

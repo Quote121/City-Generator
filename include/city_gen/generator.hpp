@@ -28,12 +28,51 @@ struct road_gen_point
     }
 };
 
+struct LineProperties
+{
+    float xzGradient;
+    float zIntercept;
+};
+
 // Temp struct for holding road data before adding it to the scene
 struct road_gen_road
 {
     glm::vec3 a;
     glm::vec3 b;
     float width;
+    glm::vec3 colour = DEFAULT_ROAD_COLOUR;
+    LineProperties lp;
+
+    // This gets the stats about the line in the xz plane
+    void UpdateLineProps(void)
+    {
+        // Work out xz gradient
+        float dz = b.z - a.z;
+        float dx = b.x - a.x;
+        lp.xzGradient = dz/dx;
+
+        // Work out zIntercept, subbing a
+        lp.zIntercept = a.z - (lp.xzGradient*a.x);
+    }
+
+    // Determines if this line and the passed in line(road) intersect
+    bool isIntercepting(const road_gen_road& road)
+    {
+        // we are z = m x + c 
+        // theyre z`= m`x + c`
+        //
+        // subbing them into us and solving for x we get
+        //
+        // m`x + c` = m x + c
+        //  x = (c - c`)/(m`-m)
+        
+        float x = (lp.zIntercept - road.lp.zIntercept)/(road.lp.xzGradient - lp.xzGradient);
+        
+        // Then we check if x is in the range to say if its an intersect
+
+
+        return false;
+    }
 
     // Operator overload for comparison
     inline bool operator==(const road_gen_road& roadIn)
@@ -44,8 +83,9 @@ struct road_gen_road
         }
         return false;
     }
-
 };
+
+
 namespace generator
 {
     // @brief Method for the road generation pass, uses LSystemGen internally to generate a grammar string
