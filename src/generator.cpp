@@ -10,6 +10,35 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
 {
     auto roadGenerateStartTime = StopWatch::GetCurrentTimePoint();
 
+    if (roadWidth >= roadLength)
+    {
+        LOG(WARN, "generateRoads() roadLength is less than or equal to roadWidth. This can cause Z-fighting.")
+    }
+
+    /*
+     * General notes so far for the generation
+     *
+     * At an angle near 90 degrees seem to generate the most realistic looking layouts
+     * If we use 160/170 degrees the layout is too dence and does not match with what we would expect from normal roads
+     * Based on this we should implement an optional pass that removes roads that overlap.
+     * This would also add those to the end nodes list if removed.
+     *
+     * After that is done another pass to link end nodes to nearby nodes as long as they dont cross an existic road will be done.
+     * This will add significant time to the road generation stage but we can take that performance hit as runtime will not be affected.
+     *
+     * In the terms of runtime, it is evident once we get to a few thousand roads, instancing is a must and should be implemented given enough time.
+     * This project is perfect for instancing as we have static meshes that are repeated tonnes of times. Also my awful intergrated graphics cannot
+     * deal with this much overhead.
+     *
+     * TLDR:
+     *
+     * Add pass to remove roads that already exist at those coordinates
+     * Add road intersection checking
+     * Add road end node join pass
+     * Add instancing
+     *
+     */
+
 
     LOG(STATUS, "generateRoads() started...");
     // std::vector<glm::vec3> points;
@@ -57,7 +86,10 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     road_gen_point currentPoint = {startPoint, 0.0f}; // Heading of 0 radians
         
     float degreeRadians = roadAngleDegrees * (M_PI/180);
-    
+   
+
+    std::vector<road_gen_road> roadsVector;
+
 
     // Key:
     // 
@@ -82,8 +114,8 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
                 currentPoint.point.z + (roadLength * glm::cos(currentPoint.degreeHeading))
             };
 
-            // Scene::getInstance()->addRoad({0,0,0}, {0, 0, 10});
-            Scene::getInstance()->addRoad(currentPoint.point, nextPoint, roadWidth);
+            // Scene::getInstance()->addRoad(currentPoint.point, nextPoint, roadWidth);
+            roadsVector.push_back({currentPoint.point, nextPoint, roadWidth}); // Add to our local road vector before adding to the scene
             currentPoint.point = nextPoint; // Update current point, no change to bearing
 
             break;
@@ -97,10 +129,10 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
                 currentPoint.point.z + (roadLength * glm::cos(currentPoint.degreeHeading))
             };
             
-            Scene::getInstance()->addRoad(currentPoint.point, nextPoint, roadWidth);
-            
-            endPoints.insert({{nextPoint, currentPoint.degreeHeading}}); // Add to the set of end points
+            // Scene::getInstance()->addRoad(currentPoint.point, nextPoint, roadWidth);
+            roadsVector.push_back({currentPoint.point, nextPoint, roadWidth}); // ^^
 
+            endPoints.insert({{nextPoint, currentPoint.degreeHeading}}); // Add to the set of end points
             currentPoint.point = nextPoint; // Update current point, no change to bearing
             
             break;
@@ -137,6 +169,43 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
         }
         } // switch(symbol)
     }
+
+    // Remove duplicate roads
+    unsigned int removedRoads = roadsVector.size();
+    // For each road
+    for (unsigned int i = 0; i < roadsVector.size(); i++)
+    {
+        // Start at i+1 (next one)
+        for (unsigned int j = i+1; j < roadsVector.size(); j++)
+        {
+            // If road is in the same remove the one we are looking at (i)
+            if (roadsVector[i] == roadsVector[j])
+            {
+                roadsVector.erase(roadsVector.begin() + i);
+            }
+        }
+    }
+    removedRoads -= roadsVector.size();
+
+    // The numbers will alter based on the length of the roads due to the grammar
+    LOG(STATUS, removedRoads << " roads removed due to duplicates");
+
+    
+    // TODO remove intersecting roads, check for each if they are crossing over one another (done during generation)
+    // TODO join end nodes up with one another based on if they are close enough and do not cross any other roads.
+
+
+
+    // Then we add to the scene
+    for (auto& road : roadsVector)
+    {
+        Scene::getInstance()->addRoad(road.a, road.b, road.width); 
+    }
+
+
+    // Get road number
+    size_t numberOfRoads = Scene::getInstance()->GetRoadObjects().size();
+    LOG(STATUS, "Number of roads generated: " << numberOfRoads)
 
     // When generating, we could give a radius from 0,0 for roads to be permitted, this would give a good effect IMO
     uint64_t timeElapsed = StopWatch::GetTimeElapsed(roadGenerateStartTime);

@@ -173,6 +173,7 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 
     // Needed for draw
     unsigned int roadVertices = verts.size(); 
+    // LOG(STATUS, "Number of vertices per road: " << roadVertices)
 
     glBindVertexArray(VAO);
     

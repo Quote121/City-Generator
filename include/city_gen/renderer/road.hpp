@@ -11,7 +11,8 @@ private:
     unsigned int VAO, VBO;
     // as to be multiple of 4, at least 4 (Will createa point at the end of the road at 4)
     // TODO In future this could be set to ranges based on level of detail (close more vertices, further the less)
-    unsigned int roadCurveSides = 4;//0;     
+    unsigned int roadCurveSides = 40; 
+    // unsigned int roadCurveSides = 4;//0;     
 
     Shader* roadShader;
 public:

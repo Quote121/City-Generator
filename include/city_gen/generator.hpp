@@ -7,27 +7,45 @@
 #include <Reputeless/PerlinNoise.hpp>
 #include <string>
 
-// Struct used for road generation
+// Struct used for recursive road generation based on point and heading
 struct road_gen_point
 {
     glm::vec3 point;
     float degreeHeading;
+
+    // Struct definition for the set
+    inline bool operator<(const road_gen_point& rhs) const
+    {
+        if (point.x != rhs.point.x)
+        {
+            return point.x < rhs.point.x;
+        }
+        if (point.y != rhs.point.y)
+        {
+            return point.y < rhs.point.y;
+        }
+        return point.z < rhs.point.z;
+    }
 };
 
-// Struct definition for the set
-inline bool operator<(const road_gen_point& lhs, const road_gen_point& rhs)
+// Temp struct for holding road data before adding it to the scene
+struct road_gen_road
 {
-    if (lhs.point.x != rhs.point.x)
-    {
-        return lhs.point.x < rhs.point.x;
-    }
-    if (lhs.point.y != rhs.point.y)
-    {
-        return lhs.point.y < rhs.point.y;
-    }
-    return lhs.point.z < rhs.point.z;
-}
+    glm::vec3 a;
+    glm::vec3 b;
+    float width;
 
+    // Operator overload for comparison
+    inline bool operator==(const road_gen_road& roadIn)
+    {
+        if ((a == roadIn.a) && (b == roadIn.b) && (width == roadIn.width))
+        {
+            return true;
+        }
+        return false;
+    }
+
+};
 namespace generator
 {
     // @brief Method for the road generation pass, uses LSystemGen internally to generate a grammar string
