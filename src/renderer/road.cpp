@@ -16,8 +16,7 @@ Road::Road(Shader* shader)
 
 Road::~Road()
 {
-
-    glDeleteBuffers(1, &VAO);
+    glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
 
@@ -187,10 +186,6 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     // aNormals offset by 3 floats for each vert
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    glBindVertexArray(0); // Unbind
 
 }
 

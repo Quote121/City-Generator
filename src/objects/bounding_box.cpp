@@ -69,7 +69,7 @@ BoundingBox::BoundingBox()
 
 BoundingBox::~BoundingBox()
 {
-    glDeleteBuffers(1, &VAO);
+    glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
 

@@ -15,7 +15,7 @@ Line::Line(Shader* shader)
 Line::~Line()
 {
     delete(lineShader);
-    glDeleteBuffers(1, &VAO);
+    glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
 

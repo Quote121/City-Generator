@@ -66,7 +66,7 @@ Sprite::~Sprite()
     // Sprite shader is allocated memory in sprite_object.hpp, needs to be freed
     delete(spriteShader);
     delete(spriteBoundingBox);
-    glDeleteBuffers(1, &VAO);
+    glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
 }
