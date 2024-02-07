@@ -12,10 +12,12 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
 {
     auto roadGenerateStartTime = StopWatch::GetCurrentTimePoint();
 
+    // Warning as this will cause z-fighting
     if (roadWidth >= roadLength)
     {
         LOG(WARN, "generateRoads() roadLength is less than or equal to roadWidth. This can cause Z-fighting.")
     }
+
     /*
      * General notes so far for the generation
      *
@@ -192,15 +194,6 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     LOG(STATUS, removedRoadsDupes << " roads removed due to duplicates");
 
     
-    // TODO remove intersecting roads, check for each if they are crossing over one another (done during generation)
-    // TODO join end nodes up with one another based on if they are close enough and do not cross any other roads.
-
-    // Debug
-    // roadsVector.clear();
-    // Scene::getInstance()->addRoad({1,0,1}, {1,0,6}, 0.5)->SetColour(BLUE);
-    // Scene::getInstance()->addRoad({-4, 0, 3}, {4, 0, 3}, 0.5)->SetColour(BLUE);
-    // roadsVector.push_back({{1,0,1}, {1,0,6}, 1.0f});
-    // roadsVector.push_back({{-4, 0, 3}, {1, 0, 3}, 1.0f});
 
     // For all the remaining roads we now have to calculate their line properties to determine if they intersect
     for (auto& road : roadsVector)
@@ -208,47 +201,35 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
         road.UpdateLineProps();
     }
 
-    // unsigned int removedRoadsIntersect = roadsVector.size();
+    
     unsigned int removedRoadsIntersect = roadsVector.size(); 
-
     for (auto i_it = roadsVector.begin(); i_it != roadsVector.end();)
     {
-        for (int i = 0; i < roadsVector.size(); i++)
+        for (auto j_it = roadsVector.begin(); j_it != roadsVector.end();)
         {
-            if (i_it->isIntercepting(roadsVector[i]))
+            if (i_it->isIntercepting(*j_it))
             {
+                // If we remove at j then we erase and pass the next valid object back to the iterator
                 removedRoadsIntersect++;
-                i_it = roadsVector.erase(i_it);
+                j_it = roadsVector.erase(j_it);
+            }
+            else 
+            {
+                // Otherwise we move onto the next one
+                ++j_it;
             }
         }
-
         ++i_it;
     }
-
     removedRoadsIntersect -= roadsVector.size(); 
-    LOG(STATUS, removedRoadsIntersect << " roads marked due to intersections");
+    LOG(STATUS, removedRoadsIntersect << " roads removed due to intersections");
 
-    
 
-    for (int i = 0; i < roadsVector.size(); i++)
-    {
-        for (int j = 0; j < roadsVector.size(); j++)
-        {
-            if (roadsVector[i].isIntercepting(roadsVector[j]))
-            {
-                roadsVector[i].colour = GREEN;
-                LOG(STATUS, "Another intersect: i\t" << i << " | j\t" << j)
-            }
-        }
-    }
 
-    
     // Connect nodes that are allowed to be connected (if they are close enough and do not intersect anything)
     float connectionThresholdDistance = 10.0f;
-
-
-
-
+    //
+ 
 
 
 
