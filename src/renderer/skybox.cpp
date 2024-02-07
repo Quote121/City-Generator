@@ -17,7 +17,7 @@ SkyBox::SkyBox(std::vector<std::string> textureFaces_in)
 SkyBox::~SkyBox()
 {
     delete(skyBoxShader);
-    glDeleteBuffers(1, &VAO);
+    glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
 

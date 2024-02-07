@@ -1,4 +1,5 @@
 #include "config.hpp"
+#include "glm/exponential.hpp"
 #include <generator.hpp>
 #include <map>
 #include <sstream>    
@@ -6,6 +7,16 @@
 #include <set>
 
 #include <stopwatch.hpp>
+
+// Helper function
+// Checks if the distance between two points is less than a threshold value in the XZ plane
+inline bool inRangeXZPlane(const road_gen_point& a, const road_gen_point& b, const float threshold){
+
+    if (glm::sqrt(glm::pow(a.point.x - b.point.x, 2.0f) + glm::pow(a.point.z - b.point.z, 2.0f)) > threshold){
+        return false;
+    }    
+    return true;
+}
 
 
 void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, float roadWidth = 3.0f, float roadAngleDegrees = 90.0f)
@@ -82,7 +93,8 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
 
     std::stack<road_gen_point> pointStack;
     // std::vector<road_gen_point> endPoints; // End nodes of the tree
-    std::set<road_gen_point> endPoints; // End nodes of the tree
+    // std::set<road_gen_point> endPoints; // End nodes of the tree
+    std::vector<road_gen_point> endPoints;
 
     // Test point
     glm::vec3 startPoint = {0.0, 0.0, 0.0};
@@ -135,7 +147,18 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
             // Scene::getInstance()->addRoad(currentPoint.point, nextPoint, roadWidth);
             roadsVector.push_back({currentPoint.point, nextPoint, roadWidth}); // ^^
 
-            endPoints.insert({{nextPoint, currentPoint.degreeHeading}}); // Add to the set of end points
+            // If the end point is in the vector already we wont add.
+            // This is done instead of a set as later on we need to access the values and attributes and dont want to const cast
+            auto iter = std::find_if(endPoints.begin(), endPoints.end(), [&](const road_gen_point& point)
+            {
+                return ((point.point == nextPoint) && (point.degreeHeading == currentPoint.degreeHeading));
+            });
+            
+            if (iter == endPoints.end())
+            {
+                endPoints.push_back({nextPoint, currentPoint.degreeHeading});
+            }
+
             currentPoint.point = nextPoint; // Update current point, no change to bearing
             
             break;
@@ -228,10 +251,96 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
 
     // Connect nodes that are allowed to be connected (if they are close enough and do not intersect anything)
     float connectionThresholdDistance = 10.0f;
+    
+    LOG(STATUS, "End points: " << endPoints.size());
+    // For every end point check if there is another end point within the threshold
+    // If so create a road and check it doesnt intersect anything, if it doesnt make it.
+    // If it does, do not make it and try a different road
+   
+   
+
+    // DEBUGGING
     //
- 
+    
+    // endPoints.clear();
+    // roadsVector.clear();
+    //
+    // road_gen_road road_a = {{0,0,0}, {0, 0, 11}, 3};
+    // road_gen_road road_d = {{0,0,11}, {0, 0, 20}, 3};
+    // road_gen_road road_b = {{3,0,10}, {30, 0 ,10}, 3, BLUE};
+    // road_gen_road road_c = {{-3, 0, 10}, {-30, 0, 10}, 3, GREEN};
+    //
+    // road_gen_point point_1 = {road_b.a, 90};
+    // road_gen_point point_2 = {road_c.a, 270};
+    //
+    // roadsVector.push_back(road_a);
+    // roadsVector.push_back(road_d); 
+    //
+    // roadsVector.push_back(road_b);
+    // roadsVector.push_back(road_c);
+    //
+    //
+    // endPoints.push_back(point_1);
+    // endPoints.push_back(point_2);
+    //
+
+    std::vector<road_gen_road> newEndNodeRoads;
+    unsigned int endNodeConnections = 0;
+
+    // Should also have a check for if they are closer than the width of the road as this will cause z fighting
+    
+    for (int i = 0; i < endPoints.size(); i++)
+    {
+        for (int j = 0; j < endPoints.size(); j++)
+        {
+            // If we are not looking at the same nodes and they have not already been used
+            if (i != j && !endPoints[i].endNodeUsed && !endPoints[j].endNodeUsed)
+            {
+                // and is in range
+                if (inRangeXZPlane(endPoints[i], endPoints[j], connectionThresholdDistance))
+                {
+                    // We create the fake road and make sure it does not intercept any other road
+                    road_gen_road tempRoad = {endPoints[i].point, endPoints[j].point, roadWidth};
+                    bool endNodeRoadIntersection = false; // Used as we are in a deeply nested set of loops
+                    for (int k = 0; k < roadsVector.size(); k++)
+                    {
+                        // If intersects then we need to look at the next point to consider
+                        if (tempRoad.isInterceptingAndNodes(roadsVector[k]))
+                        {
+                            endNodeRoadIntersection = true;
+                            break;
+                        }
+
+                    }
+                    // If it does not intersect any of them then we add
+                    if (!endNodeRoadIntersection)
+                    {
+                        // Add to final vector
+                        newEndNodeRoads.push_back(tempRoad);
+                        // Set nodes to used
+                        endPoints[i].endNodeUsed = true; endPoints[j].endNodeUsed = true;
+
+                        endNodeConnections++;
+                    }
+                }   
+
+            }
+        }
+    }
+
+    LOG(STATUS, "new end node roads: " << endNodeConnections);
 
 
+
+    for (auto itra : newEndNodeRoads)
+    {
+        LOG(STATUS, "a : " << itra.a << " b: " << itra.b)
+    }
+
+    LOG(STATUS, "Created " << endNodeConnections << " new roads to connect end nodes.");
+    // Then add them to the main roadsVector
+    roadsVector.insert(roadsVector.end(), newEndNodeRoads.begin(), newEndNodeRoads.end());
+    LOG(STATUS, "EndNodeVEctor size: " << newEndNodeRoads.size());
 
     // Then we add to the scene
     for (auto& road : roadsVector)
