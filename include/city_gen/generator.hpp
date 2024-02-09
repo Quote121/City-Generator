@@ -72,6 +72,20 @@ struct road_gen_road
         return fabs(a-b) < tolerance;
     }
 
+    // Methods that take into account error
+    inline bool areGreaterThan(const float a, const float b)
+    {
+        // If a is greater than b above the error tolerance
+        float tolerance = 0.0001;
+        return (a-b) > tolerance;
+    }
+
+    inline bool areLessThan(const float a, const float b)
+    {
+        float tolerance = 0.0001;
+        return (a-b) < -tolerance;
+    }
+
     // Determines if this line and the passed in line(road) intersect
     bool isIntercepting(const road_gen_road& road)
     {
@@ -122,16 +136,42 @@ struct road_gen_road
         float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
         if (d == 0) return false; // If determinant is zero they are parallel.
 
+        // if (areAboutEqual(d, 0)) return false;
+        
         // Get the x and y
         float pre = (x1*y2 - y1*x2), post = (x3*y4 - y3*x4);
         float x = ( pre * (x3 - x4) - (x1 - x2) * post ) / d;
         float y = ( pre * (y3 - y4) - (y1 - y2) * post ) / d;
-         
-        // Check if the x and y coordinates are within both lines
-        if ( x < fmin(x1, x2) || x > fmax(x1, x2) ||
-        x < fmin(x3, x4) || x > fmax(x3, x4) ) return false;
-        if ( y < fmin(y1, y2) || y > fmax(y1, y2) ||
-        y < fmin(y3, y4) || y > fmax(y3, y4) ) return false;
+        
+
+        // So far working well, it does however cross when there is a point, which makes sence
+        // We only want it to see its own point is okay, not all points otherwise we can get strange generations where it seems
+        // to cross roads based on the fact the road had a point half-way through it
+
+        // // Check if the x and y coordinates are within both lines
+        // if ( x < fmin(x1, x2) || x > fmax(x1, x2) ||
+        // x < fmin(x3, x4) || x > fmax(x3, x4) ) return false;
+        // if ( y < fmin(y1, y2) || y > fmax(y1, y2) ||
+        // y < fmin(y3, y4) || y > fmax(y3, y4) ) return false;
+        //
+        // Modified with error
+        if (areLessThan(x, fmin(x1, x2)) || 
+            areGreaterThan(x, fmax(x1, x2)) ||
+            areLessThan(x, fmin(x3, x4)) || 
+            areGreaterThan(x, fmax(x3, x4))) return false;
+        if (areLessThan(y, fmin(y1, y2)) || 
+            areGreaterThan(y, fmax(y1, y2)) ||
+            areLessThan(y, fmin(y3, y4)) || 
+            areGreaterThan(y, fmax(y3, y4))) return false;
+
+        if ((areAboutEqual(x1, x) && areAboutEqual(y1, y)) ||
+            (areAboutEqual(x2, x) && areAboutEqual(y2, y)) ||
+            (areAboutEqual(x3, x) && areAboutEqual(y3, y)) ||
+            (areAboutEqual(x4, x) && areAboutEqual(y4, y)))
+        {
+            return false;       
+        }
+
 
         // If all of that is passed then we know they intersect
         return true;

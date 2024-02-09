@@ -327,6 +327,23 @@ void Menues::display(float deltaTime)
             }
             ImGui::TreePop();
         }
+
+        if(ImGui::TreeNode("Roads"))
+        {
+            auto objects = scene->GetRoadObjects();
+            for (unsigned int i = 0; i < objects.size(); i++)
+            {
+                RoadObject* object = objects[i];
+                if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
+                {
+                    ImGui::Text("Road placement text"); 
+            
+                    ImGui::TreePop();
+                }
+            }
+            ImGui::TreePop();
+        }
+
         // Lines
         if(ImGui::TreeNode("Lines"))
         {

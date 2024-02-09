@@ -4,15 +4,16 @@
 #include <map>
 #include <sstream>    
 #include <stack>
-#include <set>
 
 #include <stopwatch.hpp>
 
 // Helper function
 // Checks if the distance between two points is less than a threshold value in the XZ plane
-inline bool inRangeXZPlane(const road_gen_point& a, const road_gen_point& b, const float threshold){
-
-    if (glm::sqrt(glm::pow(a.point.x - b.point.x, 2.0f) + glm::pow(a.point.z - b.point.z, 2.0f)) > threshold){
+// Road length has to scale with the threshold value
+inline bool inRangeXZPlane(const road_gen_point& a, const road_gen_point& b, const float threshold, const float roadWidth, const float roadLength){
+    float distance = glm::sqrt(glm::pow(a.point.x - b.point.x, 2.0f) + glm::pow(a.point.z - b.point.z, 2.0f));
+    // If close enough and as far away as road width
+    if (distance > threshold*roadLength || distance < roadWidth){
         return false;
     }    
     return true;
@@ -92,8 +93,8 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     generator::LSystemGen(&treeGrammar, iterations); // Get 2 iterations on the grammar
 
     std::stack<road_gen_point> pointStack;
-    // std::vector<road_gen_point> endPoints; // End nodes of the tree
-    // std::set<road_gen_point> endPoints; // End nodes of the tree
+
+    // End nodes from roads that are delted later will still be here, not an issue for the final product
     std::vector<road_gen_point> endPoints;
 
     // Test point
@@ -250,7 +251,7 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
 
 
     // Connect nodes that are allowed to be connected (if they are close enough and do not intersect anything)
-    float connectionThresholdDistance = 10.0f;
+    float connectionThresholdDistance = 5.0f;
     
     LOG(STATUS, "End points: " << endPoints.size());
     // For every end point check if there is another end point within the threshold
@@ -288,7 +289,16 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     unsigned int endNodeConnections = 0;
 
     // Should also have a check for if they are closer than the width of the road as this will cause z fighting
-    
+
+    // Current issues
+    // - Generation is inconsistent with road length - REASON: threshold doesn't scale 
+    // - Roads cross over in very particular scenarios (x ing like in git issue)
+    // - Roads can overlap if they pass through a point like so:
+    //  Road a          0------0
+    //  Road b  0=======0=-=-=-0 // =-= where overlapping
+    // 
+    //  
+    //
     for (int i = 0; i < endPoints.size(); i++)
     {
         for (int j = 0; j < endPoints.size(); j++)
@@ -297,10 +307,10 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
             if (i != j && !endPoints[i].endNodeUsed && !endPoints[j].endNodeUsed)
             {
                 // and is in range
-                if (inRangeXZPlane(endPoints[i], endPoints[j], connectionThresholdDistance))
+                if (inRangeXZPlane(endPoints[i], endPoints[j], connectionThresholdDistance, roadWidth, roadLength))
                 {
                     // We create the fake road and make sure it does not intercept any other road
-                    road_gen_road tempRoad = {endPoints[i].point, endPoints[j].point, roadWidth};
+                    road_gen_road tempRoad = {endPoints[i].point, endPoints[j].point, roadWidth, RED};
                     bool endNodeRoadIntersection = false; // Used as we are in a deeply nested set of loops
                     for (int k = 0; k < roadsVector.size(); k++)
                     {
@@ -379,8 +389,10 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
         // Current L system grammar
         std::map<const std::string, const std::string> grammar =
             {{"X", "F[+X]F[-X]F[-X]F[+X]F"},
-             {"F", "FF"}}; 
-            // {{"F", "F-F++F-F"}};
+             {"F", "FF"}};
+            // {{"X", "F[+F[+X]F[-X]]"}};
+
+
 
         for (size_t i = 0; i < axiom->size(); i++)
         {
