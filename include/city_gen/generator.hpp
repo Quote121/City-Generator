@@ -68,7 +68,7 @@ struct road_gen_road
     // To take into tolerance
     inline bool areAboutEqual(float a, float b)
     {
-        float tolerance = 0.0001; // Need to have float comparison matching of 0.0001
+        float tolerance = 0.001; // Need to have float comparison matching of 0.0001
         return fabs(a-b) < tolerance;
     }
 
@@ -76,54 +76,17 @@ struct road_gen_road
     inline bool areGreaterThan(const float a, const float b)
     {
         // If a is greater than b above the error tolerance
-        float tolerance = 0.0001;
+        float tolerance = 0.001;
         return (a-b) > tolerance;
     }
 
     inline bool areLessThan(const float a, const float b)
     {
-        float tolerance = 0.0001;
+        float tolerance = 0.001;
         return (a-b) < -tolerance;
     }
 
-    // Determines if this line and the passed in line(road) intersect
-    bool isIntercepting(const road_gen_road& road)
-    {
-        // Taken from this guy
-        // https://flassari.is/2008/11/line-line-intersection-in-cplusplus/
-
-        float x1 = a.x, x2 = b.x, x3 = road.a.x, x4 = road.b.x;
-        float y1 = a.z, y2 = b.z, y3 = road.a.z, y4 = road.b.z;
-
-        // Some matrix determinant that indicates how parallel
-        float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-        if (d == 0) return false; // If determinant is zero they are parallel.
-
-        // Get the x and y
-        float pre = (x1*y2 - y1*x2), post = (x3*y4 - y3*x4);
-        float x = ( pre * (x3 - x4) - (x1 - x2) * post ) / d;
-        float y = ( pre * (y3 - y4) - (y1 - y2) * post ) / d;
-         
-        // Check if the x and y coordinates are within both lines
-        if ( x < fmin(x1, x2) || x > fmax(x1, x2) ||
-        x < fmin(x3, x4) || x > fmax(x3, x4) ) return false;
-        if ( y < fmin(y1, y2) || y > fmax(y1, y2) ||
-        y < fmin(y3, y4) || y > fmax(y3, y4) ) return false;
-
-        // Now we check that the point of intersection is not at one of the points
-        if ((areAboutEqual(x1, x) && areAboutEqual(y1, y)) ||
-            (areAboutEqual(x2, x) && areAboutEqual(y2, y)) ||
-            (areAboutEqual(x3, x) && areAboutEqual(y3, y)) ||
-            (areAboutEqual(x4, x) && areAboutEqual(y4, y)))
-        {
-            return false;       
-        }
-        // If all of that is passed then we know they intersect
-        return true;
-    }
-
-    // Determines if this line and the passed in line(road) intersect
-    // And nodes
+    // Determines if this line and the passed in line(road) intersect, including the two points of its own
     bool isInterceptingAndNodes(const road_gen_road& road)
     {
         // Taken from this guy
@@ -136,24 +99,12 @@ struct road_gen_road
         float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
         if (d == 0) return false; // If determinant is zero they are parallel.
 
-        // if (areAboutEqual(d, 0)) return false;
-        
         // Get the x and y
         float pre = (x1*y2 - y1*x2), post = (x3*y4 - y3*x4);
         float x = ( pre * (x3 - x4) - (x1 - x2) * post ) / d;
         float y = ( pre * (y3 - y4) - (y1 - y2) * post ) / d;
         
-
-        // So far working well, it does however cross when there is a point, which makes sence
-        // We only want it to see its own point is okay, not all points otherwise we can get strange generations where it seems
-        // to cross roads based on the fact the road had a point half-way through it
-
-        // // Check if the x and y coordinates are within both lines
-        // if ( x < fmin(x1, x2) || x > fmax(x1, x2) ||
-        // x < fmin(x3, x4) || x > fmax(x3, x4) ) return false;
-        // if ( y < fmin(y1, y2) || y > fmax(y1, y2) ||
-        // y < fmin(y3, y4) || y > fmax(y3, y4) ) return false;
-        //
+        // Bounds checking if point lies outside of both lines (not intersecting)
         // Modified with error
         if (areLessThan(x, fmin(x1, x2)) || 
             areGreaterThan(x, fmax(x1, x2)) ||
@@ -163,16 +114,16 @@ struct road_gen_road
             areGreaterThan(y, fmax(y1, y2)) ||
             areLessThan(y, fmin(y3, y4)) || 
             areGreaterThan(y, fmax(y3, y4))) return false;
-
-        if ((areAboutEqual(x1, x) && areAboutEqual(y1, y)) ||
-            (areAboutEqual(x2, x) && areAboutEqual(y2, y)) ||
-            (areAboutEqual(x3, x) && areAboutEqual(y3, y)) ||
-            (areAboutEqual(x4, x) && areAboutEqual(y4, y)))
+        
+        // Check that if any of the road points are the intersection, if so then return no intersection
+        // Check that the two intersections are not the roads point A and B
+        // y in this case is the z coordinate (im sorry)
+        if ((areAboutEqual(a.x, x) && areAboutEqual(a.z, y)) ||
+             (areAboutEqual(b.x, x) && areAboutEqual(b.z, y)))
         {
-            return false;       
+            return false;
         }
-
-
+           
         // If all of that is passed then we know they intersect
         return true;
     }

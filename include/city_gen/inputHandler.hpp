@@ -2,7 +2,6 @@
 
 #include <GLFW/glfw3.h>
 #include <imgui/imgui.h>
-#include <iostream>
 
 #include <camera.hpp>
 

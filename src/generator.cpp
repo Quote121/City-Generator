@@ -231,7 +231,8 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     {
         for (auto j_it = roadsVector.begin(); j_it != roadsVector.end();)
         {
-            if (i_it->isIntercepting(*j_it))
+            if (i_it->isInterceptingAndNodes(*j_it))
+            // if (i_it->isIntercepting(*j_it))
             {
                 // If we remove at j then we erase and pass the next valid object back to the iterator
                 removedRoadsIntersect++;
@@ -338,21 +339,13 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
         }
     }
 
-    LOG(STATUS, "new end node roads: " << endNodeConnections);
-
-
-
-    for (auto itra : newEndNodeRoads)
-    {
-        LOG(STATUS, "a : " << itra.a << " b: " << itra.b)
-    }
-
     LOG(STATUS, "Created " << endNodeConnections << " new roads to connect end nodes.");
+
     // Then add them to the main roadsVector
     roadsVector.insert(roadsVector.end(), newEndNodeRoads.begin(), newEndNodeRoads.end());
     LOG(STATUS, "EndNodeVEctor size: " << newEndNodeRoads.size());
 
-    // Then we add to the scene
+    // Then we add to the scene for rendering
     for (auto& road : roadsVector)
     {
         if (road.colour == DEFAULT_ROAD_COLOUR)

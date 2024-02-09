@@ -1,5 +1,5 @@
 #include <inputHandler.hpp>
-
+#include <iostream>
 
 bool InputHandler::showMouse = false;
 
@@ -174,10 +174,10 @@ void InputHandler::process(GLFWwindow *window, double deltaTime)
     // Movement - Sprint
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-            camera->processKeyboard(Camera_Movement::FORWARD, deltaTime, 2.0f);
+            camera->processKeyboard(Camera_Movement::FORWARD, deltaTime, 4.0f);
 
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-            camera->processKeyboard(Camera_Movement::BACKWARD, deltaTime, 2.0f);
+            camera->processKeyboard(Camera_Movement::BACKWARD, deltaTime, 4.0f);
     }
 
     // Movement - up and down
