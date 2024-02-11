@@ -86,6 +86,41 @@ struct road_gen_road
         return (a-b) < -tolerance;
     }
 
+    bool isIntercepting(const road_gen_road& road)
+    {
+        // Taken from this guy
+        // https://flassari.is/2008/11/line-line-intersection-in-cplusplus/
+
+        float x1 = a.x, x2 = b.x, x3 = road.a.x, x4 = road.b.x;
+        float y1 = a.z, y2 = b.z, y3 = road.a.z, y4 = road.b.z;
+
+        // Some matrix determinant that indicates how parallel
+        float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+        if (d == 0) return false; // If determinant is zero they are parallel.
+
+        // Get the x and y
+        float pre = (x1*y2 - y1*x2), post = (x3*y4 - y3*x4);
+        float x = ( pre * (x3 - x4) - (x1 - x2) * post ) / d;
+        float y = ( pre * (y3 - y4) - (y1 - y2) * post ) / d;
+
+        // Check if the x and y coordinates are within both lines
+        if ( x < fmin(x1, x2) || x > fmax(x1, x2) ||
+        x < fmin(x3, x4) || x > fmax(x3, x4) ) return false;
+        if ( y < fmin(y1, y2) || y > fmax(y1, y2) ||
+        y < fmin(y3, y4) || y > fmax(y3, y4) ) return false;
+
+        // Now we check that the point of intersection is not at one of the points
+        if ((areAboutEqual(x1, x) && areAboutEqual(y1, y)) ||
+            (areAboutEqual(x2, x) && areAboutEqual(y2, y)) ||
+            (areAboutEqual(x3, x) && areAboutEqual(y3, y)) ||
+            (areAboutEqual(x4, x) && areAboutEqual(y4, y)))
+        {
+            return false;       
+        }
+        // If all of that is passed then we know they intersect
+        return true;
+    }
+
     // Determines if this line and the passed in line(road) intersect, including the two points of its own
     bool isInterceptingAndNodes(const road_gen_road& road)
     {

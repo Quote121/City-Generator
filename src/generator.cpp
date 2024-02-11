@@ -1,5 +1,6 @@
 #include "config.hpp"
 #include "glm/exponential.hpp"
+#include <algorithm>
 #include <generator.hpp>
 #include <map>
 #include <sstream>    
@@ -231,6 +232,7 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     {
         for (auto j_it = roadsVector.begin(); j_it != roadsVector.end();)
         {
+            // if (i_it->isIntercepting(*j_it))
             if (i_it->isInterceptingAndNodes(*j_it))
             // if (i_it->isIntercepting(*j_it))
             {
@@ -249,101 +251,66 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     removedRoadsIntersect -= roadsVector.size(); 
     LOG(STATUS, removedRoadsIntersect << " roads removed due to intersections");
 
+    LOG(STATUS, "End points: " << endPoints.size());
 
 
     // Connect nodes that are allowed to be connected (if they are close enough and do not intersect anything)
     float connectionThresholdDistance = 5.0f;
     
-    LOG(STATUS, "End points: " << endPoints.size());
-    // For every end point check if there is another end point within the threshold
-    // If so create a road and check it doesnt intersect anything, if it doesnt make it.
-    // If it does, do not make it and try a different road
    
-   
-
-    // DEBUGGING
-    //
-    
-    // endPoints.clear();
-    // roadsVector.clear();
-    //
-    // road_gen_road road_a = {{0,0,0}, {0, 0, 11}, 3};
-    // road_gen_road road_d = {{0,0,11}, {0, 0, 20}, 3};
-    // road_gen_road road_b = {{3,0,10}, {30, 0 ,10}, 3, BLUE};
-    // road_gen_road road_c = {{-3, 0, 10}, {-30, 0, 10}, 3, GREEN};
-    //
-    // road_gen_point point_1 = {road_b.a, 90};
-    // road_gen_point point_2 = {road_c.a, 270};
-    //
-    // roadsVector.push_back(road_a);
-    // roadsVector.push_back(road_d); 
-    //
-    // roadsVector.push_back(road_b);
-    // roadsVector.push_back(road_c);
-    //
-    //
-    // endPoints.push_back(point_1);
-    // endPoints.push_back(point_2);
-    //
-
-    std::vector<road_gen_road> newEndNodeRoads;
+    // This creates new roads based on the end node list generated earlier.
+    // The criteria for a new end node road are the following
+    // - A and B are not the same node
+    // - Neither A or B are in use by another end node
+    // - The two points A and B are in range in the xz plane as specified by a threshold value
+    // - The road between A and B does not intersect any other existing road.
+    // If all of the above are satisfied then a road is generated.
     unsigned int endNodeConnections = 0;
-
-    // Should also have a check for if they are closer than the width of the road as this will cause z fighting
-
-    // Current issues
-    // - Generation is inconsistent with road length - REASON: threshold doesn't scale 
-    // - Roads cross over in very particular scenarios (x ing like in git issue)
-    // - Roads can overlap if they pass through a point like so:
-    //  Road a          0------0
-    //  Road b  0=======0=-=-=-0 // =-= where overlapping
-    // 
-    //  
-    //
-    for (int i = 0; i < endPoints.size(); i++)
+    for(auto i_it = endPoints.begin(); i_it != endPoints.end();)
     {
-        for (int j = 0; j < endPoints.size(); j++)
+    
+        for (auto j_it = endPoints.begin(); j_it != endPoints.end();)
         {
-            // If we are not looking at the same nodes and they have not already been used
-            if (i != j && !endPoints[i].endNodeUsed && !endPoints[j].endNodeUsed)
+        
+            // Not looking at the same nodes and they have not already been used
+            if (i_it != j_it && !i_it->endNodeUsed && !j_it->endNodeUsed)
             {
-                // and is in range
-                if (inRangeXZPlane(endPoints[i], endPoints[j], connectionThresholdDistance, roadWidth, roadLength))
+                
+                if (inRangeXZPlane(*i_it, *j_it, connectionThresholdDistance, roadWidth, roadLength))
                 {
-                    // We create the fake road and make sure it does not intercept any other road
-                    road_gen_road tempRoad = {endPoints[i].point, endPoints[j].point, roadWidth, RED};
-                    bool endNodeRoadIntersection = false; // Used as we are in a deeply nested set of loops
-                    for (int k = 0; k < roadsVector.size(); k++)
+                    // Create temporary road
+                    road_gen_road tempRoad = {i_it->point, j_it->point, roadWidth};
+                    bool endNodeRoadIntersection = false; // used to exit deeply nested loops
+                    for (unsigned int i = 0; i < roadsVector.size(); i++)
                     {
-                        // If intersects then we need to look at the next point to consider
-                        if (tempRoad.isInterceptingAndNodes(roadsVector[k]))
+                        // If intersects then we look at next point
+                        if (tempRoad.isInterceptingAndNodes(roadsVector[i]))
                         {
                             endNodeRoadIntersection = true;
                             break;
                         }
-
                     }
-                    // If it does not intersect any of them then we add
+                    // If no intersections we add directy to endPoints
                     if (!endNodeRoadIntersection)
                     {
-                        // Add to final vector
-                        newEndNodeRoads.push_back(tempRoad);
+                        // Add to vector
+                        roadsVector.push_back(tempRoad);
                         // Set nodes to used
-                        endPoints[i].endNodeUsed = true; endPoints[j].endNodeUsed = true;
-
+                        i_it->endNodeUsed = true; j_it->endNodeUsed = true;
                         endNodeConnections++;
                     }
-                }   
-
+                }
             }
+            ++j_it;
         }
+        ++i_it;
     }
+    
+
+
 
     LOG(STATUS, "Created " << endNodeConnections << " new roads to connect end nodes.");
 
-    // Then add them to the main roadsVector
-    roadsVector.insert(roadsVector.end(), newEndNodeRoads.begin(), newEndNodeRoads.end());
-    LOG(STATUS, "EndNodeVEctor size: " << newEndNodeRoads.size());
 
     // Then we add to the scene for rendering
     for (auto& road : roadsVector)

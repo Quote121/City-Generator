@@ -236,19 +236,20 @@ int main() {
     //         ->SetPosition(glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))})
     //         ->SetScale(2.0f);
     // }
-    //
-    // scene->addModel(backPackPath, &backpackShader)
-    //      ->SetModelOriginCenter()
-    //      ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
-    //      ->ShowBoundingBox(true)
-    //      ->SetLightingEnabled(true);
-    //
-    // scene->addModel(backPackPath, &backpackShader)
-    //      ->SetModelOriginCenter()
-    //      ->SetPosition(glm::vec3{0.0f, 20.0f, 0.0f})
-    //      ->ShowBoundingBox(true)
-    //      ->SetLightingEnabled(true);
-    //
+        scene->addSprite(tree)
+            ->SetModelOriginCenterBottom()
+            ->SetIsVisible(false)
+            ->SetIsBillboard(true)
+            ->SetPosition({0, 0, 0})
+            ->SetScale(2.0f);
+
+    scene->addModel(backPackPath, &backpackShader)
+         ->SetModelOriginCenter()
+         ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
+         ->ShowBoundingBox(true)
+         ->SetLightingEnabled(true)
+         ->SetIsVisible(false);
+   //
     scene->addPointLight()
         ->SetPosition(glm::vec3{0, 0, 0});
 
@@ -267,6 +268,8 @@ int main() {
     // Builder WILL DO a second UpdateVertices() call as it will need to recalculate based on new width
     scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f);
     scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
+    
+    
 
     // Wireframe for debugging
     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
