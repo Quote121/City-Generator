@@ -9,6 +9,8 @@
 Road::Road(Shader* shader)
 {
     roadShader = shader;
+    
+    road_bb = new BoundingBox();
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -16,6 +18,8 @@ Road::Road(Shader* shader)
 
 Road::~Road()
 {
+    // Delete bounding box and road arrays
+    delete(road_bb);     
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
@@ -169,6 +173,17 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
     //========================//
 
+    // Steam vertices to bounding box
+    //
+    // This is the array setup for verts, we only want the vertices, not the normals
+    // (x, y, z, normx, normy, normz, x1, y1, z1, normx1, ...)
+    //
+    for (unsigned int i = 0; i < verts.size()/6; i++)
+    {
+        road_bb->StreamVertexUpdate(verts[(i*6)+0], verts[(i*6)+1], verts[(i*6)+2]);
+    }
+    // After we stream all the vertices we will setup the bounding box's VAOs and VBOs
+    road_bb->SetupBuffers();
 
     // Needed for draw
     unsigned int roadVertices = verts.size(); 
@@ -191,7 +206,6 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 
 void Road::Draw(glm::mat4 view, glm::mat4 projection)
 {
-
 
     // glLineWidth(3.0f);
     glBindVertexArray(VAO);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <bounding_box.hpp>
 
 // Forward declaration
 class Shader;
@@ -16,6 +17,8 @@ private:
 
     Shader* roadShader;
 
+    BoundingBox* road_bb;
+
     // Private as we want certain road object values to be updated before
     // Pass both point and road width to recalculate the vertices of the road
     void UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width);
@@ -30,6 +33,10 @@ public:
     Road(Shader* shader);
     ~Road();
 
+    BoundingBox* GetBoundingBox(void)
+    {
+        return road_bb;
+    }
 
     void SetRoadCurveSides(unsigned int sides)
     {

@@ -266,7 +266,7 @@ int main() {
     
     // Using builder rather than constructor will have larger overhead as object will be created then modified
     // Builder WILL DO a second UpdateVertices() call as it will need to recalculate based on new width
-    scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f);
+    scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f)->SetBoundingBoxEnable(true);
     scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
     
     

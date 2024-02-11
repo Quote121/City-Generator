@@ -41,7 +41,6 @@ void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
     objectShader->setMat4("view", view);
     objectShader->setMat4("projection", projection);
     objectShader->setMat4("model", result);
-
     objectShader->setVec3("colour", roadColour); 
 
     objectShader->setBool("ShowLighting", enableLighting);
@@ -79,11 +78,23 @@ void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
         objectShader->setVec3(("dirLight.ambient"), dirLight->GetAmbient());
         objectShader->setVec3(("dirLight.diffuse"), dirLight->GetDiffuse());
         objectShader->setVec3(("dirLight.specular"), dirLight->GetSpecular());
-
     }
 
     // Call underlying road renderer
     road_obj->Draw(view, projection);
+
+    // Draw bouding box
+    if (enableBoundingBox)
+    {
+        BoundingBox* bb = road_obj->GetBoundingBox();
+        Shader* bbShader = bb->getShader();
+        bbShader->use();
+        bbShader->setMat4("view", view);
+        bbShader->setMat4("projection", projection);
+        bbShader->setMat4("model", result);
+        bbShader->setVec3("localCenterPos", {0,0,0} );
+        bb->Draw();
+    }
 }
 
 
@@ -112,6 +123,12 @@ RoadObject* RoadObject::SetCurveSides(unsigned int sides)
 RoadObject* RoadObject::SetColour(glm::vec3 colour)
 {
     roadColour = colour;
+    return this;
+}
+
+RoadObject* RoadObject::SetBoundingBoxEnable(bool toggle)
+{
+    enableBoundingBox = toggle;
     return this;
 }
 

@@ -1,10 +1,9 @@
 #pragma once
 
-#include <base_object.hpp>
-// #include <shader.hpp>
 #include <road.hpp> 
 #include <sstream>
-
+#include "bounding_box.hpp"
+#include <config.hpp>
 
 // Line object
 class RoadObject
@@ -23,6 +22,7 @@ private:
     std::string alias;
     glm::vec3 roadColour = DEFAULT_ROAD_COLOUR; // Light grey
     bool enableLighting = true;
+    bool enableBoundingBox = false;
 
 public:
     RoadObject(const glm::vec3 point_a,
@@ -38,6 +38,7 @@ public:
     RoadObject* SetWidth(float width);               // Calls a vertice update
     RoadObject* SetCurveSides(unsigned int sides);   
     RoadObject* SetColour(glm::vec3 colour);
+    RoadObject* SetBoundingBoxEnable(bool toggle);
 
     // ImGui
     float& GetWidthImGui(void);
@@ -64,20 +65,6 @@ public:
         return b;
     }
 
-
-    // For debugging logs
-    std::string GetPointAString(void) const
-    {
-        std::stringstream ss;
-        ss << "[" << a.x << " " << a.y << " " << a.z << "]";
-        return ss.str();
-    }
-
-    std::string GetPointBString(void) const
-    {
-        std::stringstream ss;
-        ss << "[" << b.x << " " << b.y << " " << b.z << "]";
-        return ss.str();
-    }
+   
 
 };

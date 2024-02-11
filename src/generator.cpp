@@ -317,7 +317,7 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     {
         if (road.colour == DEFAULT_ROAD_COLOUR)
         {
-            Scene::getInstance()->addRoad(road.a, road.b, road.width);
+            Scene::getInstance()->addRoad(road.a, road.b, road.width)->SetBoundingBoxEnable(true);
         }
         else{
             // In hindsight this has minimal overhead but this will only be here temp TODO re-evaluate if this is the best way to go about it

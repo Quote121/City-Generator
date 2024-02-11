@@ -101,6 +101,9 @@ void BoundingBox::Update(glm::vec3& point)
 void BoundingBox::Draw()
 {
     glBindVertexArray(VAO);
+
+    // TODO change this to one glDrawElements call
+
     glDrawArrays(GL_LINE_LOOP, 0, 4);
     glDrawArrays(GL_LINE_LOOP, 4, 4);
     glDrawArrays(GL_LINES, 8, 8);
