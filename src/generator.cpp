@@ -1,5 +1,6 @@
 #include "config.hpp"
 #include "glm/exponential.hpp"
+#include "road_object.hpp"
 #include <algorithm>
 #include <generator.hpp>
 #include <map>
@@ -317,7 +318,7 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     {
         if (road.colour == DEFAULT_ROAD_COLOUR)
         {
-            Scene::getInstance()->addRoad(road.a, road.b, road.width)->SetBoundingBoxEnable(true);
+            Scene::getInstance()->addRoad(road.a, road.b, road.width);
         }
         else{
             // In hindsight this has minimal overhead but this will only be here temp TODO re-evaluate if this is the best way to go about it
@@ -374,8 +375,17 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
     }
 }
 
-void generator::generateBuildings();
+void generator::generateAssets()
+{
+    // Get all roads in the scene and determine the zones either side of the roads
 
-void generator::generateTrees();
+    std::vector<RoadObject*> sceneRoads = Scene::getInstance()->GetRoadObjects();
 
+    // For each road in the scene we will update its left and right zone based on intersections
+    
+    // Then once we know which cells in all zones are free we will try to fit buildings in each of them
+
+
+
+}
 

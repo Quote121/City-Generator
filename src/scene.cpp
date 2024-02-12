@@ -384,5 +384,8 @@ void Scene::CreateSkyBox(std::vector<std::string>* images)
 void Scene::DrawSkyBox(glm::mat4 view, glm::mat4 projection)
 {
     // We call the skybox draw call from the skybox object we created.
-    skybox->Draw(view, projection);
+    if (showSkybox)
+    {
+        skybox->Draw(view, projection);
+    }
 }

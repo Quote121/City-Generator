@@ -86,7 +86,7 @@ void Menues::display(float deltaTime)
 
     // Show XYZ lines
     ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui()); 
-    
+    ImGui::Checkbox("Show Skybox", &scene->GetShowSkyBoxImGui());    
 
     ImGui::PushItemWidth(100);
     ImGui::Text("Camera Position:");

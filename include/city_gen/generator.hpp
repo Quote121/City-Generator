@@ -191,7 +191,7 @@ namespace generator
     void LSystemGen(std::string* axiom, uint iterations); 
 
     // Building placement
-    void generateBuildings();
+    void generateAssets();
         // IDEA
         //
         // For generating the buildings near the roads we must determine where the roads are covering.

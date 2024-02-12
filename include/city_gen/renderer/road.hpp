@@ -1,7 +1,9 @@
 #pragma once
 
+#include "glm/fwd.hpp"
 #include <glm/glm.hpp>
 #include <bounding_box.hpp>
+#include <array>
 
 // Forward declaration
 class Shader;
@@ -17,7 +19,13 @@ private:
 
     Shader* roadShader;
 
-    BoundingBox* road_bb;
+    // Array of the 4 points of the road, all 2d in the xz plane
+    std::array<glm::vec3, 4> road_OBB;
+    // Array for left zone
+    std::array<glm::vec3, 4> road_left_zone;
+    // Array for right zone
+    std::array<glm::vec3, 4> road_right_zone;
+
 
     // Private as we want certain road object values to be updated before
     // Pass both point and road width to recalculate the vertices of the road
@@ -27,16 +35,12 @@ public:
     // So that we can access the private values without extra getters for ImGui
     friend class RoadObject;
 
-       // Make the opengl draw calls
-    void Draw(glm::mat4 view, glm::mat4 projection);
+    // Make the opengl draw calls
+    void Draw();
+    // void DrawZones();
 
     Road(Shader* shader);
     ~Road();
-
-    BoundingBox* GetBoundingBox(void)
-    {
-        return road_bb;
-    }
 
     void SetRoadCurveSides(unsigned int sides)
     {
@@ -59,6 +63,21 @@ public:
     inline Shader* GetRoadShader()
     {
         return roadShader;
+    }
+
+    inline std::array<glm::vec3, 4> const& getOBB(void) const
+    {
+        return road_OBB;
+    }
+
+    inline std::array<glm::vec3, 4> const& getLeftZone(void) const
+    {
+        return road_left_zone;
+    }
+
+    inline std::array<glm::vec3, 4> const& getRightZone(void) const
+    {
+        return road_right_zone;
     }
 
     // ImGui Handles

@@ -15,7 +15,6 @@
 // Unordered map uses buckets
 #include <unordered_map>
 #include <stb_image/stb_image.h>        // image reading
-#include <glad/glad.h>                  // opengl bindings
 
 #include <config.hpp>                   // logging
 #include <shader.hpp>

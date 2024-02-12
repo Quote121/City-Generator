@@ -2,6 +2,7 @@
 #include "resourceManager.hpp"
 #include "camera.hpp"
 #include "scene.hpp"
+#include <road_zone_object.hpp>
 
 RoadObject::RoadObject(const glm::vec3 point_a,
                        const glm::vec3 point_b,
@@ -23,11 +24,16 @@ RoadObject::RoadObject(const glm::vec3 point_a,
     road_obj = new Road(shader);
     // Initaliser list will be processed before constructor, but we pass these values
     road_obj->UpdateVertices(point_a, point_b, roadWidth_in);
+    // After our vertices have been updated we can pass them to the zones
+    leftZone = new RoadZoneObject(road_obj->road_left_zone, roadWidth);
+    rightZone = new RoadZoneObject(road_obj->road_right_zone, roadWidth);
 }
 
 RoadObject::~RoadObject()
 {
     delete(road_obj);
+    delete(leftZone);
+    delete(rightZone);
 }
 
 void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
@@ -81,20 +87,14 @@ void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
     }
 
     // Call underlying road renderer
-    road_obj->Draw(view, projection);
+    road_obj->Draw();
 
-    // Draw bouding box
-    if (enableBoundingBox)
+    if (showZones)
     {
-        BoundingBox* bb = road_obj->GetBoundingBox();
-        Shader* bbShader = bb->getShader();
-        bbShader->use();
-        bbShader->setMat4("view", view);
-        bbShader->setMat4("projection", projection);
-        bbShader->setMat4("model", result);
-        bbShader->setVec3("localCenterPos", {0,0,0} );
-        bb->Draw();
+        leftZone->Draw(view, projection);
+        rightZone->Draw(view, projection);
     }
+
 }
 
 
@@ -123,12 +123,6 @@ RoadObject* RoadObject::SetCurveSides(unsigned int sides)
 RoadObject* RoadObject::SetColour(glm::vec3 colour)
 {
     roadColour = colour;
-    return this;
-}
-
-RoadObject* RoadObject::SetBoundingBoxEnable(bool toggle)
-{
-    enableBoundingBox = toggle;
     return this;
 }
 

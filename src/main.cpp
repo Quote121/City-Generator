@@ -266,9 +266,10 @@ int main() {
     
     // Using builder rather than constructor will have larger overhead as object will be created then modified
     // Builder WILL DO a second UpdateVertices() call as it will need to recalculate based on new width
-    scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f)->SetBoundingBoxEnable(true);
-    scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
-    
+    // scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f);
+    // scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
+   
+    scene->addRoad({5, 0, 5}, {5, 0, 10}, 1.0f);
     
 
     // Wireframe for debugging
@@ -336,6 +337,8 @@ int main() {
     // Render loop to keep rendering until the program is closed
     // If GLFW has been instructed to close then run this function
     while (!glfwWindowShouldClose(window)){
+
+
 
         double currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;

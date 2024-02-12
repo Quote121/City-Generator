@@ -37,6 +37,7 @@ private:
     
     std::vector<LineObject*> scene_axis_lines;
     bool showSceneAxis = true;
+    bool showSkybox = true;
 
     SkyBox* skybox; // The skybox object
 
@@ -159,6 +160,11 @@ public:
     {
         return showSceneAxis;
     }
+
+    bool& GetShowSkyBoxImGui()
+    {
+        return showSkybox;
+    } 
 
     // Draws all of the objects form each of the object vectors
     void DrawSceneObjects(glm::mat4 view, glm::mat4 projection);

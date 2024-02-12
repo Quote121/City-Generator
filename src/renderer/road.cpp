@@ -10,16 +10,12 @@ Road::Road(Shader* shader)
 {
     roadShader = shader;
     
-    road_bb = new BoundingBox();
-
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 }
 
 Road::~Road()
 {
-    // Delete bounding box and road arrays
-    delete(road_bb);     
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
 }
@@ -85,7 +81,7 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     }
 
     /*
-    //
+    // The naming of variables past this point "LEFT" is -z and "RIGHT" is +z relative to the diagram below
     // This is the layout of the road where each number is a vertex and A B are the two points
     //   -z |      
     //      |       __ 1_3_________________5_7 __
@@ -173,17 +169,32 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
     //========================//
 
-    // Steam vertices to bounding box
     //
-    // This is the array setup for verts, we only want the vertices, not the normals
-    // (x, y, z, normx, normy, normz, x1, y1, z1, normx1, ...)
+    // 4 vertices that fully encapsulate the road on the xz plane
     //
-    for (unsigned int i = 0; i < verts.size()/6; i++)
-    {
-        road_bb->StreamVertexUpdate(verts[(i*6)+0], verts[(i*6)+1], verts[(i*6)+2]);
-    }
-    // After we stream all the vertices we will setup the bounding box's VAOs and VBOs
-    road_bb->SetupBuffers();
+    glm::vec3 point_b_offset_out = {point_b.x + (radius * unitVecAB.x), point_b.y, point_b.z + (radius * unitVecAB.z)};
+    glm::vec3 topRightPoint = point_b_offset_out + (invUnitVecAB * radius);
+    glm::vec3 bottomRightPoint = point_b_offset_out - (invUnitVecAB * radius);
+
+    glm::vec3 point_a_offset_out = {point_a.x - (radius * unitVecAB.x), point_a.y, point_a.z - (radius * unitVecAB.z)};
+    glm::vec3 topLeftPoint = point_a_offset_out + (invUnitVecAB * radius);
+    glm::vec3 bottomLeftPoint = point_a_offset_out - (invUnitVecAB * radius);
+
+    road_OBB = {topRightPoint, bottomRightPoint, topLeftPoint, bottomLeftPoint};
+    
+    // 
+    // We need the 8 vertices that will define out left and right zone for the zoning algorithm
+    //
+    // left zone, 3 and 5 used
+    glm::vec3 leftZone_topLeft = three + (invUnitVecAB * (radius*2));
+    glm::vec3 leftZone_topRight = five + (invUnitVecAB * (radius*2));
+    road_left_zone = {three, five, leftZone_topRight, leftZone_topLeft};
+
+    // Right zone, 4 and 6 used
+    glm::vec3 rightZone_bottomLeft = four - (invUnitVecAB * (radius*2));
+    glm::vec3 rightZone_bottomRight = six - (invUnitVecAB * (radius*2));
+    road_right_zone = {four, six, rightZone_bottomRight, rightZone_bottomLeft};
+
 
     // Needed for draw
     unsigned int roadVertices = verts.size(); 
@@ -204,7 +215,7 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 
 }
 
-void Road::Draw(glm::mat4 view, glm::mat4 projection)
+void Road::Draw()
 {
 
     // glLineWidth(3.0f);
@@ -226,3 +237,25 @@ void Road::Draw(glm::mat4 view, glm::mat4 projection)
         LOG(ERROR, "OpenGL Line::Draw() Error: " << error);
     }
 }
+//
+// void Road::DrawZones()
+// {
+//     std::vector<float> verts;
+//     verts.push_back({})
+//
+//     glBindVertexArray(VAO);
+//     
+//     glBindBuffer(GL_ARRAY_BUFFER, VBO);
+//     glBufferData(GL_ARRAY_BUFFER, roadVertices * sizeof(float), verts.data(), GL_STATIC_DRAW);
+//
+//     // APos
+//     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+//     glEnableVertexAttribArray(0);
+//
+//     // aNormals offset by 3 floats for each vert
+//     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+//     glEnableVertexAttribArray(1);
+//
+//
+// }
+//

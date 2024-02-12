@@ -1,9 +1,8 @@
 #pragma once
 
 #include <road.hpp> 
-#include <sstream>
-#include "bounding_box.hpp"
 #include <config.hpp>
+#include <road_zone_object.hpp>
 
 // Line object
 class RoadObject
@@ -17,12 +16,20 @@ private:
     // Width (diameter of the road)
     float roadWidth;
 
+    // Road zones
+    RoadZoneObject* leftZone;
+    RoadZoneObject* rightZone;
+
+    // Underlying rendering object
     Road* road_obj;
 
+    // Name for imgui
     std::string alias;
     glm::vec3 roadColour = DEFAULT_ROAD_COLOUR; // Light grey
+    
+    // Bool for rendering
     bool enableLighting = true;
-    bool enableBoundingBox = false;
+    bool showZones = true;
 
 public:
     RoadObject(const glm::vec3 point_a,
@@ -38,7 +45,6 @@ public:
     RoadObject* SetWidth(float width);               // Calls a vertice update
     RoadObject* SetCurveSides(unsigned int sides);   
     RoadObject* SetColour(glm::vec3 colour);
-    RoadObject* SetBoundingBoxEnable(bool toggle);
 
     // ImGui
     float& GetWidthImGui(void);
