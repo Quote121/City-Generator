@@ -22,7 +22,7 @@ inline bool inRangeXZPlane(const road_gen_point& a, const road_gen_point& b, con
 }
 
 
-void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, float roadWidth = 3.0f, float roadAngleDegrees = 90.0f)
+void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, float roadWidth = 3.0f, float roadAngleDegrees = 90.0f)
 {
     auto roadGenerateStartTime = StopWatch::GetCurrentTimePoint();
 
@@ -31,31 +31,6 @@ void generator::generateRoads(int iterations = 2, float roadLength = 10.0f, floa
     {
         LOG(WARN, "generateRoads() roadLength is less than or equal to roadWidth. This can cause Z-fighting.")
     }
-
-    /*
-     * General notes so far for the generation
-     *
-     * At an angle near 90 degrees seem to generate the most realistic looking layouts
-     * If we use 160/170 degrees the layout is too dence and does not match with what we would expect from normal roads
-     * Based on this we should implement an optional pass that removes roads that overlap.
-     * This would also add those to the end nodes list if removed.
-     *
-     * After that is done another pass to link end nodes to nearby nodes as long as they dont cross an existic road will be done.
-     * This will add significant time to the road generation stage but we can take that performance hit as runtime will not be affected.
-     *
-     * In the terms of runtime, it is evident once we get to a few thousand roads, instancing is a must and should be implemented given enough time.
-     * This project is perfect for instancing as we have static meshes that are repeated tonnes of times. Also my awful intergrated graphics cannot
-     * deal with this much overhead.
-     *
-     * TLDR:
-     *
-     * Add pass to remove roads that already exist at those coordinates
-     * Add road intersection checking
-     * Add road end node join pass
-     * Add instancing
-     *
-     */
-
 
     LOG(STATUS, "generateRoads() started...");
     // std::vector<glm::vec3> points;
@@ -375,17 +350,70 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
     }
 }
 
-void generator::generateAssets()
+void generator::GenerateAssets()
 {
     // Get all roads in the scene and determine the zones either side of the roads
 
     std::vector<RoadObject*> sceneRoads = Scene::getInstance()->GetRoadObjects();
 
-    // For each road in the scene we will update its left and right zone based on intersections
     
+    // for (int i = 0; i < sceneRoads.size(); i++)
+    // {
+    //     for (int j = 0; j < sceneRoads.size(); j++)
+    //     {
+    //         if (i != j)
+    //         {
+    //             if (sceneRoads[i]->GetZoneA()->Intersects(sceneRoads[j]->GetRoadOBB()))
+    //             {
+    //                 sceneRoads[i]->GetZoneA()->SetColour(RED);
+    //             }
+    //             if (sceneRoads[i]->GetZoneB()->Intersects(sceneRoads[j]->GetRoadOBB()))
+    //             {
+    //                 sceneRoads[i]->GetZoneB()->SetColour(RED);
+    //             }
+    //         }
+    //     }
+    // } 
+    //
+    
+    // Testing zone intersections
+    if (sceneRoads.size() == 2)
+    {
+        LOG(DEBUG, "scene roads 2");
+        if (sceneRoads[0]->GetZoneA()->Intersects(sceneRoads[1]->GetRoadOBB()))
+        {
+            sceneRoads[0]->GetZoneA()->SetColour(RED);
+        }
+    }
+
+
+    //
+    // 
+    // O(n^3) for this as for each road (2 zones) we have each cell of both zones (n is directy proportunal to width) and then check each road
+    //
+    // we can cull roads based on distance as we can assume they do not intersect our road
+    //
+
+
+    // For each road in the scene we will update its left and right zone based on intersections
+
     // Then once we know which cells in all zones are free we will try to fit buildings in each of them
 
 
+
+}
+
+// Reset colour back to green
+void generator::ClearZoneCollisions()
+{
+    std::vector<RoadObject*> roads = Scene::getInstance()->GetRoadObjects();
+
+    for (auto& road : roads)
+    {
+        road->GetZoneA()->SetColour(GREEN);
+        road->GetZoneB()->SetColour(GREEN);
+    
+    }
 
 }
 

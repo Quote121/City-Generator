@@ -24,6 +24,12 @@ Zone::~Zone()
 // Method that updates and draws the rectangle for the zone
 void Zone::UpdateVertices(const std::array<glm::vec3, 4>& array, const float width)
 {
+    // This draws our 4 sided rectangle
+    //
+    // We also want to draw our cross section lines which can be altered with a density metric
+    //
+
+
     std::array<float, 12> verts;
 
     for (unsigned int i = 0; i < array.size(); i++)

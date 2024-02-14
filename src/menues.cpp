@@ -2,6 +2,7 @@
 #include <menues.hpp>
 #include <resourceManager.hpp>
 #include <generator.hpp>
+#include <string>
 
 #define POSITION_MAX 100.0f
 #define POSITION_MIN -100.0f
@@ -74,7 +75,20 @@ void Menues::display(float deltaTime)
 
     if (generateRoads)
     {
-        generator::generateRoads(gen_iterations, gen_roadLength, gen_roadWidth, gen_roadAngle);
+        generator::GenerateRoads(gen_iterations, gen_roadLength, gen_roadWidth, gen_roadAngle);
+    }
+
+
+    ImGui::Text("Building generator settings");
+    bool generateBuildings = ImGui::Button("Generate");
+    if (generateBuildings)
+    {
+        generator::GenerateAssets();
+    }
+    bool removeZoneCollisions = ImGui::Button("Clear zone collisions");
+    if (removeZoneCollisions)
+    {
+        generator::ClearZoneCollisions(); 
     }
 
     ImGui::End();
@@ -336,8 +350,26 @@ void Menues::display(float deltaTime)
                 RoadObject* object = objects[i];
                 if (ImGui::TreeNode((void*)(intptr_t)i, "Object %d - %s", i, object->GetAlias().c_str()))
                 {
-                    ImGui::Text("Road placement text"); 
-            
+                    ImGui::Text("Road placement text");
+
+                    glm::vec3& a = object->GetPointAImGui();
+                    glm::vec3& b = object->GetPointBImGui();
+
+                    ImGui::PushItemWidth(200);
+
+                    ImGui::PushID(i);
+                    ImGui::SliderFloat("Point a.x", &a.x, -10, 10); ImGui::SameLine();
+                    ImGui::SliderFloat("Point a.z", &a.z, -10, 10);
+
+                    ImGui::SliderFloat("Point b.x", &b.x, -10, 10); ImGui::SameLine(); 
+                    ImGui::SliderFloat("Point b.z", &b.z, -10, 10);
+                    ImGui::PopID();
+
+                    ImGui::PopItemWidth();
+
+                    bool updatePoints = ImGui::Button("Update points");
+                    if (updatePoints) object->UpdatePoints(a, b);
+
                     ImGui::TreePop();
                 }
             }

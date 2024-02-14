@@ -22,9 +22,9 @@ private:
     // Array of the 4 points of the road, all 2d in the xz plane
     std::array<glm::vec3, 4> road_OBB;
     // Array for left zone
-    std::array<glm::vec3, 4> road_left_zone;
+    std::array<glm::vec3, 4> road_left_zone_vertices;
     // Array for right zone
-    std::array<glm::vec3, 4> road_right_zone;
+    std::array<glm::vec3, 4> road_right_zone_vertices;
 
 
     // Private as we want certain road object values to be updated before
@@ -72,12 +72,12 @@ public:
 
     inline std::array<glm::vec3, 4> const& getLeftZone(void) const
     {
-        return road_left_zone;
+        return road_left_zone_vertices;
     }
 
     inline std::array<glm::vec3, 4> const& getRightZone(void) const
     {
-        return road_right_zone;
+        return road_right_zone_vertices;
     }
 
     // ImGui Handles

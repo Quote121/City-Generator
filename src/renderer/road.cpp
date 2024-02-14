@@ -184,16 +184,17 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     
     // 
     // We need the 8 vertices that will define out left and right zone for the zoning algorithm
+    // Radius*2 as we want the area besides to be as big as road, this can be changed later
     //
     // left zone, 3 and 5 used
     glm::vec3 leftZone_topLeft = three + (invUnitVecAB * (radius*2));
     glm::vec3 leftZone_topRight = five + (invUnitVecAB * (radius*2));
-    road_left_zone = {three, five, leftZone_topRight, leftZone_topLeft};
+    road_left_zone_vertices = {three, five, leftZone_topRight, leftZone_topLeft};
 
     // Right zone, 4 and 6 used
     glm::vec3 rightZone_bottomLeft = four - (invUnitVecAB * (radius*2));
     glm::vec3 rightZone_bottomRight = six - (invUnitVecAB * (radius*2));
-    road_right_zone = {four, six, rightZone_bottomRight, rightZone_bottomLeft};
+    road_right_zone_vertices = {four, six, rightZone_bottomRight, rightZone_bottomLeft};
 
 
     // Needed for draw

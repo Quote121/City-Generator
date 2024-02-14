@@ -7,33 +7,29 @@
 RoadObject::RoadObject(const glm::vec3 point_a,
                        const glm::vec3 point_b,
                        const float roadWidth_in,
-                       Shader* shader_in) : a(point_a), b(point_b), roadWidth(roadWidth_in) 
+                       Shader* shader_in) : roadPointA(point_a), roadPointB(point_b), roadWidth(roadWidth_in) 
 {
-
     Shader* shader;
 
     if (shader_in == nullptr)
     {
-        // shader = ResourceManager::getInstance()->LoadShader(paths::line_defaultVertShaderPath, paths::line_defaultFragShaderPath);
         shader = ResourceManager::getInstance()->LoadShader(paths::road_defaultVertShaderPath, paths::road_defaultFragShaderPath);
     }
     else
     {
         shader = shader_in;
     }
-    road_obj = new Road(shader);
-    // Initaliser list will be processed before constructor, but we pass these values
-    road_obj->UpdateVertices(point_a, point_b, roadWidth_in);
-    // After our vertices have been updated we can pass them to the zones
-    leftZone = new RoadZoneObject(road_obj->road_left_zone, roadWidth);
-    rightZone = new RoadZoneObject(road_obj->road_right_zone, roadWidth);
+    road_renderer = new Road(shader);
+   
+    // Call master updater
+    UpdateRoad(roadPointA, roadPointB); 
 }
 
 RoadObject::~RoadObject()
 {
-    delete(road_obj);
-    delete(leftZone);
-    delete(rightZone);
+    delete(road_renderer);
+    delete(zoneA);
+    delete(zoneB);
 }
 
 void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
@@ -41,7 +37,7 @@ void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
     // Set all shader properties in here
 
     glm::mat4 result = glm::mat4(1.0f);
-    Shader* objectShader = road_obj->GetRoadShader();
+    Shader* objectShader = road_renderer->GetRoadShader();
 
     objectShader->use();
     objectShader->setMat4("view", view);
@@ -87,14 +83,29 @@ void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
     }
 
     // Call underlying road renderer
-    road_obj->Draw();
+    road_renderer->Draw();
 
     if (showZones)
     {
-        leftZone->Draw(view, projection);
-        rightZone->Draw(view, projection);
+        zoneA->Draw(view, projection);
+        zoneB->Draw(view, projection);
     }
 
+}
+
+
+void RoadObject::UpdateRoad(const glm::vec3 a, const glm::vec3 b)
+{
+    // Update renderer vertices
+    road_renderer->UpdateVertices(a, b, roadWidth);
+    // After road renderer has updated it will update zone and bounding box data
+    roadBBPoints = road_renderer->getOBB();
+
+    // Check if either road object is initalized if so then initalize, otherwise update
+    if (zoneA == nullptr) zoneA = new RoadZoneObject(road_renderer->road_left_zone_vertices, roadWidth);
+    else zoneA->UpdateVertices(road_renderer->road_left_zone_vertices, roadWidth); 
+    if (zoneB == nullptr) zoneB = new RoadZoneObject(road_renderer->road_right_zone_vertices, roadWidth);
+    else zoneB->UpdateVertices(road_renderer->road_right_zone_vertices, roadWidth); 
 }
 
 
@@ -109,14 +120,14 @@ RoadObject* RoadObject::SetWidth(float width_in)
     else {
         roadWidth = width_in;
     }
-    road_obj->UpdateVertices(a, b, roadWidth);
+    road_renderer->UpdateVertices(roadPointA, roadPointB, roadWidth);
     return this;
 }
 
 // This could be removed later on as we implement LOD
 RoadObject* RoadObject::SetCurveSides(unsigned int sides)
 {
-    road_obj->SetRoadCurveSides(sides);
+    road_renderer->SetRoadCurveSides(sides);
     return this;
 }
 
@@ -134,6 +145,6 @@ float& RoadObject::GetWidthImGui(void)
 
 unsigned int& RoadObject::GetCurveSidesImGui(void)
 {
-    return road_obj->roadCurveSides;
+    return road_renderer->roadCurveSides;
 }
 

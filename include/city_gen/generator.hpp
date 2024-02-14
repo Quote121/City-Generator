@@ -184,14 +184,15 @@ namespace generator
     // @args RoadLength - length of the road when generating
     // @args RoadWidth - width of the roads
     // @args roadAngleDegrees - the +/- angles when generating from the grammar
-    void generateRoads(int iterations, float roadLength, float roadWidth, float roadAngleDegrees);
+    void GenerateRoads(int iterations, float roadLength, float roadWidth, float roadAngleDegrees);
 
     // Axiom, is the string to have the grammar effect
     // Iterations is amount of iterations on string
     void LSystemGen(std::string* axiom, uint iterations); 
 
     // Building placement
-    void generateAssets();
+    void GenerateAssets();
+    void ClearZoneCollisions();
         // IDEA
         //
         // For generating the buildings near the roads we must determine where the roads are covering.

@@ -155,7 +155,6 @@ int main() {
 
 
 
-
     ShaderPath backpackShader{"../assets/shaders/backpack/vertexShader.vs", "../assets/shaders/backpack/fragmentShader.fs"};
 
     Shader missing("../assets/shaders/default/missing.vert", "../assets/shaders/default/missing.frag");
@@ -180,11 +179,13 @@ int main() {
     std::string building1 = "../assets/models/Buildings/NoTextureStarter/CellPhoneBuilding_01.obj";
     std::string building2 = "../assets/models/Buildings/NoTextureStarter/LargeRectangle.obj";
     std::string building3 = "../assets/models/Buildings/NoTextureStarter/AngledRoofHouse.obj";
+
+
     //
-    // scene->addModel(building1)
-    //     ->SetModelOriginCenterBottom()
-    //     ->SetPosition(glm::vec3{10, 0, 0})
-    //     ->ShowBoundingBox(false);
+    scene->addModel(building1)
+        ->SetModelOriginCenterBottom()
+        ->SetPosition(glm::vec3{10, 0, 0})
+        ->ShowBoundingBox(false);
     //     
     //
     //
@@ -269,8 +270,9 @@ int main() {
     // scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f);
     // scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
    
-    scene->addRoad({5, 0, 5}, {5, 0, 10}, 1.0f);
-    
+    scene->addRoad({5, 0, 5}, {5, 0, 10.3}, 1.2f);
+    scene->addRoad({4, 0, 0}, {-4, 0, 0}, 1.0f); 
+    // scene->addRoad({10,0, 8}, {-10,0,8}, 1.0f);
 
     // Wireframe for debugging
     // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
@@ -394,7 +396,7 @@ int main() {
 
 
 
-        // ImGui::ShowDemoWindow();
+        ImGui::ShowDemoWindow();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

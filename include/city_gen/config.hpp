@@ -75,6 +75,7 @@ inline std::ostream& operator<<(std::ostream& stream, const glm::vec3& vector)
 #define INFO " [STATUS ] "
 #define WARN (" [WARNING] in " __FILE__ " at line " STRINGIZE(__LINE__)" : ")
 #define ERROR (" [ ERROR ] in " __FILE__ " at line " STRINGIZE(__LINE__)" : ")
+#define DEBUG (" [=DEBUG=] line: " STRINGIZE(__LINE__)" : ")
 ///////////////////////////////////////
 
 ////////////////// Renderer settings ////////////////////
