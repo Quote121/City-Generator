@@ -42,6 +42,9 @@ public:
 
     ~RoadObject();
 
+    // This will take a threshold value and road object and determine if roads are far enough away to not do more costly collision calculations
+    bool TooFarForCollision(const RoadObject* road, const float threshold);
+
     void Draw(glm::mat4 view, glm::mat4 projection);
 
     // Updates road zones and underlying road renderer

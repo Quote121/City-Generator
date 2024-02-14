@@ -180,7 +180,7 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     glm::vec3 topLeftPoint = point_a_offset_out + (invUnitVecAB * radius);
     glm::vec3 bottomLeftPoint = point_a_offset_out - (invUnitVecAB * radius);
 
-    road_OBB = {topRightPoint, bottomRightPoint, topLeftPoint, bottomLeftPoint};
+    road_OBB = {topRightPoint, bottomRightPoint, bottomLeftPoint, topLeftPoint};
     
     // 
     // We need the 8 vertices that will define out left and right zone for the zoning algorithm

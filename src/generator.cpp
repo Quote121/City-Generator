@@ -308,7 +308,7 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
 
     // When generating, we could give a radius from 0,0 for roads to be permitted, this would give a good effect IMO
     uint64_t timeElapsed = StopWatch::GetTimeElapsed(roadGenerateStartTime);
-    LOG(STATUS, "generateRoads() finished in " << timeElapsed << "ms");
+    LOG(STATUS, "GenerateRoads() finished in " << timeElapsed << "ms");
 }
 
 void generator::LSystemGen(std::string *axiom, uint iterations)
@@ -352,55 +352,41 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
 
 void generator::GenerateAssets()
 {
+    LOG(STATUS, "Started GeneratedAssets()...");
+    auto assetGenerateStartTime = StopWatch::GetCurrentTimePoint();
+
     // Get all roads in the scene and determine the zones either side of the roads
-
     std::vector<RoadObject*> sceneRoads = Scene::getInstance()->GetRoadObjects();
+    
 
-    
-    // for (int i = 0; i < sceneRoads.size(); i++)
-    // {
-    //     for (int j = 0; j < sceneRoads.size(); j++)
-    //     {
-    //         if (i != j)
-    //         {
-    //             if (sceneRoads[i]->GetZoneA()->Intersects(sceneRoads[j]->GetRoadOBB()))
-    //             {
-    //                 sceneRoads[i]->GetZoneA()->SetColour(RED);
-    //             }
-    //             if (sceneRoads[i]->GetZoneB()->Intersects(sceneRoads[j]->GetRoadOBB()))
-    //             {
-    //                 sceneRoads[i]->GetZoneB()->SetColour(RED);
-    //             }
-    //         }
-    //     }
-    // } 
-    //
-    
-    // Testing zone intersections
-    if (sceneRoads.size() == 2)
+    unsigned int collisionZoneCount = 0;
+    for (int i = 0; i < sceneRoads.size(); i++)
     {
-        LOG(DEBUG, "scene roads 2");
-        if (sceneRoads[0]->GetZoneA()->Intersects(sceneRoads[1]->GetRoadOBB()))
+        for (int j = 0; j < sceneRoads.size(); j++)
         {
-            sceneRoads[0]->GetZoneA()->SetColour(RED);
+            // Optimization cull those which are too far away to be considered
+            if (i != j && !sceneRoads[i]->TooFarForCollision(sceneRoads[j], 1.0f))
+            {
+                if (sceneRoads[i]->GetZoneA()->Intersects(sceneRoads[j]->GetRoadOBB()))
+                {
+                    sceneRoads[i]->GetZoneA()->SetColour(RED);
+                    collisionZoneCount++;
+                    break;
+                }
+                if (sceneRoads[i]->GetZoneB()->Intersects(sceneRoads[j]->GetRoadOBB()))
+                {
+                    sceneRoads[i]->GetZoneB()->SetColour(RED);
+                    collisionZoneCount++;
+                    break;
+                }
+            }
         }
     }
 
+    LOG(STATUS, "Zones that have collision: " << collisionZoneCount << "/" << sceneRoads.size()*2);
 
-    //
-    // 
-    // O(n^3) for this as for each road (2 zones) we have each cell of both zones (n is directy proportunal to width) and then check each road
-    //
-    // we can cull roads based on distance as we can assume they do not intersect our road
-    //
-
-
-    // For each road in the scene we will update its left and right zone based on intersections
-
-    // Then once we know which cells in all zones are free we will try to fit buildings in each of them
-
-
-
+    uint64_t timeElapsed = StopWatch::GetTimeElapsed(assetGenerateStartTime);
+    LOG(STATUS, "GenerateAssets() finished in " << timeElapsed << "ms");
 }
 
 // Reset colour back to green

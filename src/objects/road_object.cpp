@@ -109,6 +109,25 @@ void RoadObject::UpdateRoad(const glm::vec3 a, const glm::vec3 b)
 }
 
 
+
+
+bool RoadObject::TooFarForCollision(const RoadObject* road, const float threshold)
+{
+    // Get radius of both roads from center to edge and then the threshold is the gap between the two radii
+    // Our radius
+    glm::vec3 ourCenter = roadBBPoints[0] + ((roadBBPoints[1] - roadBBPoints[0])/2.0f) + ((roadBBPoints[2] - roadBBPoints[1])/2.0f);
+    float ourRadius = glm::length(ourCenter-roadBBPoints[0]);
+
+    // Their radius
+    auto roadPoints = road->GetRoadOBB();
+    glm::vec3 theirCenter = roadPoints[0] + ((roadPoints[1] - roadPoints[0])/2.0f) + ((roadPoints[2] - roadPoints[1])/2.0f);
+    float theirRadius = glm::length(theirCenter-roadPoints[0]);
+
+    // If the distance between the two radiuss of each road is above the thresold then we are good
+    return (glm::length(ourCenter-theirCenter) - ourRadius - theirRadius) > threshold;
+}
+
+
 // Require a vertice update for the builders
 // Builders
 RoadObject* RoadObject::SetWidth(float width_in)

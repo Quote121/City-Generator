@@ -53,7 +53,9 @@ bool projectionOverlap(const std::array<glm::vec3, 4>& a, const std::array<glm::
         if (projections_b[i] > max_b) max_b = projections_b[i];
     }
 
-    if (max_a < min_b || max_b < min_a)
+    // LOG(DEBUG, "projectionOverlap(): min_a: " << min_a << " | max_a: " << max_a << " | min_b: " << min_b << " | max_b: " << max_b)
+
+    if (max_a <= min_b + 0.1 || max_b <= min_a + 0.1)
     {
         // No overlap
         return false;
@@ -89,14 +91,14 @@ bool RoadZoneObject::Intersects(const std::array<glm::vec3, 4>& boundingBox) con
 
     for (i = 0; i < 8; i++)
     {
-        if (projectionOverlap(vertices, boundingBox, axis[i]))
+        if (!projectionOverlap(vertices, boundingBox, axis[i]))
         {
-            return true;
+            return false;
         }
     }
 
     // Does not intersect
-    return false;
+    return true;
 }
 
 void RoadZoneObject::SetColour(glm::vec3 colour)
