@@ -55,7 +55,8 @@ bool projectionOverlap(const std::array<glm::vec3, 4>& a, const std::array<glm::
 
     // LOG(DEBUG, "projectionOverlap(): min_a: " << min_a << " | max_a: " << max_a << " | min_b: " << min_b << " | max_b: " << max_b)
 
-    if (max_a <= min_b + 0.1 || max_b <= min_a + 0.1)
+    constexpr float lenience = 0.05; 
+    if (max_a <= min_b + lenience || max_b <= min_a + lenience)
     {
         // No overlap
         return false;

@@ -9,6 +9,9 @@
 
 #include <stopwatch.hpp>
 
+// Macro for logging
+#define LOG_GEN "GENERATOR"
+
 // Helper function
 // Checks if the distance between two points is less than a threshold value in the XZ plane
 // Road length has to scale with the threshold value
@@ -29,15 +32,11 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
     // Warning as this will cause z-fighting
     if (roadWidth >= roadLength)
     {
-        LOG(WARN, "generateRoads() roadLength is less than or equal to roadWidth. This can cause Z-fighting.")
+        LOG(WARN_SERV(LOG_GEN), "RoadLength is less than or equal to roadWidth. This can cause Z-fighting.")
     }
 
-    LOG(STATUS, "generateRoads() started...");
-    // std::vector<glm::vec3> points;
-    //
-    // // TODO, when working we should have a menu handle to tweak all these values and then to generate. That would be cool
-    //
-    // // Procedural generation of roads here
+    LOG(STATUS, "[ Starting GenerateRoads ]");
+
     // // Seed should be changed based on system time, seed can be saved to replicate the generation
     // const siv::PerlinNoise::seed_type seed = 123456u;
     // const siv::PerlinNoise perlin{ seed };
@@ -62,8 +61,15 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
     //     }
     // }
     //
-    // Now we will select several points from the vector of points to begin our L-system and any 
-    // nodes close to one another will be joined up
+
+
+    // Output for current settings for the road generation
+    LOG(STATUS, "==== Generation settings ====");
+    LOG(STATUS, "||\tIterations:\t" << iterations);
+    LOG(STATUS, "||\tRoadLength:\t" << roadLength);
+    LOG(STATUS, "||\tRoadWidth: \t" << roadWidth);
+    LOG(STATUS, "||\tRoadAngle: \t" << roadAngleDegrees << " (degrees)");
+    LOG(STATUS, "==== Generation settings ====");
 
     // grammar
     std::string treeGrammar = "X"; // Needs to be changed based on what our grammar is
@@ -107,7 +113,6 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
                 currentPoint.point.z + (roadLength * glm::cos(currentPoint.degreeHeading))
             };
 
-            // Scene::getInstance()->addRoad(currentPoint.point, nextPoint, roadWidth);
             roadsVector.push_back({currentPoint.point, nextPoint, roadWidth}); // Add to our local road vector before adding to the scene
             currentPoint.point = nextPoint; // Update current point, no change to bearing
 
@@ -122,7 +127,6 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
                 currentPoint.point.z + (roadLength * glm::cos(currentPoint.degreeHeading))
             };
             
-            // Scene::getInstance()->addRoad(currentPoint.point, nextPoint, roadWidth);
             roadsVector.push_back({currentPoint.point, nextPoint, roadWidth}); // ^^
 
             // If the end point is in the vector already we wont add.
@@ -168,7 +172,7 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
         }
         default:
         {
-            LOG(WARN, "Default taken on switch in generateRoads()")
+            LOG(WARN, "Default taken on switch in GenerateRoads()")
             break;
         }
         } // switch(symbol)
@@ -192,8 +196,7 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
     removedRoadsDupes -= roadsVector.size();
 
     // The numbers will alter based on the length of the roads due to the grammar
-    LOG(STATUS, removedRoadsDupes << " roads removed due to duplicates");
-
+    LOG(STATUS, "[" << removedRoadsDupes << "] roads removed due to duplicates.");
     
 
     // For all the remaining roads we now have to calculate their line properties to determine if they intersect
@@ -225,10 +228,7 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
         ++i_it;
     }
     removedRoadsIntersect -= roadsVector.size(); 
-    LOG(STATUS, removedRoadsIntersect << " roads removed due to intersections");
-
-    LOG(STATUS, "End points: " << endPoints.size());
-
+    LOG(STATUS, "[" << removedRoadsIntersect << "] roads removed due to intersections.");
 
     // Connect nodes that are allowed to be connected (if they are close enough and do not intersect anything)
     float connectionThresholdDistance = 5.0f;
@@ -282,11 +282,7 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
         ++i_it;
     }
     
-
-
-
-    LOG(STATUS, "Created " << endNodeConnections << " new roads to connect end nodes.");
-
+    LOG(STATUS, "[" << endNodeConnections << "] new roads created from end node connections.");
 
     // Then we add to the scene for rendering
     for (auto& road : roadsVector)
@@ -308,7 +304,7 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
 
     // When generating, we could give a radius from 0,0 for roads to be permitted, this would give a good effect IMO
     uint64_t timeElapsed = StopWatch::GetTimeElapsed(roadGenerateStartTime);
-    LOG(STATUS, "GenerateRoads() finished in " << timeElapsed << "ms");
+    LOG(STATUS, "[ GenerateRoads finished. Time elapsed: " << timeElapsed << "ms ]\n");
 }
 
 void generator::LSystemGen(std::string *axiom, uint iterations)
@@ -327,8 +323,6 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
             {{"X", "F[+X]F[-X]F[-X]F[+X]F"},
              {"F", "FF"}};
             // {{"X", "F[+F[+X]F[-X]]"}};
-
-
 
         for (size_t i = 0; i < axiom->size(); i++)
         {
@@ -352,7 +346,8 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
 
 void generator::GenerateAssets()
 {
-    LOG(STATUS, "Started GeneratedAssets()...");
+    
+    LOG(STATUS, "[ Started GeneratedAssets ]");
     auto assetGenerateStartTime = StopWatch::GetCurrentTimePoint();
 
     // Get all roads in the scene and determine the zones either side of the roads
@@ -360,9 +355,9 @@ void generator::GenerateAssets()
     
 
     unsigned int collisionZoneCount = 0;
-    for (int i = 0; i < sceneRoads.size(); i++)
+    for (size_t i = 0; i < sceneRoads.size(); i++)
     {
-        for (int j = 0; j < sceneRoads.size(); j++)
+        for (size_t j = 0; j < sceneRoads.size(); j++)
         {
             // Optimization cull those which are too far away to be considered
             if (i != j && !sceneRoads[i]->TooFarForCollision(sceneRoads[j], 1.0f))
@@ -383,10 +378,12 @@ void generator::GenerateAssets()
         }
     }
 
-    LOG(STATUS, "Zones that have collision: " << collisionZoneCount << "/" << sceneRoads.size()*2);
+    float percent = static_cast<float>(collisionZoneCount)/(sceneRoads.size()*2)*100;
+
+    LOG(STATUS, "Zones that collided: " << collisionZoneCount << "/" << sceneRoads.size()*2 << " (" << percent << "%)");
 
     uint64_t timeElapsed = StopWatch::GetTimeElapsed(assetGenerateStartTime);
-    LOG(STATUS, "GenerateAssets() finished in " << timeElapsed << "ms");
+    LOG(STATUS, "[ GenerateAssets finished. Time elapsed: " << timeElapsed << "ms ]\n");
 }
 
 // Reset colour back to green
@@ -398,8 +395,6 @@ void generator::ClearZoneCollisions()
     {
         road->GetZoneA()->SetColour(GREEN);
         road->GetZoneB()->SetColour(GREEN);
-    
     }
-
 }
 

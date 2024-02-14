@@ -20,6 +20,8 @@
 #include <shader.hpp>
 #include <model.hpp>
 
+// Macro for logging of this file
+#define LOG_RM "RESOURCEMANAGER"
        
 // Texture struct
 struct TextureInfo{
@@ -152,7 +154,7 @@ public:
         // miss
         else
         {
-            LOG(STATUS, "Loading texture : " << texturePath);
+            LOG(STATUS_SERV(LOG_RM), "Loading texture : " << texturePath); 
             unsigned int textureID;
             glGenTextures(1, &textureID);
 
@@ -173,7 +175,7 @@ public:
                 else 
                 {
                     format = GL_RGB;
-                    LOG(ERROR, "ResourceManager::LoadTexture() image format unrecognised. nrComponents : " << nrComponents);
+                    LOG(ERROR_SERV(LOG_RM), "ResourceManager::LoadTexture() image format unrecognised. nrComponents : " << nrComponents);
                 }
     
                 glBindTexture(GL_TEXTURE_2D, textureID);
@@ -187,7 +189,7 @@ public:
             }
             else
             {
-                LOG(ERROR, "Texture failed to load at path : " << texturePath);
+                LOG(ERROR_SERV(LOG_RM), "Texture failed to load at path : " << texturePath);
             }
             stbi_image_free(data);
             
@@ -215,7 +217,7 @@ public:
         // Miss
         else
         {
-            LOG(STATUS, "Loading model : " << modelPath_in);
+            LOG(STATUS_SERV(LOG_RM), "Loading model : " << modelPath_in);
             Model* model = new Model(modelShader_in, modelPath_in);
             model_map.insert(std::make_pair(modelPath_in, model));
             return model;

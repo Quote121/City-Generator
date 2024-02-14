@@ -67,12 +67,20 @@ inline std::ostream& operator<<(std::ostream& stream, const glm::vec3& vector)
 
 
 //////////// Logging system ////////////
-#define LOG(log_type, b) std::cout << "[" << StopWatch::GetTimeElapsed() << " ms]" \
+
+
+#define LOG(log_type, b) std::cout << "[" << StopWatch::GetTimeElapsed() << " ms \t]" \
                             << log_type << b << std::endl;
 #define STRINGIZE2(x) #x
 #define STRINGIZE(x) STRINGIZE2(x)
+
+// Custom messages for loggings from sections
+#define STATUS_SERV(service) (" [" service "|STATUS ] ")
+#define WARN_SERV(service) (" [" service "|WARNING] in " __FILE__ " at line " STRINGIZE(__LINE__)" : ")
+#define ERROR_SERV(service) (" [" service "| ERROR ] in " __FILE__ " at line " STRINGIZE(__LINE__)" : ")
+#define DEBUG_SERV(service) (" [" service "|#DEBUG#] line: " STRINGIZE(__LINE__)" : ")
+
 #define STATUS " [STATUS ] "
-#define INFO " [STATUS ] "
 #define WARN (" [WARNING] in " __FILE__ " at line " STRINGIZE(__LINE__)" : ")
 #define ERROR (" [ ERROR ] in " __FILE__ " at line " STRINGIZE(__LINE__)" : ")
 #define DEBUG (" [=DEBUG=] line: " STRINGIZE(__LINE__)" : ")
