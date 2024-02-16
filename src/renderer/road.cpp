@@ -238,25 +238,4 @@ void Road::Draw()
         LOG(ERROR, "OpenGL Line::Draw() Error: " << error);
     }
 }
-//
-// void Road::DrawZones()
-// {
-//     std::vector<float> verts;
-//     verts.push_back({})
-//
-//     glBindVertexArray(VAO);
-//     
-//     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//     glBufferData(GL_ARRAY_BUFFER, roadVertices * sizeof(float), verts.data(), GL_STATIC_DRAW);
-//
-//     // APos
-//     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-//     glEnableVertexAttribArray(0);
-//
-//     // aNormals offset by 3 floats for each vert
-//     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-//     glEnableVertexAttribArray(1);
-//
-//
-// }
-//
+
