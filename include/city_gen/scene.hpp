@@ -38,6 +38,8 @@ private:
     std::vector<LineObject*> scene_axis_lines;
     bool showSceneAxis = true;
     bool showSkybox = true;
+    bool showRoadZones = true;
+    bool removeIntersectingZones = false; // If a road zone has been labled as cannot be used (intersect then dont render it)
 
     SkyBox* skybox; // The skybox object
 
@@ -165,6 +167,17 @@ public:
     {
         return showSkybox;
     } 
+
+    bool& GetShowRoadZones()
+    {
+        return showRoadZones;
+    }
+
+    bool& GetRemoveIntersectingZones()
+    {
+        return removeIntersectingZones;
+    }
+
 
     // Draws all of the objects form each of the object vectors
     void DrawSceneObjects(glm::mat4 view, glm::mat4 projection);

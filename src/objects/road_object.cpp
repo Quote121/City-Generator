@@ -85,7 +85,7 @@ void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
     // Call underlying road renderer
     road_renderer->Draw();
 
-    if (showZones)
+    if (Scene::getInstance()->GetShowRoadZones())
     {
         zoneA->Draw(view, projection);
         zoneB->Draw(view, projection);

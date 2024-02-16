@@ -1,4 +1,5 @@
 #include "glm/exponential.hpp"
+#include "scene.hpp"
 #include <road_zone_object.hpp>
 #include <glm/glm.hpp>
 #include <resourceManager.hpp>
@@ -109,16 +110,19 @@ void RoadZoneObject::SetColour(glm::vec3 colour)
 
 void RoadZoneObject::Draw(glm::mat4 view, glm::mat4 projection)
 {
-    // Setup shader attributes
-    
-    glm::mat4 result = glm::mat4(1.0f);
+    // If the road is green or should be shown based on intersections
+    if (zoneColour != RED || !Scene::getInstance()->GetRemoveIntersectingZones())
+    {
+        // Setup shader attributes
+        glm::mat4 result = glm::mat4(1.0f);
 
-    zoneShader->use();
-    zoneShader->setMat4("view", view);
-    zoneShader->setMat4("projection", projection);
-    zoneShader->setMat4("model", result);
-    zoneShader->setVec3("colour", zoneColour); 
-    
-    zone_renderer->Draw();
+        zoneShader->use();
+        zoneShader->setMat4("view", view);
+        zoneShader->setMat4("projection", projection);
+        zoneShader->setMat4("model", result);
+        zoneShader->setVec3("colour", zoneColour); 
+        
+        zone_renderer->Draw();
+    }
 }
 

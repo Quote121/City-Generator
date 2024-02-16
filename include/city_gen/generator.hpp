@@ -191,16 +191,8 @@ namespace generator
     void LSystemGen(std::string* axiom, uint iterations); 
 
     // Building placement
-    void GenerateAssets();
+    void CalculateValidZones();
     void ClearZoneCollisions();
-        // IDEA
-        //
-        // For generating the buildings near the roads we must determine where the roads are covering.
-        // First way to solve (unpreferred)
-        // - Since we have all points and widths of roads we can mathematically determine wether a building overlaps
-        //   with a road
-        // - We give each road a bounding box, alot like the models we have. Then when we generate the buildings we do
-        //   collision detection (O(n^2)), not preffered but there will only be cost upon each generation and not runtime
 
     // Tree sprite placement
     void generateTrees();

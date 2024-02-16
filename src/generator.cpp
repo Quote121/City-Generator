@@ -344,7 +344,7 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
     }
 }
 
-void generator::GenerateAssets()
+void generator::CalculateValidZones()
 {
     
     LOG(STATUS, "[ Started GeneratedAssets ]");

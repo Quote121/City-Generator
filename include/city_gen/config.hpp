@@ -56,6 +56,8 @@ inline std::ostream& operator<<(std::ostream& stream, const glm::vec3& vector)
 }
 
 
+// global boolean for showing zone line
+
 /////////////////////////////////////////
 
 // Some basic colour definitions

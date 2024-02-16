@@ -35,7 +35,7 @@ void Menues::display(float deltaTime)
     //
     
     ImGui::Begin("Stats");
-    ImGui::Text("FPS %.2f", fpsValue);
+    ImGui::Text("FPS %.2f || Delta time: %.1f ms", fpsValue, deltaTime*1000);
     ImGui::Text("Pitch | Yaw: %.3f %.3f", cam->Pitch, cam->Yaw);
     ImGui::Text("[x,y,z] : %.3f, %.3f, %.3f",cam->Position.x, cam->Position.y, cam->Position.z);
     ImGui::End();
@@ -56,10 +56,10 @@ void Menues::display(float deltaTime)
     static int gen_iterations = 1;
     ImGui::SliderInt("Iterations", &gen_iterations, 1, 10);
 
-    static float gen_roadLength = 1.0f;
+    static float gen_roadLength = 3.0f;
     ImGui::SliderFloat("Road Length", &gen_roadLength, 1.0f, 20.0f);
 
-    static float gen_roadWidth = 3.0f;
+    static float gen_roadWidth = 1.0f;
     ImGui::SliderFloat("Road Width", &gen_roadWidth, 1.0f, 10.0f);
 
     static float gen_roadAngle = 90.0f;
@@ -83,13 +83,16 @@ void Menues::display(float deltaTime)
     bool generateBuildings = ImGui::Button("Generate");
     if (generateBuildings)
     {
-        generator::GenerateAssets();
+        generator::CalculateValidZones();
     }
     bool removeZoneCollisions = ImGui::Button("Clear zone collisions");
     if (removeZoneCollisions)
     {
         generator::ClearZoneCollisions(); 
     }
+
+    ImGui::Checkbox("Show road zones", &scene->GetShowRoadZones());
+    ImGui::Checkbox("Remove intersecting zones", &scene->GetRemoveIntersectingZones());
 
     ImGui::End();
 
@@ -99,7 +102,7 @@ void Menues::display(float deltaTime)
     ImGui::Begin("World controls");
 
     // Show XYZ lines
-    ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui()); 
+    ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui());
     ImGui::Checkbox("Show Skybox", &scene->GetShowSkyBoxImGui());    
 
     ImGui::PushItemWidth(100);

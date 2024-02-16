@@ -12,7 +12,6 @@
 #include <stdlib.h> // Clearing cmd for fps
 #include <iostream>
 // temp test with randomness
-#include <random>
 
 // IMGUI
 #include <imgui/imgui.h>
