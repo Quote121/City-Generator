@@ -46,7 +46,7 @@ private:
     Scene();
     ~Scene();
 
-    static Scene* pinstance_;
+    static Scene* pInstance;
 
     // Used for alias'
     int lineCount = 0;

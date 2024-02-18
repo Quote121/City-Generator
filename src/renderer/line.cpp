@@ -1,22 +1,28 @@
 #include <line.hpp>
 
 #include <shader.hpp>
-#include <glad/glad.h>
+// #include <glad/glad.h>
+
+// TODO put all of these in renderer and so then will not need to call again
+// #include <vertexArray.hpp>
+// #include <vertexBuffer.hpp>
+// #include <indexBuffer.hpp>
+#include <renderer.hpp>
+// #include <vertexBufferLayout.hpp>
 
 Line::Line(Shader* shader)
 {
     lineShader = shader;
 
-    // Generate the VAO and VBO in the constructor
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+    VAO = new VertexArray();
+    VBO = new VertexBuffer(); 
 }
 
 Line::~Line()
 {
     delete(lineShader);
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+    delete(VAO);
+    delete(VBO);  
 }
 
 void Line::UpdateVerts(glm::vec3 point_a, glm::vec3 point_b)
@@ -26,29 +32,49 @@ void Line::UpdateVerts(glm::vec3 point_a, glm::vec3 point_b)
         point_b[0], point_b[1], point_b[2]
     };
 
-    glBindVertexArray(VAO);
+    VertexBufferLayout layout;
+    layout.AddFloat(3); // 3D vectors
+
+    VBO->SetData(vertices, 6 * sizeof(float));
+
+    // Set attributes
+   
+    // Dereferance the vertex buffer to pass
+    VAO->AddBuffer(*VBO, layout);
+
+    VAO->Bind();
+    VBO->Bind();
+
+    // Deal with index buffer too
+
     
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), vertices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-    glBindVertexArray(0); // Unbind
+    // OLD OPENGL code
+    // glBindVertexArray(VAO);
+    // 
+    // glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    // glBufferData(GL_ARRAY_BUFFER, 6 * sizeof(float), vertices, GL_STATIC_DRAW);
+    //
+    // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // glEnableVertexAttribArray(0);
 }
 
 void Line::Draw()
 {
-    // glLineWidth(2.0f);
-    glBindVertexArray(VAO);
-    glDrawArrays(GL_LINES, 0, 2);
-    glBindVertexArray(0);
-
-    GLenum error;
-    while ((error = glGetError()) != GL_NO_ERROR) {
-        LOG(ERROR, "OpenGL Line::Draw() Error: " << error);
-    }
+    Renderer::GetInstance()->DrawArrays(*VAO, 2);
+    
+    //
+    // // glLineWidth(2.0f);
+    // glBindVertexArray(VAO);
+    // glDrawArrays(GL_LINES, 0, 2);
+    // glBindVertexArray(0);
+    //
+    // GLenum error;
+    // while ((error = glGetError()) != GL_NO_ERROR) {
+    //     LOG(ERROR, "OpenGL Line::Draw() Error: " << error);
+    // }
 }
 

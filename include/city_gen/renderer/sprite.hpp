@@ -8,7 +8,6 @@
 #include <glm/glm.hpp>
 #include <stb_image/stb_image.h>
 
-#include <vector>
 #include <string>
 
 // Forward declaration

@@ -4,15 +4,15 @@
 #include <resourceManager.hpp>
 #include <algorithm>
 
-Scene* Scene::pinstance_{nullptr};
+Scene* Scene::pInstance{nullptr};
 
 Scene* Scene::getInstance()
 {
-    if (pinstance_ == nullptr)
+    if (pInstance == nullptr)
     {
-        pinstance_ = new Scene();
+        pInstance = new Scene();
     }
-    return pinstance_; 
+    return pInstance; 
 }
 
 Scene::Scene()
@@ -33,7 +33,7 @@ Scene::Scene()
 // Deallocate all created objects
 Scene::~Scene()
 {
-    delete(pinstance_);
+    delete(pInstance);
 
     // Free all allocated objects
     removeAllModels();

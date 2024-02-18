@@ -1,6 +1,8 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include <vertexArray.hpp>
+#include <vertexBuffer.hpp>
 
 // Forward declaration
 class Shader;
@@ -8,7 +10,9 @@ class Shader;
 class Line
 {
 private:
-    unsigned int VAO, VBO;
+    VertexArray* VAO;
+    VertexBuffer* VBO;
+
     Shader* lineShader;
 
 public:

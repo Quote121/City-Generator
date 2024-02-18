@@ -74,13 +74,6 @@ public:
         return scaleScalar;
     }
 
-
-
-    // ImGui getters. These return a reference to each data type
-    // as the imgui interface requires it for callbacks.
-    // since this is a single threaded application we dont have
-    // to worry about race cases etc.
-
     glm::vec3& GetPositionImGui()
     {
         return position;
@@ -96,22 +89,15 @@ public:
         return isVisible;
     }
 
-
     float& GetScaleScalarImGui()
     {
         return scaleScalar;
     }
 
-
     // Builders
     T* SetPosition(glm::vec3 position_in);
     T* SetRotation(glm::vec3 rotation_in);
-    // T* SetScale(glm::vec2 scale_in);
     T* SetScale(float scale_in);
     T* SetIsVisible(bool toggle);
-    // T* ShowBoundingBox(bool toggle);
 };
 
-// template class BaseObject<SpriteObject>;
-
-// #include "../src/objects/base_object.cpp"
