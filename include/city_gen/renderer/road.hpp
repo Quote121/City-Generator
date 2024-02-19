@@ -59,7 +59,6 @@ public:
         return roadCurveSides;
     }
 
-
     inline Shader* GetRoadShader()
     {
         return roadShader;
@@ -80,12 +79,5 @@ public:
         return road_right_zone_vertices;
     }
 
-    // ImGui Handles
-    // If we change these values at runtime we will need to call update vertices too so that the
-    // road will update with the new parameters
-
-    // We should check if the value has changed, if not no need to update. An update will be expensive
-
-    
-
 };
+

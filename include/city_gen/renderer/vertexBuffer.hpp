@@ -8,10 +8,12 @@ private:
 public:
 
     VertexBuffer(void);
-    VertexBuffer(const void* data, const unsigned int size);
     ~VertexBuffer(void);
 
+    // @param size - number of elements
+    template<typename T>
     void SetData(const void* data, const unsigned int size);
+
     void Bind(void) const;
     void Unbind(void) const;
 };

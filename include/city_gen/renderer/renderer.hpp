@@ -5,6 +5,9 @@
 
 // class Batch;
 
+// Defined outside of Glad as we cant include several times
+#define GL_TRIANGLES 0x0004
+
 class Renderer
 {
 private:
@@ -28,10 +31,11 @@ public:
 
 
     void ClearScreen();
-    // Make sure shaders are bound before calls to draw
-    void DrawIndices(const VertexArray& vao, const IndexBuffer& ebo);
+    // Make sure shaders are bound before calls to draw, mode is the primative to draw, default gl_triangle
+    void DrawIndices(const VertexArray* vao, const IndexBuffer* ebo, unsigned int mode = GL_TRIANGLES);
     // @params count - number of arrays to draw with primative from vao
-    void DrawArrays(const VertexArray& vao, unsigned int count);
+    void DrawArrays(const VertexArray* vao, unsigned int count, unsigned int mode = GL_TRIANGLES);
+
     void DrawBatches();
 };
 

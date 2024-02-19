@@ -13,12 +13,12 @@ Renderer* Renderer::GetInstance()
     return pInstance; 
 }
 
-void Renderer::DrawIndices(const VertexArray& vao, const IndexBuffer& ebo)
+void Renderer::DrawIndices(const VertexArray* vao, const IndexBuffer* ebo, unsigned int mode)
 {
-    vao.Bind();
-    ebo.Bind(); 
-    glBindVertexArray(vao.GetVertexArray());
-    glDrawElements(GL_TRIANGLES, ebo.GetCount(), GL_UNSIGNED_INT, nullptr); 
+    vao->Bind();
+    ebo->Bind(); 
+    glBindVertexArray(vao->GetVertexArray());
+    glDrawElements(mode, ebo->GetCount(), GL_UNSIGNED_INT, nullptr); 
 
     GLenum error;
     while ((error = glGetError()) != GL_NO_ERROR) {
@@ -26,11 +26,11 @@ void Renderer::DrawIndices(const VertexArray& vao, const IndexBuffer& ebo)
     }
 }
 
-void Renderer::DrawArrays(const VertexArray& vao, unsigned int count)
+void Renderer::DrawArrays(const VertexArray* vao, unsigned int count, unsigned int mode)
 {
     // glLineWidth(2.0f);
-    glBindVertexArray(vao.GetVertexArray());
-    glDrawArrays(vao.GetPrimativeType(), 0, count);
+    glBindVertexArray(vao->GetVertexArray());
+    glDrawArrays(mode, 0, count);
 
     GLenum error;
     while ((error = glGetError()) != GL_NO_ERROR) {

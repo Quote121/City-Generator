@@ -8,18 +8,13 @@ class VertexArray
 private:
     
     unsigned int VAO;
-    // type primative
-    unsigned int type;
 
 public:
 
     VertexArray();
     ~VertexArray();
 
-    void AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
-
-    void SetPrimativeType(const unsigned int type_in);
-    unsigned int GetPrimativeType(void) const;
+    void AddBuffer(const VertexBuffer* vb, const VertexBufferLayout* layout);
 
     unsigned int GetVertexArray(void) const;
 

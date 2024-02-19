@@ -27,10 +27,10 @@ void Line::UpdateVerts(glm::vec3 point_a, glm::vec3 point_b)
     VertexBufferLayout layout;
     layout.AddFloat(3); // 3D vectors
 
-    VBO->SetData(vertices, 6 * sizeof(float));
+    VBO->SetData<float>(vertices, 6);
 
     // Set attributes
-    VAO->AddBuffer(*VBO, layout);
+    VAO->AddBuffer(VBO, &layout);
 
     VAO->Bind();
     VBO->Bind();
@@ -38,7 +38,6 @@ void Line::UpdateVerts(glm::vec3 point_a, glm::vec3 point_b)
 
 void Line::Draw()
 {
-    VAO->SetPrimativeType(GL_LINES);
-    Renderer::GetInstance()->DrawArrays(*VAO, 2); 
+    Renderer::GetInstance()->DrawArrays(VAO, 2, GL_LINES); 
 }
 

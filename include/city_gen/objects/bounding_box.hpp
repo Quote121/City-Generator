@@ -9,6 +9,9 @@
     in /renderer, ah well. Im sure I wont go to hell for it... right?
 */
 #include <glm/glm.hpp>
+#include <vertexArray.hpp>
+#include <vertexBuffer.hpp>
+#include <indexBuffer.hpp>
 
 // Forward declaration
 class Shader;
@@ -17,12 +20,12 @@ class BoundingBox
 {
 private:
     // All measurements are in local coordinate space
-    // Min xyz
     glm::vec3 min;
-    // Max xyz
     glm::vec3 max;
 
-    unsigned int VAO, VBO;
+    VertexArray* VAO;
+    VertexBuffer* VBO;
+    IndexBuffer* EBO;
 
     Shader* boundingBoxShader;
 
@@ -65,3 +68,4 @@ public:
     // The setup for the box VAO and VBO will be done everytime the update() is called
     void Draw();
 };
+
