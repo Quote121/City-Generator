@@ -19,6 +19,11 @@ void Renderer::DrawIndices(const VertexArray& vao, const IndexBuffer& ebo)
     ebo.Bind(); 
     glBindVertexArray(vao.GetVertexArray());
     glDrawElements(GL_TRIANGLES, ebo.GetCount(), GL_UNSIGNED_INT, nullptr); 
+
+    GLenum error;
+    while ((error = glGetError()) != GL_NO_ERROR) {
+        LOG(ERROR, "OpenGL DrawIndices() Error: " << error);
+    }
 }
 
 void Renderer::DrawArrays(const VertexArray& vao, unsigned int count)
@@ -29,7 +34,6 @@ void Renderer::DrawArrays(const VertexArray& vao, unsigned int count)
 
     GLenum error;
     while ((error = glGetError()) != GL_NO_ERROR) {
-        LOG(ERROR, "OpenGL Line::Draw() Error: " << error);
+        LOG(ERROR, "OpenGL DrawArrays() Error: " << error);
     }
-
 }

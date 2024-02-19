@@ -1,7 +1,5 @@
 // #include "vertexBuffer.hpp"
 #include <vertexArray.hpp>
-#include <vertexBufferLayout.hpp>
-
 #include <glad/glad.h>
 
 
@@ -37,22 +35,22 @@ void VertexArray::SetPrimativeType(const unsigned int type_in)
     type = type_in;
 }
 
-inline unsigned int VertexArray::GetPrimativeType(void) const
+unsigned int VertexArray::GetPrimativeType(void) const
 {
     return type;
 }
 
-inline GLuint VertexArray::GetVertexArray(void) const
+GLuint VertexArray::GetVertexArray(void) const
 {
     return VAO;
 }
 
-inline void VertexArray::Bind(void) const
+void VertexArray::Bind(void) const
 {
     glBindVertexArray(VAO);
 }
 
-inline void VertexArray::Unbind(void) const
+void VertexArray::Unbind(void) const
 {
     glBindVertexArray(0);
 }

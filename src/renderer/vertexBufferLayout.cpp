@@ -29,12 +29,12 @@ void VertexBufferLayout::AddFloat(unsigned int count)        { Push(GL_FLOAT, co
 void VertexBufferLayout::AddUnsignedInt(unsigned int count)  { Push(GL_UNSIGNED_INT, count, GL_FALSE); }
 void VertexBufferLayout::AddUnsignedByte(unsigned int count) { Push(GL_UNSIGNED_BYTE, count, GL_TRUE); }
 
-inline const std::vector<VertexBufferElement> VertexBufferLayout::GetElements() const 
+const std::vector<VertexBufferElement> VertexBufferLayout::GetElements() const 
 {
     return elementVector;
 }
 
-inline unsigned int VertexBufferLayout::GetStride() const 
+unsigned int VertexBufferLayout::GetStride() const 
 {
     return stride;
 }
