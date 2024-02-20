@@ -1,9 +1,13 @@
 #pragma once
 
-#include "glm/fwd.hpp"
+#include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 #include <bounding_box.hpp>
 #include <array>
+
+#include <vertexArray.hpp>
+#include <vertexBuffer.hpp>
+#include <indexBuffer.hpp>
 
 // Forward declaration
 class Shader;
@@ -11,7 +15,11 @@ class Shader;
 class Road
 {
 private:
-    unsigned int VAO, VBO;
+   
+    VertexArray* VAO;
+    VertexBuffer* VBO;
+    IndexBuffer* EBO; 
+
     // as to be multiple of 4, at least 4 (Will createa point at the end of the road at 4)
     // TODO In future this could be set to ranges based on level of detail (close more vertices, further the less)
     unsigned int roadCurveSides = 40; 

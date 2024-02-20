@@ -11,8 +11,8 @@ private:
 
 public:
 
-    VertexArray();
-    ~VertexArray();
+    VertexArray(void);
+    ~VertexArray(void);
 
     void AddBuffer(const VertexBuffer* vb, const VertexBufferLayout* layout);
 

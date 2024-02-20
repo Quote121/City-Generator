@@ -3,21 +3,24 @@
 #include <config.hpp>
 #include <shader.hpp>
 #include <resourceManager.hpp>
+#include <renderer.hpp>
 
 #include <vector>
 
 Road::Road(Shader* shader)
 {
     roadShader = shader;
-    
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
+
+    VAO = new VertexArray();
+    VBO = new VertexBuffer();
+    EBO = new IndexBuffer();
 }
 
 Road::~Road()
 {
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
+    delete(VAO);
+    delete(VBO);
+    delete(EBO);
 }
 
 // Helper function for getting cross products and normalizing
@@ -28,7 +31,7 @@ glm::vec3 inline getCross(glm::vec3 origin, glm::vec3 a, glm::vec3 b)
 
 void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 {
-    int numberOfSides = roadCurveSides;
+    const int numberOfSides = roadCurveSides;
 
     const float radius = width/2;
     float theta = (2*M_PI)/roadCurveSides; // radians
@@ -96,7 +99,7 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     // The verts.insert() are each labeled by a number
     //
     // Left hand rule, index finger 1st vector, thumb 2nd vector; middle finger is cross result
-    //
+    // 
     ////////////////////////////
     // Draw 3 boxes for the road
     ////////////////////////////
@@ -198,44 +201,56 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 
 
     // Needed for draw
-    unsigned int roadVertices = verts.size(); 
-    // LOG(STATUS, "Number of vertices per road: " << roadVertices)
-
-    glBindVertexArray(VAO);
+    // unsigned int roadVertices = verts.size(); 
     
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, roadVertices * sizeof(float), verts.data(), GL_STATIC_DRAW);
+    for (int i = 0; i < verts.size()/6; i++)
+    {
+        // Print out points and normals
+        LOG(STATUS, "Vert: " << verts[(6*i)+0] << " " << verts[(3*i)+1] << " " << verts[(6*i)+2]);
+        LOG(STATUS, "Vert: " << verts[(6*i)+3] << " " << verts[(6*i)+4] << " " << verts[(6*i)+5] << "\n");
+        
+    }
 
-    // APos
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
+    std::vector<unsigned int> indices;
+    
+    unsigned int i = 0;
+    // Create index buffer from number of sides info
+    for (i = 0; i < numberOfSides/2; i++)
+    {
+        // First semi-circle
+        indices.insert(indices.end(), {0, i+1, i+2});
+    }
 
-    // aNormals offset by 3 floats for each vert
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
+    // Next circle starts at numberofsides/2 + 2
+    const unsigned int nextCircleStartIndex = numberOfSides/2 + 2;
+    for (i = nextCircleStartIndex; i < nextCircleStartIndex + numberOfSides/2; i++)
+    {
+        indices.insert(indices.end(), {nextCircleStartIndex, i+1, i+2});
+    }
+    // Set index to the first of the squares
+    i+=2;
+  
+    // Add planes
+    // A box plane (2 triangles each plane)
+    indices.insert(indices.end(), {i, i+1, i+2, i+1, i+2, i+3,    // 123 234
+                                   i+2, i+3, i+4, i+3, i+4, i+5,  // 345, 456
+                                   i+4, i+5, i+6, i+5, i+6, i+7   // 567, 678
+    });
 
-}
+    VertexBufferLayout vbl;
+    vbl.AddFloat(3); // xyz
+    vbl.AddFloat(3); // norms
+
+    VBO->SetData<float>(verts.data(), verts.size());
+    VAO->AddBuffer(VBO, &vbl);
+
+    EBO->SetData(indices.data(), indices.size());
+
+}     
 
 void Road::Draw()
 {
-
-    // glLineWidth(3.0f);
-    glBindVertexArray(VAO);
-
-    // Draw both semi-circles
-    // GL_TRIANGLE_FAN draws n-2 for n
-    glDrawArrays(GL_TRIANGLE_FAN, 0, roadCurveSides/2 + 2); // Strips
-    glDrawArrays(GL_TRIANGLE_FAN, roadCurveSides/2 + 2, roadCurveSides/2 + 2); // Strips 2
-
-    // Draw the 3 box parts of the road
-    // n-2 so we need 8 verts for 6 triangles
-    glDrawArrays(GL_TRIANGLE_STRIP, roadCurveSides + 4 , 8);
-
-    glBindVertexArray(0);
-
-    GLenum error;
-    while ((error = glGetError()) != GL_NO_ERROR) {
-        LOG(ERROR, "OpenGL Line::Draw() Error: " << error);
-    }
+    // GL_TRIANGLES
+    Renderer::GetInstance()->DrawIndices(VAO, EBO);
 }
 

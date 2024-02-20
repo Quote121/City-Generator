@@ -18,8 +18,8 @@ unsigned int VertexBufferElement::GetSizeOfType(unsigned int type)
 
 void VertexBufferLayout::Push(unsigned int type, unsigned int count, unsigned char normalized)
 {
-    elementVector.push_back({type, count, normalized});
-    elementVector.push_back({type, count, normalized});
+    VertexBufferElement vbe = {type, count, normalized};
+    elementVector.push_back(vbe);
     stride += count * VertexBufferElement::GetSizeOfType(type);
 }
 

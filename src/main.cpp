@@ -270,7 +270,7 @@ int main() {
     // scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
    
     scene->addRoad({5, 0, 5}, {5, 0, 10.3}, 1.2f);
-    scene->addRoad({4, 0, 0}, {-4, 0, 0}, 1.0f); 
+    // scene->addRoad({4, 0, 0}, {-4, 0, 0}, 1.0f); 
     // scene->addRoad({10,0, 8}, {-10,0,8}, 1.0f);
 
     // Wireframe for debugging

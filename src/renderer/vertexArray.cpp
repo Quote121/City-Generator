@@ -3,12 +3,12 @@
 #include <glad/glad.h>
 
 
-VertexArray::VertexArray()
+VertexArray::VertexArray(void)
 {
     glGenVertexArrays(1, &VAO);
 }
 
-VertexArray::~VertexArray()
+VertexArray::~VertexArray(void)
 {
     glDeleteVertexArrays(1, &VAO);
 }
@@ -25,8 +25,8 @@ void VertexArray::AddBuffer(const VertexBuffer* vb, const VertexBufferLayout* vb
     {
         auto element = elements[i];
         glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, element.count, element.type, element.normalized, vbl->GetStride(), reinterpret_cast<void*>(offset));
-        offset += element.count + VertexBufferElement::GetSizeOfType(element.type);
+        glVertexAttribPointer(i, element.count, element.type, element.normalized, vbl->GetStride(), (void*)(intptr_t)(offset));
+        offset += element.count * VertexBufferElement::GetSizeOfType(element.type);
     }
 }
 
