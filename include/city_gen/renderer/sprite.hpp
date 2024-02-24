@@ -10,6 +10,10 @@
 
 #include <string>
 
+#include <vertexArray.hpp>
+#include <vertexBuffer.hpp>
+#include <indexBuffer.hpp>
+
 // Forward declaration
 class Shader;
 class BoundingBox;
@@ -18,7 +22,9 @@ class ResourceManager;
 class Sprite
 {
 private:
-    unsigned int VAO, VBO, EBO;
+    VertexArray* VAO;
+    VertexBuffer* VBO;
+    IndexBuffer* EBO;
 
     Shader* spriteShader = nullptr;
     BoundingBox* spriteBoundingBox;

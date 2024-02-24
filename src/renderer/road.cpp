@@ -201,7 +201,7 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     
     unsigned int i = 0;
     // Create index buffer from number of sides info
-    for (i = 0; i < numberOfSides/2; i++)
+    for (i = 0; i < static_cast<unsigned int>(numberOfSides/2); i++) // Cast for warn suppression
     {
         // First semi-circle
         indices.insert(indices.end(), {0, i+1, i+2});

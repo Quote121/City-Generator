@@ -4,6 +4,7 @@
 #include <bounding_box.hpp>
 #include <resourceManager.hpp>
 #include <config.hpp>
+#include <renderer.hpp>
 
 Sprite::Sprite(Shader* spriteShader_in, const std::string& filename) : texturePath{filename}
 {
@@ -66,36 +67,28 @@ Sprite::~Sprite()
     // Sprite shader is allocated memory in sprite_object.hpp, needs to be freed
     delete(spriteShader);
     delete(spriteBoundingBox);
-    glDeleteVertexArrays(1, &VAO);
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+
+    delete(VAO);
+    delete(VBO);
+    delete(EBO);
 }
 
 
 // Setup vertex and buffer arrays
 void Sprite::SetupSprite(float vertices[], unsigned int indices[])
 {
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
+    VAO = new VertexArray();
+    VBO = new VertexBuffer();
+    EBO = new IndexBuffer();
 
-    glBindVertexArray(VAO);
+    VertexBufferLayout vbl;
+    vbl.AddFloat(3); // xyz
+    vbl.AddFloat(2); // tex coords
+    
+    VBO->SetData<float>(vertices, 20);
+    VAO->AddBuffer(VBO, &vbl);
 
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, 20 * sizeof(float), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * sizeof(float), indices, GL_STATIC_DRAW);
-
-    // Position attributes
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
-    // texture coordinates attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindVertexArray(0); // Unbind
+    EBO->SetData(indices, 6);
 }
 
 // Make the OpenGL draw call
@@ -104,12 +97,7 @@ void Sprite::Draw()
     glActiveTexture(GL_TEXTURE0); // Associate the texture to GL_TEXTURE0 texture unit
     glBindTexture(GL_TEXTURE_2D, spriteTextureID);
     spriteShader->setInt("texture1", 0);
-    
-    glBindVertexArray(VAO); // Bind the vertex object
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    GLenum error;
-    while ((error = glGetError()) != GL_NO_ERROR) {
-        LOG(ERROR, "OpenGL Sprite::Draw() Error: " << error);
-    }
+    Renderer::GetInstance()->DrawIndices(VAO, EBO);
 }
+
