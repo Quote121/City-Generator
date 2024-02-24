@@ -1,5 +1,4 @@
 #include <road.hpp>
-#include <glad/glad.h>
 #include <config.hpp>
 #include <shader.hpp>
 #include <resourceManager.hpp>

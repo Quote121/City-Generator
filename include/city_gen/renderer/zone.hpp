@@ -2,14 +2,17 @@
 #include <array>
 #include <glm/glm.hpp>
 
+#include <vertexArray.hpp>
+#include <vertexBuffer.hpp>
+#include <indexBuffer.hpp>
+
 // Zone renderer for debugging
 
 class Zone
 {
 private:
-    
-    unsigned VAO, VBO;
-    // unsigned EBO;
+    VertexArray* VAO;
+    VertexBuffer* VBO;
 
 public:
 
