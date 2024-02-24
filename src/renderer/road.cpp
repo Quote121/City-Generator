@@ -41,8 +41,6 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     // const float lineAngle = glm::atan((point_a.z - point_b.z)/(point_a.x - point_b.x));
 
 
-
-
     // Flip if we switch sides, this will flip the direction that the semi-circles will be facing
     int flip = 1;
     if (point_a.x <= point_b.x) { flip = -1; }
@@ -199,18 +197,6 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     glm::vec3 rightZone_bottomRight = six - (invUnitVecAB * (radius*2));
     road_right_zone_vertices = {four, six, rightZone_bottomRight, rightZone_bottomLeft};
 
-
-    // Needed for draw
-    // unsigned int roadVertices = verts.size(); 
-    
-    for (int i = 0; i < verts.size()/6; i++)
-    {
-        // Print out points and normals
-        LOG(STATUS, "Vert: " << verts[(6*i)+0] << " " << verts[(3*i)+1] << " " << verts[(6*i)+2]);
-        LOG(STATUS, "Vert: " << verts[(6*i)+3] << " " << verts[(6*i)+4] << " " << verts[(6*i)+5] << "\n");
-        
-    }
-
     std::vector<unsigned int> indices;
     
     unsigned int i = 0;
@@ -245,7 +231,6 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     VAO->AddBuffer(VBO, &vbl);
 
     EBO->SetData(indices.data(), indices.size());
-
 }     
 
 void Road::Draw()

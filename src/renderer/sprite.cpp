@@ -107,9 +107,6 @@ void Sprite::Draw()
     
     glBindVertexArray(VAO); // Bind the vertex object
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0); // Once drawn we unbind the vertex object
-    
-    glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
 
     GLenum error;
     while ((error = glGetError()) != GL_NO_ERROR) {

@@ -30,7 +30,7 @@ public:
     static Renderer* GetInstance();
 
 
-    void ClearScreen();
+    void ClearScreen(void) const;
     // Make sure shaders are bound before calls to draw, mode is the primative to draw, default gl_triangle
     void DrawIndices(const VertexArray* vao, const IndexBuffer* ebo, unsigned int mode = GL_TRIANGLES);
     // @params count - number of arrays to draw with primative from vao

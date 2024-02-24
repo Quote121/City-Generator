@@ -25,13 +25,12 @@
 #include <inputHandler.hpp>
 #include <menues.hpp>
 #include <scene.hpp>
+#include <renderer.hpp>
+#include <generator.hpp>
+#include <road.hpp>
 
 // Perlin noise generator
 #include <Reputeless/PerlinNoise.hpp>
-#include <generator.hpp>
-
-#include <road.hpp>
-
 
 
 // Prototypes
@@ -339,15 +338,11 @@ int main() {
     // If GLFW has been instructed to close then run this function
     while (!glfwWindowShouldClose(window)){
 
-
-
         double currentFrame = glfwGetTime();
         deltaTime = currentFrame - lastFrame;
         lastFrame = currentFrame;
 
         glfwPollEvents();
-
-
 
         // Call the input processer each loop to check if the esc key is pressed
         InputHandler::process(window, deltaTime);
@@ -359,13 +354,7 @@ int main() {
         // glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo); // Bind your FBO as the destination
         // ===================================================
 
-
-        // Clearing colour buffer
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-    
+        Renderer::GetInstance()->ClearScreen();         
 
         scene->GetRoadObjects();
 
