@@ -354,24 +354,35 @@ void generator::CalculateValidZones()
     std::vector<RoadObject*> sceneRoads = Scene::getInstance()->GetRoadObjects();
     
 
+    bool zoneACollide = false;
+    bool zoneBCollide = false;
+
     unsigned int collisionZoneCount = 0;
     for (size_t i = 0; i < sceneRoads.size(); i++)
     {
+        zoneACollide = false; zoneBCollide = false;
         for (size_t j = 0; j < sceneRoads.size(); j++)
         {
             // Optimization cull those which are too far away to be considered
             if (i != j && !sceneRoads[i]->TooFarForCollision(sceneRoads[j], 1.0f))
             {
+                // Boolean for both left and right
+
                 if (sceneRoads[i]->GetZoneA()->Intersects(sceneRoads[j]->GetRoadOBB()))
                 {
                     sceneRoads[i]->GetZoneA()->SetColour(RED);
                     collisionZoneCount++;
-                    break;
+                    zoneACollide = true;
                 }
                 if (sceneRoads[i]->GetZoneB()->Intersects(sceneRoads[j]->GetRoadOBB()))
                 {
                     sceneRoads[i]->GetZoneB()->SetColour(RED);
                     collisionZoneCount++;
+                    zoneBCollide = true;
+                }
+                // If both already collide we can skip onto the next i road
+                if (zoneACollide && zoneBCollide)
+                {
                     break;
                 }
             }

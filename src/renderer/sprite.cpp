@@ -99,5 +99,6 @@ void Sprite::Draw()
     spriteShader->setInt("texture1", 0);
 
     Renderer::GetInstance()->DrawIndices(VAO, EBO);
+    glBindTexture(GL_TEXTURE_2D, 0); // Unbind as models without textures will bind it 
 }
 

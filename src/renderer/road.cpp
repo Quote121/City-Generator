@@ -37,8 +37,6 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 
     // To add to offset of circle angle
     const float lineAngle = glm::atan((point_b.z - point_a.z)/(point_b.x - point_a.x));
-    // const float lineAngle = glm::atan((point_a.z - point_b.z)/(point_a.x - point_b.x));
-
 
     // Flip if we switch sides, this will flip the direction that the semi-circles will be facing
     int flip = 1;
@@ -46,7 +44,6 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 
     // Normals of the semi-circles are all the same and are straight up
     // When we get to the slope thats when we need to add normal calculations to determine it
-
     std::vector<float> verts = {};
 
     // First side A
@@ -69,7 +66,6 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     verts.insert(verts.end(), {point_b.x, point_b.y, point_b.z});
     verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
 
-    
     for (int i = numberOfSides/4 ; i < static_cast<float>(numberOfSides) * (3.0f/4.0f) + 1; i++)
     {
         float xOffset = radius * (glm::cos((i * theta) + lineAngle)) * flip;
@@ -105,30 +101,20 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     glm::vec3 unitVecAB = glm::normalize(glm::vec3{point_b.x, 0, point_b.z} - glm::vec3{point_a.x, 0, point_a.z});
     glm::vec3 invUnitVecAB = glm::vec3{-unitVecAB.z, unitVecAB.y, unitVecAB.x};
     
-    // All 4 verts of point A
-    glm::vec3 leftALine = point_a + (invUnitVecAB * radius);
-    glm::vec3 rightALine = point_a - (invUnitVecAB * radius);
-    
     glm::vec3 point_a_offset = {point_a.x + (radius * unitVecAB.x), point_a.y, point_a.z + (radius * unitVecAB.z)};
     glm::vec3 leftA = point_a_offset + (invUnitVecAB * radius);
     glm::vec3 rightA = point_a_offset - (invUnitVecAB * radius);
 
-    // All 4 verts of point B
-    glm::vec3 leftBLine = point_b + (invUnitVecAB * radius);                    
-    glm::vec3 rightBLine = point_b - (invUnitVecAB * radius);
-    
     glm::vec3 point_b_offset = {point_b.x - (radius * unitVecAB.x), point_b.y, point_b.z - (radius * unitVecAB.z)};
     glm::vec3 leftB = point_b_offset + (invUnitVecAB * radius);
     glm::vec3 rightB = point_b_offset - (invUnitVecAB * radius);
 
-    glm::vec3 one = {leftALine.x, point_a.y, leftALine.z};
-    glm::vec3 two = {rightALine.x, point_a.y, rightALine.z};
     glm::vec3 three = {leftA.x, point_a.y, leftA.z};
     glm::vec3 four = {rightA.x, point_a.y, rightA.z};
     glm::vec3 five = {leftB.x, point_b.y, leftB.z};
     glm::vec3 six = {rightB.x, point_b.y, rightB.z};
-    glm::vec3 seven = {leftBLine.x, point_b.y, leftBLine.z};
-    glm::vec3 eight = {rightBLine.x, point_b.y, rightBLine.z};
+    
+    // 1, 2, 7, 8 are all overlapped points and so we reuse them from the semi-circles
 
     // Done -'ve in front of normals since the z axis is the other way around
     // 4 5 from point 3
@@ -139,13 +125,6 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     glm::vec3 fiveNormal = -getCross(five, three, six);
     // 5 4 from point 6
     glm::vec3 sixNormal = -getCross(six, five, four);
-    
-    // Adjacent to point A
-    verts.insert(verts.end(), {one.x, one.y, one.z});                           // 1
-    verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
-
-    verts.insert(verts.end(), {two.x, two.y, two.z});                           // 2
-    verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
 
     // Left and right
     verts.insert(verts.end(), {three.x, three.y, three.z});                     // 3
@@ -160,14 +139,6 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 
     verts.insert(verts.end(), {rightB.x, point_b.y, rightB.z});                 // 6
     verts.insert(verts.end(), {sixNormal.x, sixNormal.y, sixNormal.z});
-
-    // Adjacent to point B
-    verts.insert(verts.end(), {seven.x, seven.y, seven.z});                     // 7
-    verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
-
-    verts.insert(verts.end(), {eight.x, eight.y, eight.z});                     // 8
-    verts.insert(verts.end(), {0.0f, 1.0f, 0.0f});
-    //========================//
 
     //
     // 4 vertices that fully encapsulate the road on the xz plane
@@ -212,14 +183,15 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     {
         indices.insert(indices.end(), {nextCircleStartIndex, i+1, i+2});
     }
-    // Set index to the first of the squares
-    i+=2;
   
-    // Add planes
-    // A box plane (2 triangles each plane)
-    indices.insert(indices.end(), {i, i+1, i+2, i+1, i+2, i+3,    // 123 234
+    const unsigned int one = 1;
+    const unsigned int two = 1 + numberOfSides/2;
+    const unsigned int sev = 3 + numberOfSides; // Becuase the other semi-circle is drawn like a mirror image
+    const unsigned int eig = 3 + numberOfSides/2;
+
+    indices.insert(indices.end(), {one, two, i+2, two, i+2, i+3,    // 123 234
                                    i+2, i+3, i+4, i+3, i+4, i+5,  // 345, 456
-                                   i+4, i+5, i+6, i+5, i+6, i+7   // 567, 678
+                                   i+4, i+5, sev, i+5, sev, eig   // 567, 678
     });
 
     VertexBufferLayout vbl;
