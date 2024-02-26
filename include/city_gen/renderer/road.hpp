@@ -35,6 +35,11 @@ private:
     std::array<glm::vec3, 4> road_right_zone_vertices;
 
 
+    // Road vertices and indices to use for batch renderer
+    std::vector<float> gVertices;
+    std::vector<unsigned int> gIndices;
+    int batchRenderID = -1;
+
     // Private as we want certain road object values to be updated before
     // Pass both point and road width to recalculate the vertices of the road
     void UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width);
@@ -49,6 +54,28 @@ public:
 
     Road(Shader* shader);
     ~Road();
+
+
+    std::vector<float> const* GetVertices(void) const
+    {
+        return &gVertices;
+    }
+
+    std::vector<unsigned int> const* GetIndices(void) const
+    {
+        return &gIndices;
+    }
+
+    void SetBatchRenderID(const unsigned int id)
+    {
+        batchRenderID = id;
+    }
+
+    unsigned int GetBatchRenderID(void) const
+    {
+        return batchRenderID;
+    }
+    
 
     void SetRoadCurveSides(unsigned int sides)
     {

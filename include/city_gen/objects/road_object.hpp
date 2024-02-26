@@ -41,6 +41,8 @@ public:
 
     ~RoadObject();
 
+    Road const* GetRoadRenderer(void) const;
+
     // This will take a threshold value and road object and determine if roads are far enough away to not do more costly collision calculations
     bool TooFarForCollision(const RoadObject* road, const float threshold);
 

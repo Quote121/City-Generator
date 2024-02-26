@@ -4,7 +4,7 @@
 
 // Get roads
 #include <scene.hpp>
-
+#include <cassert>
 
 Batch::Batch()
 {
@@ -41,17 +41,32 @@ void Batch::UpdateAll(void)
     vbl.AddFloat(3); // xyz
     vbl.AddFloat(3); // normal
 
+    // Buffer for all roads
+    VBO->CreateBuffer(ROAD_MAX_BUFFER_SIZE_BYTES * roads.size());
+    EBO->CreateBuffer(ROAD_MAX_INDICES * roads.size());
 
-    // VBO->SetData<float>(, )
-    // VAO->AddBuffer(VBO, &VBL);
-    // EBO->SetData(, ROAD_MAX_INDICES)
+    vbl.AddFloat(3); // aPos
+    vbl.AddFloat(3); // normals
     
-    // No class for indirect buffer so manually here
+    // count, _, offset, _, _
+    DrawElementsIndirectCommand edic = {8, 0, 1, 0, 0};
 
+    // No class for indirect buffer so manually here
     for (auto road : roads)
     {
+        unsigned int indexCount = road->GetRoadRenderer()->GetIndices()->size();
+        int renderID = road->GetRoadRenderer()->GetBatchRenderID();
 
+        // Check that the road is valid
+        assert(indexCount <= ROAD_MAX_INDICES);
+        assert(renderID >= 0);
+
+        indirectCommands.push_back({indexCount, 0, renderID * ROAD_MAX_BUFFER_SIZE_BYTES, 0, 0});
+        
+        // Enter data into VBO and EBO
     }
+
+    // Bind it all to VAO
 
 }
 

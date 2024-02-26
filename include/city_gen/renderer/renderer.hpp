@@ -16,20 +16,12 @@
 
 // Max buffer sizes
 
-// 40 point sides 22 vertices for each semi-circle
-// 8 for middle
-//
-// 44 + 8 = 52 vertices (4 duplicates) for a road
-//
-// Indices:
-//
-// 20 sections for each semi-circle
-// 4 sections for middle
-// 44 triangles, 44*3 = 132 indices
-#define ROAD_MAX_VERTICES 52 // 4 dupes
-// #define ROAD_MAX_VERTICES 48 // no dupes
+// For max 40 vert circle roads // TODO check these values
+#define ROAD_MAX_VERTICES 48 // no dupes
 #define ROAD_MAX_INDICES 132 // for the 44 GL_TRIANGLES
-
+// Max bytes for a buffer, 6 is for xyz aPos and xyz normals
+constexpr unsigned int ROAD_MAX_BUFFER_SIZE_BYTES = ROAD_MAX_VERTICES * 6 * sizeof(float);
+constexpr unsigned int ROAD_MAX_BUFFER_SIZE = ROAD_MAX_VERTICES * 6;
 
 // Indrect command structure
 struct DrawElementsIndirectCommand {

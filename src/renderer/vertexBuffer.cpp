@@ -3,9 +3,7 @@
 
 // Explicit template instantation
 template void VertexBuffer::SetData<float>(const void* data, const unsigned int size);
-template void VertexBuffer::SetData<unsigned int>(const void* data, const unsigned int size);
-template void VertexBuffer::SetData<double>(const void* data, const unsigned int size);
-
+template void VertexBuffer::CreateBuffer<float>(const unsigned int size);
 
 VertexBuffer::VertexBuffer(void)
 {
@@ -24,6 +22,27 @@ void VertexBuffer::SetData(const void* data, const unsigned int size)
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, size * sizeof(T), data, GL_STATIC_DRAW);
 }
+
+// Create buffer of size with no data
+template<typename T>
+void VertexBuffer::CreateBuffer(const unsigned int size)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, size * sizeof(T), nullptr, GL_STATIC_DRAW);
+}
+
+void VertexBuffer::CreateBuffer(const unsigned int bytes)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, bytes, nullptr, GL_STATIC_DRAW);
+}
+
+// Update section of buffer with data
+void VertexBuffer::UpdateBuffer(const void* data, const unsigned int offset, const unsigned int size)
+{
+    glBufferSubData(GL_ARRAY_BUFFER, offset, size, data); 
+}
+
 
 void VertexBuffer::Bind(void) const
 {

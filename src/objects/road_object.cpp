@@ -32,6 +32,11 @@ RoadObject::~RoadObject()
     delete(zoneB);
 }
 
+inline Road const* RoadObject::GetRoadRenderer(void) const
+{
+    return road_renderer;
+}
+
 void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
 {
     // Set all shader properties in here

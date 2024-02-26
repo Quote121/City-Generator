@@ -23,6 +23,18 @@ void IndexBuffer::SetData(const unsigned int* indices, unsigned int count)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), indices, GL_STATIC_DRAW);
 }
 
+// Number of indices
+void IndexBuffer::CreateBuffer(const unsigned int size)
+{
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, size * sizeof(unsigned int), nullptr, GL_STATIC_DRAW);
+}
+    
+void IndexBuffer::UpdateBuffer(const void* data, const unsigned int offset, const unsigned int size)
+{
+    glBufferSubData(GL_ARRAY_BUFFER, offset, size, data); 
+}
+
 unsigned int IndexBuffer::GetCount(void) const
 {
     return indexBufferCount;

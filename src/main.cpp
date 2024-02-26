@@ -273,7 +273,7 @@ int main() {
     // scene->addRoad({10,0, 8}, {-10,0,8}, 1.0f);
 
     // Wireframe for debugging
-    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
 
 
     // Road* j = new Road(&lineShader);
