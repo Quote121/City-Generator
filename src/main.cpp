@@ -331,7 +331,8 @@ int main() {
     
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+    // Update all road buffers in the renderer
+    Scene::getInstance()->roadBatchRenderer->UpdateAll();
 
     // bool show_demo_window = true;
     // Render loop to keep rendering until the program is closed
@@ -365,7 +366,7 @@ int main() {
         // 2 View types of view, perspective and orthographic projections. We use perspective becuase we are human and have 2 eyes and so can measure depth
         //glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f); // Makes stuff look 2d
         // FOV, aspect ratio (width/height), near distance, far distance
-        glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 1000.0f);
+        glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 10000.0f);
         glm::mat4 view = camera->GetViewMatrix();
         
         Menues::display(deltaTime);

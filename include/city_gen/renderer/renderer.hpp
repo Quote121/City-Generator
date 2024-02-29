@@ -3,6 +3,7 @@
 #include "indexBuffer.hpp"
 #include "vertexArray.hpp"
 #include "vertexBuffer.hpp"
+#include <glm/glm.hpp>
 
 // Defined outside of Glad as we cant include several times
 #define GL_POINTS 0x0000
@@ -14,11 +15,9 @@
 #define GL_TRIANGLE_FAN 0x0006
 #define GL_QUADS 0x0007
 
-// Max buffer sizes
-
 // For max 40 vert circle roads // TODO check these values
 #define ROAD_MAX_VERTICES 48 // no dupes
-#define ROAD_MAX_INDICES 132 // for the 44 GL_TRIANGLES
+#define ROAD_MAX_INDICES 138 // for the 46 GL_TRIANGLES
 // Max bytes for a buffer, 6 is for xyz aPos and xyz normals
 constexpr unsigned int ROAD_MAX_BUFFER_SIZE_BYTES = ROAD_MAX_VERTICES * 6 * sizeof(float);
 constexpr unsigned int ROAD_MAX_BUFFER_SIZE = ROAD_MAX_VERTICES * 6;
@@ -56,11 +55,14 @@ public:
     void UpdateAll(void);
 
     // Update one set of road vertices and indices
-    void Update(void);
+    // Roads call an update and pass their renderID which is used to find them in the List
+    void Update(const unsigned int renderID);
 
-    void DrawBatch(void) const; 
+    void DrawBatch(glm::mat4 view, glm::mat4 projection) const; 
 
 };
+
+
 
 class Renderer
 {

@@ -31,7 +31,7 @@ private:
     glm::vec3 roadColour = DEFAULT_ROAD_COLOUR; // Light grey
     
     // Bool for rendering
-    bool enableLighting = true;
+    bool enableLighting = false;
 
 public:
     RoadObject(const glm::vec3 point_a,
@@ -41,7 +41,7 @@ public:
 
     ~RoadObject();
 
-    Road const* GetRoadRenderer(void) const;
+    Road* const GetRoadRenderer(void);
 
     // This will take a threshold value and road object and determine if roads are far enough away to not do more costly collision calculations
     bool TooFarForCollision(const RoadObject* road, const float threshold);

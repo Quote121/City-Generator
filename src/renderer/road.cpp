@@ -194,6 +194,9 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
                                    i+4, i+5, sev, i+5, sev, eig   // 567, 678
     });
 
+    gVertices = verts;
+    gIndices = indices;
+
     VertexBufferLayout vbl;
     vbl.AddFloat(3); // xyz
     vbl.AddFloat(3); // norms

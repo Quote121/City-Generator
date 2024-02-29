@@ -13,7 +13,7 @@ public:
     void SetData(const unsigned int* indices, unsigned int count);
 
     void CreateBuffer(const unsigned int size);
-    void UpdateBuffer(const void* data, const unsigned int offset, const unsigned int size);
+    void UpdateBuffer(const void* data, const unsigned int offset, const unsigned int size_bytes);
 
     unsigned int GetCount(void) const;
     void Bind(void) const;

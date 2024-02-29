@@ -38,9 +38,10 @@ void VertexBuffer::CreateBuffer(const unsigned int bytes)
 }
 
 // Update section of buffer with data
-void VertexBuffer::UpdateBuffer(const void* data, const unsigned int offset, const unsigned int size)
+void VertexBuffer::UpdateBuffer(const void* data, const unsigned int offset, const unsigned int size_bytes)
 {
-    glBufferSubData(GL_ARRAY_BUFFER, offset, size, data); 
+    this->Bind();
+    glBufferSubData(GL_ARRAY_BUFFER, offset, size_bytes, data); 
 }
 
 

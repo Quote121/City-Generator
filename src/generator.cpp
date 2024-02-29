@@ -305,6 +305,10 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
     // When generating, we could give a radius from 0,0 for roads to be permitted, this would give a good effect IMO
     uint64_t timeElapsed = StopWatch::GetTimeElapsed(roadGenerateStartTime);
     LOG(STATUS, "[ GenerateRoads finished. Time elapsed: " << timeElapsed << "ms ]\n");
+
+    // Update the batch renderer buffers
+    Scene::getInstance()->roadBatchRenderer->UpdateAll();
+
 }
 
 void generator::LSystemGen(std::string *axiom, uint iterations)

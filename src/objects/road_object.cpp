@@ -32,7 +32,7 @@ RoadObject::~RoadObject()
     delete(zoneB);
 }
 
-inline Road const* RoadObject::GetRoadRenderer(void) const
+Road* const RoadObject::GetRoadRenderer(void)
 {
     return road_renderer;
 }

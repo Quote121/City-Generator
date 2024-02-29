@@ -27,12 +27,15 @@ Scene::Scene()
     // Z is Blue
     this->addLineAxis(glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0})
         ->SetColour(glm::vec3{0, 0, 1});
+
+    roadBatchRenderer = new Batch(); 
 }
 
 
 // Deallocate all created objects
 Scene::~Scene()
 {
+    delete(roadBatchRenderer);
     delete(pInstance);
 
     // Free all allocated objects
@@ -347,11 +350,16 @@ void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
         obj->Draw(view, projection);
     }
 
-    // Draw roads
+
+
+    roadBatchRenderer->DrawBatch(view, projection);
+
+    // Draw roadsscene
     for (auto& obj : GetRoadObjects())
     {
-        obj->Draw(view, projection);
+        // obj->Draw(view, projection);
     }
+
 
     // Get the sprites and point light sprites and order both by distance to 
     // avoid alpha bug, this inner vector also avoids bug of ImGui menu displaying

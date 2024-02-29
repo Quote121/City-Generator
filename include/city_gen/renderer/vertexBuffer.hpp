@@ -19,7 +19,7 @@ public:
 
     void CreateBuffer(const unsigned int bytes);
 
-    void UpdateBuffer(const void* data, const unsigned int offset, const unsigned int size);
+    void UpdateBuffer(const void* data, const unsigned int offset, const unsigned int size_bytes);
 
     void Bind(void) const;
     void Unbind(void) const;

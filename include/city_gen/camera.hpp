@@ -4,8 +4,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <string>
-#include <sstream>
 
 // Enum class declared instead of enum as other enum types can be seen as equivilent
 enum class Camera_Movement {

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <glm/glm.hpp>
+#include <vector>
 
 #include <stopwatch.hpp>
 
@@ -55,8 +56,19 @@ inline std::ostream& operator<<(std::ostream& stream, const glm::vec3& vector)
     return stream;
 }
 
+// vectors
+template<typename T>
+inline std::ostream& operator<<(std::ostream& stream, const std::vector<T> vector)
+{
+    stream << "[";
+    for (auto a : vector)
+    {
+        stream << " " << a;
+    }
+    stream << "]";
+    return stream;
+} 
 
-// global boolean for showing zone line
 
 /////////////////////////////////////////
 

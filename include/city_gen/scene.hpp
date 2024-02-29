@@ -21,6 +21,8 @@
 #include <skybox.hpp>
 #include <shader.hpp>
 
+#include <renderer.hpp>
+
 class Scene
 {
 private:
@@ -66,6 +68,9 @@ private:
                             const ShaderPath* shader_in = nullptr);
 
 public:
+
+    Batch* roadBatchRenderer;
+
     // Singleton setup //  
     Scene(Scene &other) = delete;
     void operator=(const Scene &) = delete;

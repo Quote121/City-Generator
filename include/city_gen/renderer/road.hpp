@@ -56,12 +56,12 @@ public:
     ~Road();
 
 
-    std::vector<float> const* GetVertices(void) const
+    inline std::vector<float> const* GetVertices(void) const
     {
         return &gVertices;
     }
 
-    std::vector<unsigned int> const* GetIndices(void) const
+    inline std::vector<unsigned int> const* GetIndices(void) const
     {
         return &gIndices;
     }
