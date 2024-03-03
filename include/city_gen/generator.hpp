@@ -193,6 +193,7 @@ namespace generator
     // Building placement
     void CalculateValidZones();
     void ClearZoneCollisions();
+    void GenerateBuildings();
 
     // Tree sprite placement
     void generateTrees();

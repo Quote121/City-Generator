@@ -65,6 +65,17 @@ public:
         return boundingBoxShader;
     }
 
+    // For building placement
+    inline glm::vec3 getFrontLeftBuilding(void) const
+    {
+        return {min.x, min.y, min.z};
+    }
+
+    inline glm::vec3 getFrontRightBuilding(void) const
+    {
+        return {max.x, min.y, min.z};
+    }
+
     // The setup for the box VAO and VBO will be done everytime the update() is called
     void Draw();
 };

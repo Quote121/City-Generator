@@ -14,10 +14,10 @@ private:
 
     // Make constructor for these values
     // glm::vec3 ambient = {0.05f, 0.05f, 0.05f};
-    glm::vec3 ambient = {0.4f, 0.4f, 0.4f};
+    glm::vec3 ambient = {0.1f, 0.1f, 0.1f};
 
-    glm::vec3 diffuse = {0.08f, 0.08f, 0.08f};
-    glm::vec3 specular = {1.0f, 1.0f, 1.0f};
+    glm::vec3 diffuse = {1.0f, 1.0f, 1.0f};
+    glm::vec3 specular = {0.07f, 0.07f, 0.07f};
     
     // Seem to be the same
     float constant = 1.0f;

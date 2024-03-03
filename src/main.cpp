@@ -180,10 +180,10 @@ int main() {
 
 
     //
-    scene->addModel(building1)
-        ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, 0})
-        ->ShowBoundingBox(false);
+    // scene->addModel(building1)
+    //     ->SetModelOriginCenterBottom()
+    //     ->SetPosition(glm::vec3{10, 0, 0})
+    //     ->ShowBoundingBox(false);
     //     
     //
     //
@@ -213,7 +213,9 @@ int main() {
         ->SetModelOriginCenterBottom()
         ->ShowBoundingBox(false)
         ->SetLightingEnabled(true)
-        ->SetIsVisible(false);
+        ->SetIsVisible(true)
+        ->SetPosition({0,-0.4, 0})
+        ->SetScale(2);
 
 
     // Tree asset generation
@@ -246,29 +248,47 @@ int main() {
          ->SetModelOriginCenter()
          ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
          ->ShowBoundingBox(true)
-         ->SetLightingEnabled(true)
-         ->SetIsVisible(false);
-   //
-    scene->addPointLight()
-        ->SetPosition(glm::vec3{0, 0, 0});
-
-    scene->addPointLight()
-        ->SetPosition(glm::vec3{-10, 0, 0});
-
+         ->SetLightingEnabled(true);
+         // ->SetIsVisible(false);
+    // 
+    // scene->addPointLight()
+    //     ->SetPosition(glm::vec3{0, 0, 0});
+    //
+    // scene->addPointLight()
+    //     ->SetPosition(glm::vec3{-10, 0, 0});
+    //
     scene->addDirectionalLight()
-        ->SetDirection(glm::vec3(-1, -4, -1));
+        ->SetDirection(glm::vec3(0, 0, 0));
 
     
     Shader lineShader("../assets/shaders/default/line/line_shader.frag",
                      "../assets/shaders/default/line/line_shader.frag");
 
     
+    std::string buildingTest = "../assets/models/Buildings/buildingTest.obj";
+    ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath}; 
+    scene->addModel(buildingTest, &buildingShader)
+        ->SetLightingEnabled(false)
+        ->SetOriginFrontRight()
+        ->SetPosition({1, 0, 1});
+        // ->SetSpawnOffset();
+
     // Using builder rather than constructor will have larger overhead as object will be created then modified
     // Builder WILL DO a second UpdateVertices() call as it will need to recalculate based on new width
     // scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f);
     // scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
    
-    scene->addRoad({5, 0, 5}, {5, 0, 10.3}, 1.2f);
+    scene->addRoad({5, 0, 5}, {5, 0, 10}, 1.0f);
+    scene->addRoad({7, 0, 10}, {7, 0, 5}, 1.0f);
+    //
+    scene->addRoad({-5, 0, 5}, {-10, 0, 5}, 1.0f);
+    scene->addRoad({-10, 0, 7}, {-5, 0, 7}, 1.0f);
+    //
+    scene->addRoad({-1, 0, -1}, {-6, 0, -6});
+    scene->addRoad({-10, 0, -12}, {-5, 0, -7});
+
+
+
     // scene->addRoad({4, 0, 0}, {-4, 0, 0}, 1.0f); 
     // scene->addRoad({10,0, 8}, {-10,0,8}, 1.0f);
 

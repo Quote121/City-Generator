@@ -93,7 +93,7 @@ public:
     // Roads
     RoadObject* addRoad(glm::vec3 point_a,
                         glm::vec3 point_b,
-                        float road_width = 3.0f, // default road width size
+                        float road_width = 1.0f, // default road width size
                         const ShaderPath* shader_in = nullptr);
 
     DirectionalLightObject* addDirectionalLight();

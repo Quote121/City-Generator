@@ -374,13 +374,13 @@ void generator::CalculateValidZones()
 
                 if (sceneRoads[i]->GetZoneA()->Intersects(sceneRoads[j]->GetRoadOBB()))
                 {
-                    sceneRoads[i]->GetZoneA()->SetColour(RED);
+                    sceneRoads[i]->GetZoneA()->SetZoneUsable(true);
                     collisionZoneCount++;
                     zoneACollide = true;
                 }
                 if (sceneRoads[i]->GetZoneB()->Intersects(sceneRoads[j]->GetRoadOBB()))
                 {
-                    sceneRoads[i]->GetZoneB()->SetColour(RED);
+                    sceneRoads[i]->GetZoneB()->SetZoneUsable(true);
                     collisionZoneCount++;
                     zoneBCollide = true;
                 }
@@ -411,5 +411,65 @@ void generator::ClearZoneCollisions()
         road->GetZoneA()->SetColour(GREEN);
         road->GetZoneB()->SetColour(GREEN);
     }
+}
+
+#define MAXLOOPS 20
+
+void generator::GenerateBuildings()
+{
+
+    // TEMP
+    std::string buildingTest = "../assets/models/Buildings/buildingTest.obj";
+    ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath}; 
+
+
+    Scene* scene = Scene::getInstance();
+
+    std::vector<RoadObject*> roads = scene->GetRoadObjects();
+
+    for (auto& road : roads)
+    {
+        for (int i = 0; i < MAXLOOPS; i++)
+        {
+            auto zone = road->GetZoneA()->GetValidPlacement();
+
+            // Check we still have zones left
+            if (zone != nullptr && road->GetZoneA()->IsUsable())
+            {
+                scene->addModel(buildingTest, &buildingShader)
+                    ->SetOriginFrontLeft()
+                    ->SetPosition(zone->position)
+                    ->ShowBoundingBox(false)
+                    ->SetRotation(glm::vec3{0,zone->angle,0});
+            }
+            else 
+            {
+                break;
+            }
+        }       
+    }
+
+    for (auto& road : roads)
+    {
+        for (int i = 0; i < MAXLOOPS; i++)
+        {
+            auto zone = road->GetZoneB()->GetValidPlacement();
+
+            // Check we still have zones left
+            if (zone != nullptr && road->GetZoneB()->IsUsable())
+            {
+                scene->addModel(buildingTest, &buildingShader)
+                    ->SetOriginFrontLeft()
+                    ->SetPosition(zone->position)
+                    ->ShowBoundingBox(false)
+                    ->SetRotation(glm::vec3{0,zone->angle,0});
+            }
+            else 
+            {
+                break;
+            }
+        }       
+    }
+
 }
 

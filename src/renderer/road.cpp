@@ -165,8 +165,9 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     // Right zone, 4 and 6 used
     glm::vec3 rightZone_bottomLeft = four - (invUnitVecAB * (radius*2));
     glm::vec3 rightZone_bottomRight = six - (invUnitVecAB * (radius*2));
-    road_right_zone_vertices = {four, six, rightZone_bottomRight, rightZone_bottomLeft};
-
+    // road_right_zone_vertices = {four, six, rightZone_bottomRight, rightZone_bottomLeft};
+    road_right_zone_vertices = {six, four, rightZone_bottomLeft, rightZone_bottomRight};
+    
     std::vector<unsigned int> indices;
     
     unsigned int i = 0;

@@ -31,7 +31,7 @@ private:
     glm::vec3 roadColour = DEFAULT_ROAD_COLOUR; // Light grey
     
     // Bool for rendering
-    bool enableLighting = false;
+    bool enableLighting = true;
 
 public:
     RoadObject(const glm::vec3 point_a,

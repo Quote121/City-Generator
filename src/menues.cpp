@@ -80,8 +80,8 @@ void Menues::display(float deltaTime)
 
 
     ImGui::Text("Building generator settings");
-    bool generateBuildings = ImGui::Button("Generate");
-    if (generateBuildings)
+    bool calculateZones = ImGui::Button("Generate");
+    if (calculateZones)
     {
         generator::CalculateValidZones();
     }
@@ -90,6 +90,13 @@ void Menues::display(float deltaTime)
     {
         generator::ClearZoneCollisions(); 
     }
+
+    bool generateBuildings = ImGui::Button("Generate buildings");
+    if (generateBuildings)
+    {
+        generator::GenerateBuildings();
+    }
+
 
     ImGui::Checkbox("Show road zones", &scene->GetShowRoadZones());
     ImGui::Checkbox("Remove intersecting zones", &scene->GetRemoveIntersectingZones());

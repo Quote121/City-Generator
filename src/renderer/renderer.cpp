@@ -129,10 +129,10 @@ void Batch::DrawBatch(glm::mat4 view, glm::mat4 projection) const
     objectShader->setMat4("model", result); // TODO remove from shader as we cannot translate/rotate/scale the model
     objectShader->setVec3("colour", DEFAULT_ROAD_COLOUR); 
 
-    objectShader->setBool("ShowLighting", false);
+    objectShader->setBool("ShowLighting", true);
 
     // Lighting
-    if (false)
+    if (true)
     {
         // TEMP we go through all point lights and assign the values form it here
         objectShader->setVec3("viewPos", Camera::getInstance()->Position);

@@ -22,6 +22,14 @@ struct Texture {
     std::string path;
 };
 
+// Not for textures, just raw values
+struct Material {
+    glm::vec3 ambience = {0.5f, 0.5f, 0.5f};
+    glm::vec3 diffuse = {1.0f, 1.0f, 1.0f};
+    glm::vec3 specular = {0.4f, 0.4f, 0.4f};
+    float shininess = 20.0f;
+};
+
 class Mesh{
 
     private:
@@ -35,8 +43,9 @@ class Mesh{
         std::vector<Vertex>         vertices;
         std::vector<unsigned int>   indices;
         std::vector<Texture>        textures;
+        Material                    material;
 
-        Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> textures);
+        Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> textures, Material material);
         void Draw(Shader &shader);
 
 };

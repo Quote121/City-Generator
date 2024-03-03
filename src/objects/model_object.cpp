@@ -177,6 +177,17 @@ ModelObject* ModelObject::SetModelOriginCenter()
     return this;
 }
 
+ModelObject* ModelObject::SetOriginFrontLeft()
+{
+    objectOriginPosition = model->GetBoundingBox()->getFrontLeftBuilding();
+    return this;
+}
+
+ModelObject* ModelObject::SetOriginFrontRight()
+{
+    objectOriginPosition = model->GetBoundingBox()->getFrontRightBuilding();
+    return this;
+}
 // Getters and setters
 
 std::string ModelObject::GetModelName() const

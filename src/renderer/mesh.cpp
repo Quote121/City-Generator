@@ -4,11 +4,12 @@
 #include <config.hpp>
 
 
-Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> textures)
+Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> textures, Material material)
 {
     this->vertices = vertices;
     this->indices = indices;
     this->textures = textures;
+    this->material = material;
 
     setupMesh();
 }
@@ -48,6 +49,7 @@ void Mesh::Draw(Shader &shader)
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;
 
+    // If we have textures, draw them
     for (unsigned int i = 0; i < textures.size(); i++)
     {
         glActiveTexture(GL_TEXTURE0 + i); // activate texture unit, with an offset
@@ -64,14 +66,31 @@ void Mesh::Draw(Shader &shader)
     }
     glActiveTexture(GL_TEXTURE0); // unbind
 
+
+    // If we do not have textures then use the material
+    if (textures.size() == 0)
+    {
+        // LOG(STATUS, "mat.amb " << material.ambience)
+        // LOG(STATUS, "mat.dif " << material.diffuse)
+        // LOG(STATUS, "mat.spec " << material.specular)
+        // LOG(STATUS, "mat.shin " << material.shininess)
+        //
+        shader.setVec3("material.ambient", material.ambience);
+        shader.setVec3("material.diffuse", material.diffuse);
+        shader.setVec3("material.specular", material.specular);
+        shader.setFloat("material.shininess", 10.0f);
+    }
+
     // draw mesh
 #if ENABLE_CULL_FACE_MODEL == 1
     glEnable(GL_CULL_FACE);
 #endif
     glBindVertexArray(VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0); // unbind
+
     glBindTexture(GL_TEXTURE_2D, 0);
+
 #if ENABLE_CULL_FACE_MODEL == 1
     glDisable(GL_CULL_FACE);
 #endif

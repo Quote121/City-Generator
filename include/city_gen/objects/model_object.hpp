@@ -42,6 +42,10 @@ public:
     ModelObject* SetSpawnOffset(glm::vec3 vec3);
     ModelObject* SetModelOriginCenterBottom();
     ModelObject* SetModelOriginCenter();
+    
+    // For buildings
+    ModelObject* SetOriginFrontRight();
+    ModelObject* SetOriginFrontLeft();
 
     // Getters
     std::string GetModelName() const;

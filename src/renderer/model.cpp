@@ -105,20 +105,46 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
             indices.push_back(face.mIndices[j]);
     }
 
+    // For non-textured models
+    Material meshMaterial;
+
     // Material
     if (mesh->mMaterialIndex >= 0)
     {
         aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+
+        // Setup material for mesh
+        aiColor3D tempColour (0.f,0.f,0.f);
+        // float tempShininess (0.f);
+       
+        // Only want the colour from the buildings
+        if(AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, tempColour)) {
+            meshMaterial.diffuse = {tempColour.r, tempColour.g, tempColour.b};
+        }
+        // if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_AMBIENT, tempColour))
+        // {
+        //     meshMaterial.ambience = {tempColour.r, tempColour.g, tempColour.b};
+        // }
+        // if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_SPECULAR, tempColour))
+        // {
+        //     meshMaterial.specular = {tempColour.r, tempColour.g, tempColour.b};
+        // }
+        // if (AI_SUCCESS == material->Get(AI_MATKEY_SHININESS, tempShininess))
+        // {
+        //     meshMaterial.shininess = tempShininess;
+        // }
+
         std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
         textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
         std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
         textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
     }
-    return Mesh(vertices, indices, textures);
+    return Mesh(vertices, indices, textures, meshMaterial);
 }
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
 {
+
     std::vector<Texture> textures;
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
@@ -154,6 +180,4 @@ void Model::Draw()
 {
     for (unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(*modelShader);
-
-    
 }

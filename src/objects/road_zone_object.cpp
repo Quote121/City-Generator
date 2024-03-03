@@ -1,4 +1,3 @@
-#include "glm/exponential.hpp"
 #include "scene.hpp"
 #include <road_zone_object.hpp>
 #include <glm/glm.hpp>
@@ -9,8 +8,8 @@ RoadZoneObject::RoadZoneObject(std::array<glm::vec3, 4>& vertices_in, float widt
     // Load line shader
     zoneShader = ResourceManager::getInstance()->LoadShader(paths::line_defaultVertShaderPath, paths::line_defaultFragShaderPath);
 
-    // Create zone_renderer
-    zone_renderer = new Zone(vertices, roadWidth);
+    // Update the vertices
+    this->UpdateVertices(vertices, roadWidth);
 }
 
 RoadZoneObject::~RoadZoneObject()
@@ -21,8 +20,46 @@ RoadZoneObject::~RoadZoneObject()
 // Update vertices of zone
 void RoadZoneObject::UpdateVertices(const std::array<glm::vec3, 4>& vertices_in, const float width_in)
 {
+    if (zone_renderer == nullptr)
+    {
+        // Create zone_renderer
+        zone_renderer = new Zone(vertices, roadWidth);
+    } 
+
     vertices = vertices_in;
     zone_renderer->UpdateVertices(vertices_in, width_in);
+
+    // Determine how many zones it has
+    float length = glm::length(vertices_in[0] - vertices_in[1]);
+    int sectionCount = glm::floor(length/width_in);
+
+    glm::vec3 newVec = (vertices_in[0] - vertices_in[1]);
+    glm::vec3 unitVector = newVec /= sectionCount;
+
+    float flip = 0;
+    if (vertices[0].x > vertices[1].x) { flip = M_PI; }
+
+    for (int i = 0; i < sectionCount; i++)
+    {
+        glm::vec3 x = (unitVector * glm::vec3(i));
+        glm::vec3 placementVector = vertices_in[0] - x;
+        LOG(STATUS, placementVector)
+        areasForPlacement.push_back({placementVector, false, this->GetZoneAngle()+flip});
+    }
+}
+
+
+PlacementArea const* RoadZoneObject::GetValidPlacement(void)
+{
+    for (unsigned int i = 0; i < areasForPlacement.size(); i++)
+    {
+        if (!areasForPlacement[i].isOccupied)
+        {
+            areasForPlacement[i].isOccupied = true;
+            return &areasForPlacement[i]; // return copy
+        }
+    }
+    return nullptr;
 }
 
 // helper function
@@ -107,6 +144,25 @@ void RoadZoneObject::SetColour(glm::vec3 colour)
 {
     zoneColour = colour;
 }
+
+
+void RoadZoneObject::SetZoneUsable(bool toggle)
+{
+    useZone = toggle;
+}
+
+
+bool RoadZoneObject::IsUsable(void) const
+{
+    return useZone;
+}
+
+
+float RoadZoneObject::GetZoneAngle(void)
+{    
+    return glm::atan((vertices[1].z - vertices[0].z)/(vertices[1].x - vertices[0].x));
+}
+
 
 void RoadZoneObject::Draw(glm::mat4 view, glm::mat4 projection)
 {
