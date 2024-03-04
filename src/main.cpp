@@ -209,14 +209,16 @@ int main() {
     //     
     //
     //
-    scene->addModel(terrain, &backpackShader)
-        ->SetModelOriginCenterBottom()
-        ->ShowBoundingBox(false)
-        ->SetLightingEnabled(true)
-        ->SetIsVisible(true)
-        ->SetPosition({0,-0.4, 0})
-        ->SetScale(2);
 
+    // // GOOD POSITION TERRAIN, USE AGAIN
+    // scene->addModel(terrain, &backpackShader)
+    //     ->SetModelOriginCenterBottom()
+    //     ->ShowBoundingBox(false)
+    //     ->SetLightingEnabled(true)
+    //     ->SetIsVisible(true)
+    //     ->SetPosition({0,-0.4, 0})
+    //     ->SetScale(2);
+    //
 
     // Tree asset generation
     // generator::generateRoads(3, 10.0f, 3.0f, 90.0f);
@@ -243,12 +245,12 @@ int main() {
             ->SetIsBillboard(true)
             ->SetPosition({0, 0, 0})
             ->SetScale(2.0f);
-
-    scene->addModel(backPackPath, &backpackShader)
-         ->SetModelOriginCenter()
-         ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
-         ->ShowBoundingBox(true)
-         ->SetLightingEnabled(true);
+    //
+    // scene->addModel(backPackPath, &backpackShader)
+    //      ->SetModelOriginCenter()
+    //      ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
+    //      ->ShowBoundingBox(true)
+    //      ->SetLightingEnabled(true);
          // ->SetIsVisible(false);
     // 
     // scene->addPointLight()
@@ -269,7 +271,7 @@ int main() {
     ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath}; 
     scene->addModel(buildingTest, &buildingShader)
         ->SetLightingEnabled(false)
-        ->SetOriginFrontRight()
+        ->SetOriginFrontLeft()
         ->SetPosition({1, 0, 1});
         // ->SetSpawnOffset();
 

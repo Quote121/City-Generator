@@ -181,3 +181,22 @@ void Model::Draw()
     for (unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(*modelShader);
 }
+
+void Model::DrawInstanced(std::vector<float>* matrices)
+{
+    // Instance draw for each mesh
+
+    // Bind the mesh vertex array
+    //
+    // Then add the matrix attributes
+    //
+    // And then instance draw
+    
+    for (unsigned int i = 0; i < meshes.size(); i++)
+    {
+        assert(matrices->size()%16 == 0); // Make sure we have an n amount of mat4's
+        meshes[i].DrawInstanced(*modelShader, matrices->size()/16, matrices);
+    }
+
+}
+

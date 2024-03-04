@@ -63,4 +63,5 @@ public:
     }
 
     void Draw();
+    void DrawInstanced(std::vector<float>* matrices);
 };

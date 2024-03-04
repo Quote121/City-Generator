@@ -26,7 +26,7 @@ private:
    
 
     // To say if we should use this zone
-    bool useZone = false;
+    bool useZone = true;
 
     std::array<glm::vec3, 4> vertices;
 

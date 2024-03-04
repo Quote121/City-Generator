@@ -27,6 +27,9 @@ public:
     ~ModelObject();
 
     void Draw(glm::mat4 view, glm::mat4 projection) override;
+    void DrawIndices(glm::mat4 view, glm::mat4 projection, std::vector<float>* matrices);
+    
+    glm::mat4 GetModelMatrix(void);
 
     // For builder, these are object specific as we want to return
     // the object type and also it means we can choose for different

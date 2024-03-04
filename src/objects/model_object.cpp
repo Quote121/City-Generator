@@ -113,8 +113,91 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
 }
 
 
-// Model specific builders
+void ModelObject::DrawIndices(glm::mat4 view, glm::mat4 projection, std::vector<float>* matrices)
+{
+    if (isVisible)
+    {
+        // Shader* objectShader = model->GetShader();
+        
+        Shader* objectShader = ResourceManager::getInstance()->LoadShader(paths::building_defaultInstancedVertShaderPath, paths::building_defaultFragShaderPath);
+        if (objectShader == nullptr)
+        {
+            LOG(ERROR, "NO SHADER LOADED TO OBJECT CLASS");
+        }
+        else
+        {
+            // Apply all position and scaling before drawing
+            objectShader->use();
+            objectShader->setMat4("view", view);
+            objectShader->setMat4("projection", projection);
+       
+            // Set the local position based on the bounding box center
+            // LOG(WARN, "Object origin: " << objectOriginPosition)
+            objectShader->setVec3("localCenterPos", objectOriginPosition);
+            
+            // Tells the shader wether to show the lighting or just the base ambient texture
+            objectShader->setBool("ShowLighting", lightingEnable);
+            // Lighting
+            if (lightingEnable)
+            {
+                // TEMP we go through all point lights and assign the values form it here
+                objectShader->setVec3("viewPos", Camera::getInstance()->Position);
+                objectShader->setFloat("material.shininess", 10.0f);
+                
+                size_t pointLightSize = Scene::getInstance()->GetPointLightObjects().size();
+                
+                objectShader->setInt("NumValidPointLights", pointLightSize);
 
+                // For each point light set the corresponding values
+                for (long unsigned int i = 0; i < pointLightSize; i++)
+                {
+                    auto& light = Scene::getInstance()->GetPointLightObjects().at(i);
+                    std::string lightName = "pointLights[" + std::to_string(i) + "]";
+                    
+                    objectShader->setVec3((lightName + ".position"), light->GetPosition());
+                    objectShader->setVec3((lightName + ".ambient"), light->GetAmbient());
+                    objectShader->setVec3((lightName + ".diffuse"), light->GetDiffuse());
+                    objectShader->setVec3((lightName + ".specular"), light->GetSpecular());
+                    objectShader->setFloat((lightName + ".constant"), light->GetConstant());
+                    objectShader->setFloat((lightName + ".linear"), light->GetLinear());
+                    objectShader->setFloat((lightName + ".quadratic"), light->GetQuadratic());
+                }
+
+                // Directional lights
+                DirectionalLightObject* dirLight = Scene::getInstance()->GetDirectionalLightObjects().at(0);
+                objectShader->setVec3(("dirLight.direction"), dirLight->GetDirection());
+
+                objectShader->setVec3(("dirLight.ambient"), dirLight->GetAmbient());
+                objectShader->setVec3(("dirLight.diffuse"), dirLight->GetDiffuse());
+                objectShader->setVec3(("dirLight.specular"), dirLight->GetSpecular());
+
+            }
+            model->Model::DrawInstanced(matrices);
+            // model->Model::Draw();
+        }
+
+        // // Draw bounding box if asked
+        // if (showBoundingBox)
+        // {
+        //     BoundingBox* bb = model->GetBoundingBox();
+        //     Shader* bbShader = bb->getShader();
+        //     bbShader->use();
+        //     bbShader->setMat4("view", view);
+        //     bbShader->setMat4("projection", projection);
+        //     bbShader->setMat4("model", result);
+        //     bbShader->setVec3("localCenterPos", objectOriginPosition);
+        //     bb->Draw();
+        // }
+    }
+}
+
+
+glm::mat4 ModelObject::GetModelMatrix(void)
+{
+    return glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * getScaleMat4(scaleScalar) * getScaleMat4(scale);
+}
+
+// Model specific builders
 ModelObject* ModelObject::SetPosition(glm::vec3 position_in)
 {
     position = position_in;
@@ -180,12 +263,14 @@ ModelObject* ModelObject::SetModelOriginCenter()
 ModelObject* ModelObject::SetOriginFrontLeft()
 {
     objectOriginPosition = model->GetBoundingBox()->getFrontLeftBuilding();
+    LOG(STATUS, "Left: " << objectOriginPosition);
     return this;
 }
 
 ModelObject* ModelObject::SetOriginFrontRight()
 {
     objectOriginPosition = model->GetBoundingBox()->getFrontRightBuilding();
+    LOG(STATUS, "Right: " << objectOriginPosition);
     return this;
 }
 // Getters and setters

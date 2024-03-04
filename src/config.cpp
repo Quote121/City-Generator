@@ -29,7 +29,7 @@ const char* paths::skybox_defaultFragShaderPath = "../assets/shaders/default/sky
 // Building default shaders
 const char* paths::building_defaultVertShaderPath = "../assets/shaders/default/buildings/build_shader.vert";
 const char* paths::building_defaultFragShaderPath = "../assets/shaders/default/buildings/build_shader.frag";
-
+const char* paths::building_defaultInstancedVertShaderPath = "../assets/shaders/default/buildings/build_shader_instanced.vert";
 
 const char* paths::light_icon_texture = "../assets/textures/sun-icon-1.png";
 

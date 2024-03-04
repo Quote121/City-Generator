@@ -28,7 +28,7 @@ Scene::Scene()
     this->addLineAxis(glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0})
         ->SetColour(glm::vec3{0, 0, 1});
 
-    roadBatchRenderer = new Batch(); 
+    roadBatchRenderer = new BatchRenderer(); 
 }
 
 
@@ -343,22 +343,36 @@ void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
             line->Draw(view, projection);
         }
     }
-    
+   
+    std::vector<float> matrices;
+
+    // Instance model drawing:
+    //
+    // For each model, if not in vector add and then get all the same momdels
+    // Do until end of model objects and then call each of their instance renderers
+
     // Draw objects
     for (auto& obj : GetModelObjects())
     {
-        obj->Draw(view, projection);
+        glm::mat4 matrix = obj->GetModelMatrix();
+        for (int i = 0; i < 4; i++)
+        {
+            matrices.insert(matrices.end(), {matrix[i].x, matrix[i].y, matrix[i].z, matrix[i].w});
+        }
+        // obj->Draw(view, projection);
     }
-
-
+    // Assume all are the same TEST
+    GetModelObjects()[0]->DrawIndices(view, projection, &matrices);
+    
+    // Scene::getInstance()-> 
 
     roadBatchRenderer->DrawBatch(view, projection);
 
     // Draw roadsscene
-    for (auto& obj : GetRoadObjects())
-    {
-        // obj->Draw(view, projection);
-    }
+    // for (auto& obj : GetRoadObjects())
+    // {
+    //   obj->Draw(view, projection);
+    // }
 
 
     // Get the sprites and point light sprites and order both by distance to 

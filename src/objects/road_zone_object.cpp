@@ -43,7 +43,7 @@ void RoadZoneObject::UpdateVertices(const std::array<glm::vec3, 4>& vertices_in,
     {
         glm::vec3 x = (unitVector * glm::vec3(i));
         glm::vec3 placementVector = vertices_in[0] - x;
-        LOG(STATUS, placementVector)
+        // LOG(STATUS, placementVector)
         areasForPlacement.push_back({placementVector, false, this->GetZoneAngle()+flip});
     }
 }

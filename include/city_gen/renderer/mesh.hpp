@@ -32,20 +32,25 @@ struct Material {
 
 class Mesh{
 
-    private:
-        // Render data
-        unsigned int VAO, VBO, EBO;
+private:
+    // Render data
+    unsigned int VAO, VBO, EBO;
 
-        void setupMesh();
+    // temp
+    unsigned int matrixBuffer;
 
-    public:
-        // Mesh data
-        std::vector<Vertex>         vertices;
-        std::vector<unsigned int>   indices;
-        std::vector<Texture>        textures;
-        Material                    material;
+    void setupMesh();
 
-        Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> textures, Material material);
-        void Draw(Shader &shader);
+public:
+    // Mesh data
+    std::vector<Vertex>         vertices;
+    std::vector<unsigned int>   indices;
+    std::vector<Texture>        textures;
+    Material                    material;
 
+    Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> textures, Material material);
+    ~Mesh();
+    void Draw(Shader &shader);
+    void DrawInstanced(Shader &shader, unsigned int instanceCount, std::vector<float>* matrices);
 };
+

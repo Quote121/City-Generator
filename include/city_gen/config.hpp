@@ -43,6 +43,7 @@ extern const char* skybox_defaultFragShaderPath;
 // Building shader
 extern const char* building_defaultVertShaderPath;
 extern const char* building_defaultFragShaderPath;
+extern const char* building_defaultInstancedVertShaderPath;
 
 // Sun Icon for lights
 extern const char* light_icon_texture;

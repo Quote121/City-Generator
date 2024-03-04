@@ -69,7 +69,7 @@ private:
 
 public:
 
-    Batch* roadBatchRenderer;
+    BatchRenderer* roadBatchRenderer;
 
     // Singleton setup //  
     Scene(Scene &other) = delete;

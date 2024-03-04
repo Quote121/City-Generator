@@ -374,13 +374,13 @@ void generator::CalculateValidZones()
 
                 if (sceneRoads[i]->GetZoneA()->Intersects(sceneRoads[j]->GetRoadOBB()))
                 {
-                    sceneRoads[i]->GetZoneA()->SetZoneUsable(true);
+                    sceneRoads[i]->GetZoneA()->SetZoneUsable(false);
                     collisionZoneCount++;
                     zoneACollide = true;
                 }
                 if (sceneRoads[i]->GetZoneB()->Intersects(sceneRoads[j]->GetRoadOBB()))
                 {
-                    sceneRoads[i]->GetZoneB()->SetZoneUsable(true);
+                    sceneRoads[i]->GetZoneB()->SetZoneUsable(false);
                     collisionZoneCount++;
                     zoneBCollide = true;
                 }
@@ -436,6 +436,7 @@ void generator::GenerateBuildings()
             // Check we still have zones left
             if (zone != nullptr && road->GetZoneA()->IsUsable())
             {
+                LOG(WARN, "BEFORE")
                 scene->addModel(buildingTest, &buildingShader)
                     ->SetOriginFrontLeft()
                     ->SetPosition(zone->position)

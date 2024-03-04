@@ -16,7 +16,7 @@ void checkGLError(const std::string& functionName) {
     }
 }
 
-Batch::Batch()
+BatchRenderer::BatchRenderer()
 {
     VAO = new VertexArray();
     VBO = new VertexBuffer();
@@ -24,7 +24,7 @@ Batch::Batch()
     glGenBuffers(1, &IBO);
 }
 
-Batch::~Batch()
+BatchRenderer::~BatchRenderer()
 {
     delete(VAO);
     delete(VBO);
@@ -32,7 +32,7 @@ Batch::~Batch()
     glDeleteBuffers(1, &IBO);
 }
 
-void Batch::UpdateAll(void)
+void BatchRenderer::UpdateAll(void)
 {
     // Gives new renderIDs
 
@@ -95,7 +95,7 @@ void Batch::UpdateAll(void)
     }
 }
 
-void Batch::Update(const unsigned int renderID)
+void BatchRenderer::Update(const unsigned int renderID)
 {
     // TODO how to nicly pass the vertex and element data and renderID
 
@@ -118,7 +118,7 @@ void Batch::Update(const unsigned int renderID)
 }
 
 
-void Batch::DrawBatch(glm::mat4 view, glm::mat4 projection) const
+void BatchRenderer::DrawBatch(glm::mat4 view, glm::mat4 projection) const
 {
     glm::mat4 result = glm::mat4(1.0f);
     Shader* objectShader = ResourceManager::getInstance()->LoadShader(paths::road_defaultVertShaderPath, paths::road_defaultFragShaderPath);

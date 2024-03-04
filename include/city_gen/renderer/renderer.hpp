@@ -32,7 +32,7 @@ struct DrawElementsIndirectCommand {
 };
 
 // Batch renderer, for now will only batch render roads as we have no other objects that need this. (Others needs instancing, sprites and buildings)
-class Batch
+class BatchRenderer
 {
 private:
     // List of commands for each road (will be mostly the same)
@@ -48,8 +48,8 @@ private:
     
     // Update method for updating a specific set of vertices and indices 
 public:
-    Batch();
-    ~Batch();
+    BatchRenderer();
+    ~BatchRenderer();
 
     // Update all roads vertices and indices
     void UpdateAll(void);
@@ -63,6 +63,15 @@ public:
 };
 
 
+// class InstanceRenderer
+// {
+// private:
+//     std::vector<float> modelMatrices;
+//
+// public:
+//      
+//
+// };
 
 class Renderer
 {
