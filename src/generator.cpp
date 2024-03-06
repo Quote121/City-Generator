@@ -6,6 +6,7 @@
 #include <map>
 #include <sstream>    
 #include <stack>
+#include <cityRandom.hpp>
 
 #include <stopwatch.hpp>
 
@@ -25,6 +26,66 @@ inline bool inRangeXZPlane(const road_gen_point& a, const road_gen_point& b, con
 }
 
 
+struct CityGenerationParameters
+{
+    int iterations;         // 2-4
+    float roadLength;       //  
+    float roadWidth;
+    float roadAngleDegrees;
+    float densityFactor; // Float that determines the density of a city (likelyhood of a city being built)
+};
+
+
+// Main generation function
+void GenerateCity(unsigned int seed_in)
+{
+    // Generate new city with new random numbers, else use seed
+    if (seed_in == 0)
+    {
+        time_t seed = time(nullptr);
+        std::srand(seed);
+    }
+    else 
+    {
+        std::srand(seed_in);
+    }
+    
+    // First we need to determine how many smaller cities we are going to have
+    // 1-4
+    int numberOfCities = Random::GetIntBetweenInclusive(1, 4);
+
+    
+    std::vector<CityGenerationParameters> cityParameterVector;
+
+    
+
+    // Then we need to know the parameters to give to each city:
+    for (int i = 0; i < numberOfCities; i++)
+    {
+        cityParameterVector.push_back({
+            Random::GetIntBetweenInclusive(2, 4),           // Iterations of grammar
+            Random::GetFloatBetweenInclusive(3.0f, 5.0f),   // Road length
+            1.0f,                                           // Keep road width the same (1.0f)
+            Random::GetFloatBetweenInclusive(88.0f, 92.0f), // Angle between roads in degrees
+            Random::GetPercentage()                         // The probability of placing a building at any spot
+        }); 
+    }
+
+    // TODO next - idea
+    //
+    // We want a vector of all the roads in each city so that we can determine the "highways"
+    // Best way is to pass the vector to the generation method by passing it as a pointer
+    // the method will fill up the vector and will also give us a vector of end nodes
+    //
+    // Once we create the highways we can add all the roads to the scene
+    //
+    // TODO random grammars
+    //
+    // When generating each of our cities we should pick from a list of predetermined grammars
+}
+
+
+
 void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, float roadWidth = 3.0f, float roadAngleDegrees = 90.0f)
 {
     auto roadGenerateStartTime = StopWatch::GetCurrentTimePoint();
@@ -36,32 +97,6 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
     }
 
     LOG(STATUS, "[ Starting GenerateRoads ]");
-
-    // // Seed should be changed based on system time, seed can be saved to replicate the generation
-    // const siv::PerlinNoise::seed_type seed = 123456u;
-    // const siv::PerlinNoise perlin{ seed };
-    //
-    // // Note for terrain generation the terrain asset is 160 by 160
-    // for (int y = 0; y < 160; ++y)
-    // {
-    //     for (int x = 0; x < 160; ++x)
-    //     {
-    //         const double noise = perlin.normalizedOctave2D_01((x), (y), 4);
-    //
-    //         // Random threshold to create a 
-    //         if (noise > 0.65)
-    //         {
-    //             float xPos, yPos;
-    //             xPos = (2*x)-160;
-    //             yPos = (2*y)-160;
-    //             
-    //             // Get Starting points
-    //             points.push_back(glm::vec3{xPos, 0, yPos});
-    //         }
-    //     }
-    // }
-    //
-
 
     // Output for current settings for the road generation
     LOG(STATUS, "==== Generation settings ====");
@@ -282,20 +317,22 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
         ++i_it;
     }
     
+    
+
+
+
+
+
+
+
     LOG(STATUS, "[" << endNodeConnections << "] new roads created from end node connections.");
+
+
 
     // Then we add to the scene for rendering
     for (auto& road : roadsVector)
     {
-        if (road.colour == DEFAULT_ROAD_COLOUR)
-        {
-            Scene::getInstance()->addRoad(road.a, road.b, road.width);
-        }
-        else{
-            // In hindsight this has minimal overhead but this will only be here temp TODO re-evaluate if this is the best way to go about it
-            Scene::getInstance()->addRoad(road.a, road.b, road.width)
-                ->SetColour(road.colour);
-        }
+        Scene::getInstance()->addRoad(road.a, road.b, road.width);
     }
     
     // Get road number
@@ -500,6 +537,15 @@ void generator::GenerateBuildings()
         }
         if (!intersects)
         {
+            // Street lights for roads
+            if (i % 10 == 0)
+            {
+                scene->addPointLight()
+                    ->SetIsVisible(false) // Disable the sprite
+                    ->SetPosition(areas[i].zoneVerticesArray[0])
+                    ;
+            }
+
             scene->addModel(buildingModelPaths[i%9], &buildingShader)
                 ->SetOriginFrontLeft()
                 ->SetPosition(areas[i].position)

@@ -4,6 +4,7 @@
 #include "vertexArray.hpp"
 #include "vertexBuffer.hpp"
 #include <glm/glm.hpp>
+#include <config.hpp>
 
 // Defined outside of Glad as we cant include several times
 #define GL_POINTS 0x0000
@@ -85,6 +86,8 @@ private:
 
     static Renderer* pInstance;  
 
+    glm::vec3 backgroundColour = DEFAULT_BACKGROUND_COLOUR; 
+
     Renderer() = default;
     ~Renderer();
 
@@ -94,6 +97,7 @@ public:
     void operator=(const Renderer &) = delete;
     static Renderer* GetInstance();
 
+    void SetClearScreenColour(glm::vec3 colour);
 
     void ClearScreen(void) const;
     // Make sure shaders are bound before calls to draw, mode is the primative to draw, default gl_triangle

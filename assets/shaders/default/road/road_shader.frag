@@ -53,7 +53,7 @@ void main()
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
     // phase 2: point lights
 
-    for(int i = 0; i < NumValidPointLights; i++)
+    for(int i = 0; i < NumValidPointLights && i < MAX_NR_POINT_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
 
     // Hacky fix

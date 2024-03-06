@@ -84,10 +84,11 @@ inline std::ostream& operator<<(std::ostream& stream, const std::vector<T> vecto
 #define CYAN  glm::vec3{0, 1, 1}
 #define PURPLE glm::vec3{0.5, 0, 1}
 #define PINK glm::vec3{1, 0, 1}
+#define BLACK glm::vec3{0, 0, 0}
+#define WHITE glm::vec3{1, 1, 1}
 
 #define DEFAULT_ROAD_COLOUR glm::vec3{0.325490196f, 0.329411765f, 0.309803922f}
-
-
+#define DEFAULT_BACKGROUND_COLOUR glm::vec3{0.2, 0.3, 0.3} 
 //////////// Logging system ////////////
 
 

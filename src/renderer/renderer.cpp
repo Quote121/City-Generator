@@ -198,9 +198,15 @@ Renderer* Renderer::GetInstance()
     return pInstance; 
 }
 
+
+void Renderer::SetClearScreenColour(glm::vec3 colour)
+{
+    this->backgroundColour = colour;
+}
+
 void Renderer::ClearScreen(void) const
 {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(backgroundColour.x, backgroundColour.y, backgroundColour.z, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

@@ -141,16 +141,26 @@ int main() {
     
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_ft.jpg");
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_bk.jpg");
-    
+
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_up.jpg");
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_dn.jpg");
 
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_rt.jpg");
     skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_lf.jpg");
 
+    // Doesn't work, havent investigated
+    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
+
+
+
     scene->CreateSkyBox(&skyBoxImages);
     ////////////////////////
-
+    Renderer::GetInstance()->SetClearScreenColour(BLACK);
 
 
     ShaderPath backpackShader{"../assets/shaders/backpack/vertexShader.vs", "../assets/shaders/backpack/fragmentShader.fs"};
@@ -250,18 +260,20 @@ int main() {
             ->SetScale(2.0f);
 
 
-    scene->addPointLight()
-        ->SetPosition(glm::vec3{-10, 0, 0});
+    
 
+    // scene->addPointLight()
+    //     ->SetPosition(glm::vec3{-10, 0, 0});
+    //
 
-    for (int i = 0; i < 10; i++)
-    {
-        for (int j = 0; j < 1; j++)
-        {
-            scene->addPointLight()
-                ->SetPosition(glm::vec3{i*10, 1, j*10});
-        }
-    }
+    // for (int i = 0; i < 10; i++)
+    // {
+    //     for (int j = 0; j < 1; j++)
+    //     {
+    //         scene->addPointLight()
+    //             ->SetPosition(glm::vec3{i*10, 1, j*10});
+    //     }
+    // }
     
 
 

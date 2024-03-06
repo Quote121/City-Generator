@@ -20,9 +20,10 @@ private:
     glm::vec3 specular = {0.07f, 0.07f, 0.07f};
     
     // Seem to be the same
-    float constant = 1.0f;
+    float constant = 0.8f;
     float linear = 0.09f;
-    float quadratic = 0.032f;
+    // float quadratic = 0.032f;
+    float quadratic = 0.32f;
 
     
 
