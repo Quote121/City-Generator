@@ -415,15 +415,27 @@ void generator::ClearZoneCollisions()
 
 #define MAXLOOPS 20
 
+std::array<std::string, 9> buildingModelPaths = {
+    "../assets/models/Buildings/LowPoly/low_buildingA.obj",
+    "../assets/models/Buildings/LowPoly/low_buildingB.obj",
+    "../assets/models/Buildings/LowPoly/low_buildingC.obj",
+    "../assets/models/Buildings/LowPoly/low_buildingD.obj",
+    "../assets/models/Buildings/LowPoly/low_buildingE.obj",
+    "../assets/models/Buildings/LowPoly/low_buildingF.obj",
+    "../assets/models/Buildings/LowPoly/low_buildingG.obj",
+    "../assets/models/Buildings/LowPoly/low_buildingH.obj",
+    "../assets/models/Buildings/LowPoly/low_buildingI.obj"
+};
+
 void generator::GenerateBuildings()
 {
     LOG(STATUS, "[ Started GeneratedBuildings ]");
     auto buildingGenerateStartTime = StopWatch::GetCurrentTimePoint();
 
     // TEMP
-    std::string buildingTest = "../assets/models/Buildings/buildingTest2.obj";
-    ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath}; 
-
+    // std::string buildingTest = "../assets/models/Buildings/buildingTest2.obj";
+    std::string buildingTest = "../assets/models/Buildings/LowPoly/low_buildingC.obj";
+    ShaderPath buildingShader = {paths::building_defaultInstancedVertShaderPath, paths::building_defaultFragShaderPath}; 
 
     Scene* scene = Scene::getInstance();
 
@@ -488,7 +500,7 @@ void generator::GenerateBuildings()
         }
         if (!intersects)
         {
-            scene->addModel(buildingTest, &buildingShader)
+            scene->addModel(buildingModelPaths[i%9], &buildingShader)
                 ->SetOriginFrontLeft()
                 ->SetPosition(areas[i].position)
                 ->ShowBoundingBox(false)
