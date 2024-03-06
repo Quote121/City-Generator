@@ -351,8 +351,8 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
 void generator::CalculateValidZones()
 {
     
-    LOG(STATUS, "[ Started GeneratedAssets ]");
-    auto assetGenerateStartTime = StopWatch::GetCurrentTimePoint();
+    LOG(STATUS, "[ Started GenerateValidZones ]");
+    auto generateValidZonesStartTime = StopWatch::GetCurrentTimePoint();
 
     // Get all roads in the scene and determine the zones either side of the roads
     std::vector<RoadObject*> sceneRoads = Scene::getInstance()->GetRoadObjects();
@@ -397,7 +397,7 @@ void generator::CalculateValidZones()
 
     LOG(STATUS, "Zones that collided: " << collisionZoneCount << "/" << sceneRoads.size()*2 << " (" << percent << "%)");
 
-    uint64_t timeElapsed = StopWatch::GetTimeElapsed(assetGenerateStartTime);
+    uint64_t timeElapsed = StopWatch::GetTimeElapsed(generateValidZonesStartTime);
     LOG(STATUS, "[ GenerateAssets finished. Time elapsed: " << timeElapsed << "ms ]\n");
 }
 
@@ -417,15 +417,21 @@ void generator::ClearZoneCollisions()
 
 void generator::GenerateBuildings()
 {
+    LOG(STATUS, "[ Started GeneratedBuildings ]");
+    auto buildingGenerateStartTime = StopWatch::GetCurrentTimePoint();
 
     // TEMP
-    std::string buildingTest = "../assets/models/Buildings/buildingTest.obj";
+    std::string buildingTest = "../assets/models/Buildings/buildingTest2.obj";
     ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath}; 
 
 
     Scene* scene = Scene::getInstance();
 
     std::vector<RoadObject*> roads = scene->GetRoadObjects();
+
+    int buildingCount = 0;
+
+    std::vector<PlacementArea> areas;
 
     for (auto& road : roads)
     {
@@ -436,17 +442,11 @@ void generator::GenerateBuildings()
             // Check we still have zones left
             if (zone != nullptr && road->GetZoneA()->IsUsable())
             {
-                LOG(WARN, "BEFORE")
-                scene->addModel(buildingTest, &buildingShader)
-                    ->SetOriginFrontLeft()
-                    ->SetPosition(zone->position)
-                    ->ShowBoundingBox(false)
-                    ->SetRotation(glm::vec3{0,zone->angle,0});
+                areas.push_back(*zone);
+                buildingCount++;
             }
             else 
-            {
                 break;
-            }
         }       
     }
 
@@ -459,18 +459,45 @@ void generator::GenerateBuildings()
             // Check we still have zones left
             if (zone != nullptr && road->GetZoneB()->IsUsable())
             {
-                scene->addModel(buildingTest, &buildingShader)
-                    ->SetOriginFrontLeft()
-                    ->SetPosition(zone->position)
-                    ->ShowBoundingBox(false)
-                    ->SetRotation(glm::vec3{0,zone->angle,0});
+                areas.push_back(*zone);
+                buildingCount++;
             }
             else 
-            {
                 break;
-            }
         }       
     }
+    LOG(STATUS, "[" << buildingCount << "] Buildings generated."); 
+ 
+    // Pass to remove overlapping buildings
+    int intersectingBuildings = 0;
+    for (int i = 0; i < areas.size(); i++)
+    {
+        bool intersects = false;
+        for (int j = i+1; j < areas.size(); j++)
+        {
+            if (areas[i].Intersects(areas[j].zoneVerticesArray))
+            {
+                intersects = true;
+                break;
+            }
+        }
+        if (!intersects)
+        {
+            scene->addModel(buildingTest, &buildingShader)
+                ->SetOriginFrontLeft()
+                ->SetPosition(areas[i].position)
+                ->ShowBoundingBox(false)
+                ->SetRotation(glm::vec3{0, areas[i].angle, 0})
+                ->SetInstaceRendering(true);
+        }
+        else {
+            intersectingBuildings++;
+        }
+    }
+    LOG(STATUS, "[" << intersectingBuildings << "] buildings removed. (" << static_cast<float>(intersectingBuildings)/static_cast<float>(buildingCount) * 100 << "%)");
+
+    uint64_t timeElapsed = StopWatch::GetTimeElapsed(buildingGenerateStartTime);
+    LOG(STATUS, "[ GenerateBuildings finished. Time elapsed: " << timeElapsed << "ms ]\n");
 
 }
 

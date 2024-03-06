@@ -174,7 +174,6 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType 
     return textures;
 }
 
-
 // For each mesh in our model
 void Model::Draw()
 {

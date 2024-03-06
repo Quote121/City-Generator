@@ -344,26 +344,72 @@ void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
         }
     }
    
-    std::vector<float> matrices;
-
     // Instance model drawing:
     //
     // For each model, if not in vector add and then get all the same momdels
     // Do until end of model objects and then call each of their instance renderers
 
+
+    // // NOTE
+    // 
+    // For all model drawn if they are to be instanced, the only difference
+    // is their model matrix. If we want the same model to have other qualities
+    // then we need to render it normally. For this we should have a bool to indicate
+    // if it should be instance rendered or normally rendered.
+    //
+    
+    std::vector<std::string> instancedModels;
+
     // Draw objects
     for (auto& obj : GetModelObjects())
     {
-        glm::mat4 matrix = obj->GetModelMatrix();
-        for (int i = 0; i < 4; i++)
+        std::vector<float> matrices;
+        
+        if (obj->GetIsInstanceRendered()) 
         {
-            matrices.insert(matrices.end(), {matrix[i].x, matrix[i].y, matrix[i].z, matrix[i].w});
+            if (std::find(instancedModels.begin(), instancedModels.end(), obj->GetModelName()) != instancedModels.end())
+            {
+                // Skip this object as we've already done it
+                continue;
+            }
+
+            // Check if we've already instanced rendered it, if not then we get all the 
+            // same models and instance render
+            for (auto& obj2 : GetModelObjects())
+            {
+                if (obj2->GetModelName() == obj->GetModelName())
+                {
+                    glm::mat4 matrix = obj2->GetModelMatrix();
+
+                    for (int i = 0; i < 4; i++)
+                        matrices.insert(matrices.end(), {matrix[i].x, matrix[i].y, matrix[i].z, matrix[i].w});
+                }
+            }
+            instancedModels.push_back(obj->GetModelName());
+            obj->DrawInstances(view, projection, &matrices);
         }
+        // If not instanced, draw normally
+        else 
+        {
+            obj->Draw(view, projection);
+        }        
+        
+
+        // glm::mat4 matrix = obj->GetModelMatrix();
+        // for (int i = 0; i < 4; i++)
+        // {
+        //     matrices.insert(matrices.end(), {matrix[i].x, matrix[i].y, matrix[i].z, matrix[i].w});
+        // }
         // obj->Draw(view, projection);
+        
+        // For all the same model names
+        // Append them to the temp matrices vector and then call the DrawInstances
+
+        // obj->GetModelName();
     }
     // Assume all are the same TEST
-    GetModelObjects()[0]->DrawIndices(view, projection, &matrices);
-    
+    // GetModelObjects()[0]->DrawInstances(view, projection, &matrices);
+     
     // Scene::getInstance()-> 
 
     roadBatchRenderer->DrawBatch(view, projection);

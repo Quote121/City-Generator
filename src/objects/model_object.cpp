@@ -113,7 +113,7 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
 }
 
 
-void ModelObject::DrawIndices(glm::mat4 view, glm::mat4 projection, std::vector<float>* matrices)
+void ModelObject::DrawInstances(glm::mat4 view, glm::mat4 projection, std::vector<float>* matrices)
 {
     if (isVisible)
     {
@@ -260,17 +260,23 @@ ModelObject* ModelObject::SetModelOriginCenter()
     return this;
 }
 
+
+ModelObject* ModelObject::SetInstaceRendering(bool toggle)
+{
+    instanceRender = toggle;
+    return this;
+}
+
+
 ModelObject* ModelObject::SetOriginFrontLeft()
 {
     objectOriginPosition = model->GetBoundingBox()->getFrontLeftBuilding();
-    LOG(STATUS, "Left: " << objectOriginPosition);
     return this;
 }
 
 ModelObject* ModelObject::SetOriginFrontRight()
 {
     objectOriginPosition = model->GetBoundingBox()->getFrontRightBuilding();
-    LOG(STATUS, "Right: " << objectOriginPosition);
     return this;
 }
 // Getters and setters
@@ -285,8 +291,13 @@ bool ModelObject::GetShowBoundingBox() const
     return showBoundingBox;
 }
 
-// ImGui reference handles
 
+bool ModelObject::GetIsInstanceRendered(void) const
+{
+    return instanceRender;
+}
+
+// ImGui reference handles
 glm::vec3& ModelObject::GetScaleImGui()
 {
     return scale;

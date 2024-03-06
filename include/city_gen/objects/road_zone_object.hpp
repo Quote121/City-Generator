@@ -2,6 +2,56 @@
 
 #include <zone.hpp>
 #include <config.hpp>
+#include <helper.hpp>
+
+// helper function
+// bool projectionOverlap(const std::array<glm::vec3, 4>& a, const std::array<glm::vec3, 4>& b, const glm::vec3 axis)
+// {
+//     std::array<float, 4> projections_a, projections_b;
+//     float min_a, max_a, min_b, max_b;
+//
+//     int i;
+//
+//     // Project vertices onto axis
+//     for (i = 0; i < 4; i++)
+//     {
+//         projections_a[i] = glm::dot(a[i], axis);
+//         projections_b[i] = glm::dot(b[i], axis);
+//     }
+//
+//     // Initalize the min and maxes
+//     min_a = projections_a[0];
+//     max_a = projections_a[0];
+//     min_b = projections_b[0];
+//     max_b = projections_b[0];
+//
+//     for (i = 0; i < 4; i++)
+//     {
+//         if (projections_a[i] < min_a) min_a = projections_a[i];
+//         if (projections_a[i] > max_a) max_a = projections_a[i];
+//         if (projections_b[i] < min_b) min_b = projections_b[i];
+//         if (projections_b[i] > max_b) max_b = projections_b[i];
+//     }
+//
+//     constexpr float lenience = 0.05; 
+//     if (max_a <= min_b + lenience || max_b <= min_a + lenience)
+//     {
+//         // No overlap
+//         return false;
+//     }
+//     // Overlap
+//     return true;
+// }
+
+// Get perpendicular edges
+// inline glm::vec3 getPerpendicularXZ(glm::vec3 vector)
+// {
+//     glm::vec3 returnVector;
+//     returnVector.x = -vector.z;
+//     returnVector.y = vector.y;
+//     returnVector.z = vector.x;
+//     return returnVector;
+// }
 
 
 struct PlacementArea
@@ -9,6 +59,34 @@ struct PlacementArea
     glm::vec3 position;
     bool isOccupied = false;
     float angle; // direction based on 0 being -Z
+    std::array<glm::vec3, 4> zoneVerticesArray; // For collision    
+
+    // Checks if two orienteted rectangles collide, using SAT - seperate axis theorem
+    bool Intersects(const std::array<glm::vec3, 4>& boundingBox)
+    {
+        // First we check the axis of our zone
+        std::array<glm::vec3, 8> axis;
+
+        size_t i;
+        // Get all 4 edges of both rectangles
+        for (i = 0; i < 4; i++)
+        {
+            // Get each vector of each edge and then get its perits adjacent one and then put them into a bix array
+            axis[i] = glm::normalize(getPerpendicularXZ(zoneVerticesArray[(i + 1) % 4] - zoneVerticesArray[i]));
+            axis[i+4] = glm::normalize(getPerpendicularXZ(boundingBox[(i + 1) % 4] - boundingBox[i]));
+        }
+
+        for (i = 0; i < 8; i++)
+        {
+            if (!projectionOverlap(zoneVerticesArray, boundingBox, axis[i]))
+            {
+                return false;
+            }
+        }
+
+        // Does not intersect
+        return true;
+    }
 };
 
 // Forward declaration

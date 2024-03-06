@@ -2,6 +2,7 @@
 #include <road_zone_object.hpp>
 #include <glm/glm.hpp>
 #include <resourceManager.hpp>
+#include <helper.hpp>
 
 RoadZoneObject::RoadZoneObject(std::array<glm::vec3, 4>& vertices_in, float width_in) : vertices{vertices_in}, roadWidth{width_in}
 {
@@ -43,8 +44,17 @@ void RoadZoneObject::UpdateVertices(const std::array<glm::vec3, 4>& vertices_in,
     {
         glm::vec3 x = (unitVector * glm::vec3(i));
         glm::vec3 placementVector = vertices_in[0] - x;
-        // LOG(STATUS, placementVector)
-        areasForPlacement.push_back({placementVector, false, this->GetZoneAngle()+flip});
+
+        glm::vec3 invUnitVector = {-unitVector.z, unitVector.y, unitVector.x};
+
+        // Zone vertices
+        glm::vec3 one = placementVector;
+        glm::vec3 two = placementVector-unitVector;
+        glm::vec3 three = placementVector-invUnitVector;
+        glm::vec3 four = placementVector-unitVector-invUnitVector;
+
+        areasForPlacement.push_back({placementVector, false, 
+                                     this->GetZoneAngle()+flip, {one, two, four, three}});
     }
 }
 
@@ -62,56 +72,6 @@ PlacementArea const* RoadZoneObject::GetValidPlacement(void)
     return nullptr;
 }
 
-// helper function
-bool projectionOverlap(const std::array<glm::vec3, 4>& a, const std::array<glm::vec3, 4>& b, const glm::vec3 axis)
-{
-    std::array<float, 4> projections_a, projections_b;
-    float min_a, max_a, min_b, max_b;
-
-    int i;
-
-    // Project vertices onto axis
-    for (i = 0; i < 4; i++)
-    {
-        projections_a[i] = glm::dot(a[i], axis);
-        projections_b[i] = glm::dot(b[i], axis);
-    }
-
-    // Initalize the min and maxes
-    min_a = projections_a[0];
-    max_a = projections_a[0];
-    min_b = projections_b[0];
-    max_b = projections_b[0];
-
-    for (i = 0; i < 4; i++)
-    {
-        if (projections_a[i] < min_a) min_a = projections_a[i];
-        if (projections_a[i] > max_a) max_a = projections_a[i];
-        if (projections_b[i] < min_b) min_b = projections_b[i];
-        if (projections_b[i] > max_b) max_b = projections_b[i];
-    }
-
-    // LOG(DEBUG, "projectionOverlap(): min_a: " << min_a << " | max_a: " << max_a << " | min_b: " << min_b << " | max_b: " << max_b)
-
-    constexpr float lenience = 0.05; 
-    if (max_a <= min_b + lenience || max_b <= min_a + lenience)
-    {
-        // No overlap
-        return false;
-    }
-    // Overlap
-    return true;
-}
-
-// Get perpendicular edges
-inline glm::vec3 getPerpendicularXZ(glm::vec3 vector)
-{
-    glm::vec3 returnVector;
-    returnVector.x = -vector.z;
-    returnVector.y = vector.y;
-    returnVector.z = vector.x;
-    return returnVector;
-}
 
 // Checks if two orienteted rectangles collide, using SAT - seperate axis theorem
 bool RoadZoneObject::Intersects(const std::array<glm::vec3, 4>& boundingBox) const

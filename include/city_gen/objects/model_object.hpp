@@ -16,7 +16,9 @@ private:
     // Will draw the outline of the bounding box on the model
     bool showBoundingBox = true;
 
-    bool lightingEnable = false;
+    bool lightingEnable = true;
+
+    bool instanceRender = false;
 
 public:
     // modelPath_in -- Path to the model's .obj
@@ -27,7 +29,7 @@ public:
     ~ModelObject();
 
     void Draw(glm::mat4 view, glm::mat4 projection) override;
-    void DrawIndices(glm::mat4 view, glm::mat4 projection, std::vector<float>* matrices);
+    void DrawInstances(glm::mat4 view, glm::mat4 projection, std::vector<float>* matrices);
     
     glm::mat4 GetModelMatrix(void);
 
@@ -45,7 +47,8 @@ public:
     ModelObject* SetSpawnOffset(glm::vec3 vec3);
     ModelObject* SetModelOriginCenterBottom();
     ModelObject* SetModelOriginCenter();
-    
+   
+    ModelObject* SetInstaceRendering(bool toggle);
     // For buildings
     ModelObject* SetOriginFrontRight();
     ModelObject* SetOriginFrontLeft();
@@ -53,7 +56,8 @@ public:
     // Getters
     std::string GetModelName() const;
     bool GetShowBoundingBox() const;
-    
+    bool GetIsInstanceRendered(void) const;
+        
     // ImGui
     glm::vec3& GetScaleImGui();
     bool& GetShowBoundingBoxImGui();

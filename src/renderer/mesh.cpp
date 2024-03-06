@@ -15,7 +15,6 @@ void CheckGLError(const std::string& functionName) {
 
 Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, std::vector<Texture> textures, Material material)
 {
-    LOG(STATUS, "adsadsadsdsadasd");
     glGenBuffers(1, &matrixBuffer);
 
 
@@ -30,7 +29,7 @@ Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices, st
 Mesh::~Mesh()
 {
     // NOT SURE HOW BUT THIS IS BEING CALLED WHEN IT SHOULDNT BE
-    LOG(STATUS, "~Mesh() called");
+    // LOG(STATUS, "~Mesh() called");
     // glDeleteVertexArrays(1, &VAO);
     // glDeleteBuffers(1, &VBO);
     // glDeleteBuffers(1, &EBO);
@@ -186,18 +185,10 @@ void Mesh::DrawInstanced(Shader &shader_unused, unsigned int instanceCount, std:
     glEnable(GL_CULL_FACE);
 #endif
 
-
-    // LOG(STATUS, "VAO: " << VAO); 
-    
-    CheckGLError("1");
-
     glBindVertexArray(VAO);
     // Bind matrices
     glBindBuffer(GL_ARRAY_BUFFER, matrixBuffer);
     glBufferData(GL_ARRAY_BUFFER, matrices->size() * sizeof(float), matrices->data(), GL_STATIC_DRAW);
-
-    
-    CheckGLError("2");
     
 
     glEnableVertexAttribArray(3);
@@ -212,31 +203,19 @@ void Mesh::DrawInstanced(Shader &shader_unused, unsigned int instanceCount, std:
     glEnableVertexAttribArray(6);
     glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 16 * sizeof(float), (void*)(12*sizeof(float)));
 
-    // glBindVertexArray(0);
     // Configure them as instanced matrices
     glVertexAttribDivisor(3, 1);
     glVertexAttribDivisor(4, 1);
     glVertexAttribDivisor(5, 1);
     glVertexAttribDivisor(6, 1);
 
-    CheckGLError("3");
-
 
 
     // glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 
-
-    CheckGLError("4");
-
     glDrawElementsInstanced(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, nullptr, instanceCount);
-
     
-    CheckGLError("5");
-
-    // glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-    // glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, 0);
-
     glBindTexture(GL_TEXTURE_2D, 0);
 
 #if ENABLE_CULL_FACE_MODEL == 1

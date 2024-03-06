@@ -89,6 +89,7 @@ void BoundingBox::Update(glm::vec3& point)
     SetupBuffers();
 }
 
+
 // Draw function maybe for a wireframe like draw
 void BoundingBox::Draw()
 {

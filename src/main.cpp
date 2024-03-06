@@ -211,14 +211,14 @@ int main() {
     //
 
     // // GOOD POSITION TERRAIN, USE AGAIN
-    // scene->addModel(terrain, &backpackShader)
-    //     ->SetModelOriginCenterBottom()
-    //     ->ShowBoundingBox(false)
-    //     ->SetLightingEnabled(true)
-    //     ->SetIsVisible(true)
-    //     ->SetPosition({0,-0.4, 0})
-    //     ->SetScale(2);
-    //
+    scene->addModel(terrain, &backpackShader)
+        ->SetModelOriginCenterBottom()
+        ->ShowBoundingBox(false)
+        ->SetLightingEnabled(true)
+        ->SetIsVisible(true)
+        ->SetPosition({0,-0.4, 0})
+        ->SetScale(2);
+
 
     // Tree asset generation
     // generator::generateRoads(3, 10.0f, 3.0f, 90.0f);
@@ -256,9 +256,9 @@ int main() {
     // scene->addPointLight()
     //     ->SetPosition(glm::vec3{0, 0, 0});
     //
-    // scene->addPointLight()
-    //     ->SetPosition(glm::vec3{-10, 0, 0});
-    //
+    scene->addPointLight()
+        ->SetPosition(glm::vec3{-10, 0, 0});
+
     scene->addDirectionalLight()
         ->SetDirection(glm::vec3(0, 0, 0));
 
@@ -270,7 +270,7 @@ int main() {
     std::string buildingTest = "../assets/models/Buildings/buildingTest.obj";
     ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath}; 
     scene->addModel(buildingTest, &buildingShader)
-        ->SetLightingEnabled(false)
+        ->SetLightingEnabled(true)
         ->SetOriginFrontLeft()
         ->SetPosition({1, 0, 1});
         // ->SetSpawnOffset();
