@@ -27,7 +27,7 @@ struct PointLight {
     float quadratic;
 };
 
-#define MAX_NR_POINT_LIGHTS 4 // Max number we can have
+#define MAX_NR_POINT_LIGHTS 50 // Max number we can have
 
 in vec2 TexCoord;
 in vec3 FragPos;

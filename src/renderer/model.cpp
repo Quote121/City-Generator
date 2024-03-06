@@ -2,6 +2,7 @@
 
 #include <bounding_box.hpp>
 #include <resourceManager.hpp>
+#include <stb_image/stb_image.h>
 
 Model::Model(Shader* modelShader_in, const std::string& path)
 {
@@ -144,12 +145,14 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene)
 
 std::vector<Texture> Model::loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName)
 {
-
+    
     std::vector<Texture> textures;
     for(unsigned int i = 0; i < mat->GetTextureCount(type); i++)
     {
         aiString str;
         mat->GetTexture(type, i, &str);
+
+
         bool skip = false;
         for(unsigned int j = 0; j < textures_loaded.size(); j++)
         {

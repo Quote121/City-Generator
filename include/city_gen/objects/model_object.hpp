@@ -11,6 +11,7 @@ class ModelObject : public BaseObject<ModelObject>
 {
 private:
     glm::vec3 scale = {1.0f, 1.0f, 1.0f};
+    glm::vec2 textureScale = {1.0f, 1.0f};
     Model* model;
 
     // Will draw the outline of the bounding box on the model
@@ -52,6 +53,8 @@ public:
     // For buildings
     ModelObject* SetOriginFrontRight();
     ModelObject* SetOriginFrontLeft();
+    // Large value for repeating
+    ModelObject* SetTextureScale(glm::vec2 scale);
 
     // Getters
     std::string GetModelName() const;

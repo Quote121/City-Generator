@@ -136,7 +136,6 @@ void Mesh::DrawInstanced(Shader &shader_unused, unsigned int instanceCount, std:
      
     Shader shader = *ResourceManager::getInstance()->LoadShader(paths::building_defaultInstancedVertShaderPath, paths::building_defaultFragShaderPath);
 
-    CheckGLError("-2");
     //
     // unsigned int diffuseNr = 1;
     // unsigned int specularNr = 1;
@@ -159,7 +158,6 @@ void Mesh::DrawInstanced(Shader &shader_unused, unsigned int instanceCount, std:
     // glActiveTexture(GL_TEXTURE0); // unbind
     //
 
-    CheckGLError("-1");
     // If we do not have textures then use the material
     if (textures.size() == 0)
     {
@@ -169,14 +167,8 @@ void Mesh::DrawInstanced(Shader &shader_unused, unsigned int instanceCount, std:
         // LOG(STATUS, "mat.shin " << material.shininess)
         //
         shader.setVec3("material.ambient", material.ambience);
-
-        CheckGLError("11");
         shader.setVec3("material.diffuse", material.diffuse);
-
-        CheckGLError("12");
         shader.setVec3("material.specular", material.specular);
-
-        CheckGLError("13");
         shader.setFloat("material.shininess", 10.0f);
     }
 

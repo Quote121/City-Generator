@@ -56,7 +56,8 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
             objectShader->setMat4("model", result);
             // Set the local position based on the bounding box center
             objectShader->setVec3("localCenterPos", objectOriginPosition);
-            
+
+            objectShader->setVec2("textureScale", textureScale);
             // Tells the shader wether to show the lighting or just the base ambient texture
             objectShader->setBool("ShowLighting", lightingEnable);
             // Lighting
@@ -279,6 +280,14 @@ ModelObject* ModelObject::SetOriginFrontRight()
     objectOriginPosition = model->GetBoundingBox()->getFrontRightBuilding();
     return this;
 }
+
+
+ModelObject* ModelObject::SetTextureScale(glm::vec2 scale)
+{
+    textureScale = scale;
+    return this;
+}
+
 // Getters and setters
 
 std::string ModelObject::GetModelName() const

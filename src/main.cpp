@@ -169,6 +169,8 @@ int main() {
     std::string dust2 = "../assets/models/de_dust2/de_dust2.obj";
 
     std::string terrain = "../assets/models/Terrain/Terrain_first.obj";
+
+    // std::string terrain = "../assets/models/Terrain/Terrain_repeat.obj";
     std::string tree = "../assets/textures/tree_2_cropped.png";
     std::string sunIcon = "../assets/textures/sun_icon.png";
 
@@ -217,7 +219,8 @@ int main() {
         ->SetLightingEnabled(true)
         ->SetIsVisible(true)
         ->SetPosition({0,-0.4, 0})
-        ->SetScale(2);
+        ->SetScale(1.5)
+        ->SetTextureScale({10.0f, 10.0f});
 
 
     // Tree asset generation
@@ -245,19 +248,23 @@ int main() {
             ->SetIsBillboard(true)
             ->SetPosition({0, 0, 0})
             ->SetScale(2.0f);
-    //
-    // scene->addModel(backPackPath, &backpackShader)
-    //      ->SetModelOriginCenter()
-    //      ->SetPosition(glm::vec3{0.0f, 10.0f, 0.0f})
-    //      ->ShowBoundingBox(true)
-    //      ->SetLightingEnabled(true);
-         // ->SetIsVisible(false);
-    // 
-    // scene->addPointLight()
-    //     ->SetPosition(glm::vec3{0, 0, 0});
-    //
+
+
     scene->addPointLight()
         ->SetPosition(glm::vec3{-10, 0, 0});
+
+
+    for (int i = 0; i < 10; i++)
+    {
+        for (int j = 0; j < 1; j++)
+        {
+            scene->addPointLight()
+                ->SetPosition(glm::vec3{i*10, 1, j*10});
+        }
+    }
+    
+
+
 
     scene->addDirectionalLight()
         ->SetDirection(glm::vec3(0, 0, 0));

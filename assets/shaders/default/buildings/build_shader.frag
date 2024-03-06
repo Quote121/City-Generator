@@ -28,7 +28,7 @@ struct PointLight {
     float quadratic;
 };
 
-#define MAX_NR_POINT_LIGHTS 4 // Max number of lights that can effect this object
+#define MAX_NR_POINT_LIGHTS 100 // Max number of lights that can effect this object
 
 in vec3 FragPos;
 in vec3 Normal;

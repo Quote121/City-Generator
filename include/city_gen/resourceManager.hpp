@@ -161,6 +161,7 @@ public:
             int width, height, nrComponents;
 
             stbi_set_flip_vertically_on_load(flip_texture_vertically);
+
             unsigned char *data = stbi_load(texturePath.c_str(), &width, &height, &nrComponents, 0);
             if (data)
             {
