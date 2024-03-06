@@ -54,6 +54,7 @@
 // }
 
 
+constexpr float buildingCollisionThresholdDetection = 2.82842712475; // sqrt 8
 struct PlacementArea
 {
     glm::vec3 position;
@@ -87,6 +88,16 @@ struct PlacementArea
         // Does not intersect
         return true;
     }
+
+    bool TooFarForCollision(const PlacementArea* area_in)
+    {
+        if (glm::length(position-area_in->position) <= buildingCollisionThresholdDetection)
+        {
+            return false;
+        }
+        return true;
+    }
+
 };
 
 // Forward declaration

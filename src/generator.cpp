@@ -475,6 +475,11 @@ void generator::GenerateBuildings()
         bool intersects = false;
         for (int j = i+1; j < areas.size(); j++)
         {
+            if (areas[i].TooFarForCollision(&areas[j]))
+            {
+                // Move onto next one
+                continue;
+            }
             if (areas[i].Intersects(areas[j].zoneVerticesArray))
             {
                 intersects = true;
