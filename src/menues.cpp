@@ -17,39 +17,24 @@
 void Menues::display(float deltaTime)
 {
     Camera* cam = Camera::getInstance();
-    // Fps and general stats area
-    static int fpsSampCount = 0;
-    static float fpsSum = 0;
-    static float fpsValue;
-    // Print fps and coords
-    const int sampleSize = 100;
-    fpsSum += (1 / deltaTime);
-    fpsSampCount += 1;
-    if (fpsSampCount == sampleSize) {
-        fpsValue = ceil((int)(fpsSum / sampleSize * 10)) / 10;
-        fpsSum = 0; fpsSampCount = 0;
-    }
-    //////////////////////////////////////////////////////////////
+
     //
     // Window that gives fps, position, camera view
     //
-    
     ImGui::Begin("Stats");
-    ImGui::Text("FPS %.2f || Delta time: %.1f ms", fpsValue, deltaTime*1000);
+    ImGui::Text("FPS %.2f || Delta time: %.1f ms", 1/deltaTime, deltaTime*1000);
     ImGui::Text("Pitch | Yaw: %.3f %.3f", cam->Pitch, cam->Yaw);
     ImGui::Text("[x,y,z] : %.3f, %.3f, %.3f",cam->Position.x, cam->Position.y, cam->Position.z);
     ImGui::End();
-    //////////////////////////////////////////////////////////////
     
+
     Scene* scene = Scene::getInstance();
     
 
     ImGui::Begin("Generator settings");
-
     // Settings for the road Generator
     ImGui::Text("Road generator settings");
 
-    
     // generator::generateRoads(int iterations, float roadLength, float roadWidth, float roadAngleDegrees) 
 
     // iterations
