@@ -360,6 +360,14 @@ void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
     
     std::vector<std::string> instancedModels;
 
+
+    auto modelInstanceStartTime = StopWatch::GetCurrentTimePoint();
+    uint64_t timeElapsed = 0;
+
+    // TODO URGENT
+    // This takes up a lot of time
+    // 45 ms at itteration 3. This needs to be dealt with
+
     // Draw objects
     for (auto& obj : GetModelObjects())
     {
@@ -386,7 +394,15 @@ void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
                 }
             }
             instancedModels.push_back(obj->GetModelName());
+
+            timeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
+
+            
+            auto instanceDrawStartTime = StopWatch::GetCurrentTimePoint();
             obj->DrawInstances(view, projection, &matrices);
+            uint64_t intsanceDrawTimeElapsed = StopWatch::GetTimeElapsed(instanceDrawStartTime);
+            // LOG(STATUS, "INSTANCE DRAW TIME: " << intsanceDrawTimeElapsed << "ms")
+
         }
         // If not instanced, draw normally
         else 
@@ -411,6 +427,8 @@ void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
     // GetModelObjects()[0]->DrawInstances(view, projection, &matrices);
      
     // Scene::getInstance()-> 
+    // uint64_t timeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
+    // LOG(STATUS, "[ Model Instance draw. Time elapsed: " << timeElapsed << "ms ]\n");
 
     roadBatchRenderer->DrawBatch(view, projection);
 
@@ -457,3 +475,4 @@ void Scene::DrawSkyBox(glm::mat4 view, glm::mat4 projection)
         skybox->Draw(view, projection);
     }
 }
+

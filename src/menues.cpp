@@ -50,19 +50,40 @@ void Menues::display(float deltaTime)
     static float gen_roadAngle = 90.0f;
     ImGui::SliderFloat("Road Angle", &gen_roadAngle, 0.0f, 180.0f);
 
+    
+    static long menu_seed = 0;
+    ImGui::Text("Seed: %ld", menu_seed);
+    
     bool removeRoads = ImGui::Button("Clear roads.");
     if (removeRoads)
     {
         scene->removeAllRoads();
     }
     
-    bool generateRoads = ImGui::Button("Generate.");
+    bool generateRoads = ImGui::Button("Clear and Generate.");
 
     if (generateRoads)
     {
-        generator::GenerateRoads(gen_iterations, gen_roadLength, gen_roadWidth, gen_roadAngle);
+        scene->removeAllRoads();
+        menu_seed = generator::GenerateCity(0);
     }
 
+
+    static char textBuffer[20] = "";
+    bool simulateRandomGen = ImGui::Button("Random generator.");
+    if (simulateRandomGen)
+    {
+        if (std::strcmp(textBuffer, ""))
+        {
+            LOG(STATUS, "TEXTBUFFER: " << std::stoi(textBuffer));
+            menu_seed = generator::GenerateCity(std::stoi(textBuffer));
+        }
+        else{
+            menu_seed = generator::GenerateCity(0);
+        }
+    }
+    
+    ImGui::InputText("Seed: ", textBuffer, 20);
 
     ImGui::Text("Building generator settings");
     bool calculateZones = ImGui::Button("Generate");
@@ -79,7 +100,7 @@ void Menues::display(float deltaTime)
     bool generateBuildings = ImGui::Button("Generate buildings");
     if (generateBuildings)
     {
-        generator::GenerateBuildings();
+        generator::GenerateBuildings(0.5);
     }
 
 

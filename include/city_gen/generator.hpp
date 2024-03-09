@@ -45,6 +45,7 @@ struct road_gen_road
     float width;
     glm::vec3 colour = DEFAULT_ROAD_COLOUR;
     LineProperties lp;
+    bool allowBuildingZones = true;
 
     // This gets the stats about the line in the xz plane
     void UpdateLineProps(void)
@@ -178,13 +179,30 @@ struct road_gen_road
 
 namespace generator
 {
+
+    // @brief Generate a complete city with a set of randomly generated values. If seed is zero a new seed will be created
+    // @args seed_in - specify a seed to generate a previous city, 0 to generate a new city
+    // @returns the seed used, (int) if seed_in = 0 then a random seed is returned else the one you inputed is returned
+    int GenerateCity(unsigned int seed_in);
+
+
     // @brief Method for the road generation pass, uses LSystemGen internally to generate a grammar string
-    //
+    // @args StartPos - vector of the start position
+    // @args StartAngle - angle for the network to start
     // @args Iterations - number of grammar iterations
     // @args RoadLength - length of the road when generating
     // @args RoadWidth - width of the roads
     // @args roadAngleDegrees - the +/- angles when generating from the grammar
-    void GenerateRoads(int iterations, float roadLength, float roadWidth, float roadAngleDegrees);
+    // @args endNodes - pointer to a 2D dynamic array of the end nodes of each city
+    // @returns a dynamic array of all the generated roads
+    std::vector<road_gen_road> GenerateRoads(glm::vec3 startPos,
+                                             float startAngle, 
+                                             int iterations, 
+                                             float roadLength, 
+                                             float roadWidth, 
+                                             float roadAngleDegrees, 
+                                             std::vector<road_gen_point>* endNodes);
+    
 
     // Axiom, is the string to have the grammar effect
     // Iterations is amount of iterations on string
@@ -193,13 +211,16 @@ namespace generator
     // Building placement
     void CalculateValidZones();
     void ClearZoneCollisions();
-    void GenerateBuildings();
+
+    // @brief Creates buildings in zones
+    // @args DensityFactor value that determines the probibility of a building being created at any zone point
+    void GenerateBuildings(float densityFactor);
 
     // Tree sprite placement
     void generateTrees();
-        // IDEA
-        //
-        // Just like with buildings determine tree placement based on collision
-        // We could also define a circle around the generation zone to allow roads to generate
+    // IDEA
+    //
+    // Just like with buildings determine tree placement based on collision
+    // We could also define a circle around the generation zone to allow roads to generate
 };
 

@@ -16,10 +16,13 @@
 // Helper function
 // Checks if the distance between two points is less than a threshold value in the XZ plane
 // Road length has to scale with the threshold value
-inline bool inRangeXZPlane(const road_gen_point& a, const road_gen_point& b, const float threshold, const float roadWidth, const float roadLength){
+inline bool inRangeXZPlane(const road_gen_point& a, const road_gen_point& b, float thresholdUpper, float thresholdLower, const float roadWidth, const float roadLength){
+    if (thresholdLower < roadWidth)
+        thresholdLower = roadWidth;
+
     float distance = glm::sqrt(glm::pow(a.point.x - b.point.x, 2.0f) + glm::pow(a.point.z - b.point.z, 2.0f));
     // If close enough and as far away as road width
-    if (distance > threshold*roadLength || distance < roadWidth){
+    if (distance > thresholdUpper*roadLength || distance < thresholdLower){
         return false;
     }    
     return true;
@@ -28,6 +31,8 @@ inline bool inRangeXZPlane(const road_gen_point& a, const road_gen_point& b, con
 
 struct CityGenerationParameters
 {
+    glm::vec3 startPosition;
+    float startAngle;
     int iterations;         // 2-4
     float roadLength;       //  
     float roadWidth;
@@ -36,57 +41,253 @@ struct CityGenerationParameters
 };
 
 
-// Main generation function
-void GenerateCity(unsigned int seed_in)
+
+// @brief Creates long roads between cities
+// @args roads - dynamic array of all generated roads, will add the highways to this if any created
+// @args endNodes - 2D dynamic array of all the end nodes of each city so we can create highways between different cities
+// @args closest - the minimum amount of distance between two end nodes to consider creating a highway
+// @args furthest - the furthest amount of distance between two end nodes to conisder creating a highway
+void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<road_gen_point>>* endNodes, float closest, float furthest, float roadWidth)
 {
+    // Set our quota of highways to 8, at 8 we stop
+    int quota = 8;
+    unsigned int newHighways = 0;
+
+    // We cannot create highways between less than 2 cites.
+    if (endNodes->size() < 2)
+        return;
+
+    // For each set of city end nodes which are not the same city
+    for (unsigned int i = 0; i < endNodes->size(); i++)
+    {
+        for (unsigned int j = i+1; j < endNodes->size(); j++)
+        {
+            std::vector<road_gen_point> cityA = endNodes->at(i);
+            std::vector<road_gen_point> cityB = endNodes->at(j);
+
+            // Attempt to create highways
+            for(unsigned int k = 0; k < cityA.size(); k++)
+            {
+                for (unsigned int l = 0; l < cityB.size(); l++)
+                {
+                    auto pointA = cityA[k];
+                    auto pointB = cityB[l];
+                    if (inRangeXZPlane(pointA, pointB, furthest, closest, roadWidth, 1.0f) && !pointA.endNodeUsed && !pointB.endNodeUsed)
+                    {
+                        // Create temporary road
+                        road_gen_road tempRoad = {pointA.point, pointB.point, roadWidth};
+                        tempRoad.allowBuildingZones = false;
+                        bool endNodeRoadIntersection = false; // used to exit deeply nested loops
+                        for (unsigned int m = 0; m < roads->size(); m++)
+                        {
+                            // If intersects then we look at next point
+                            if (tempRoad.isInterceptingAndNodes(roads->at(m)))
+                            {
+                                endNodeRoadIntersection = true;
+                                break;
+                            }
+                        }
+                        // If no intersections we add directy to endPoints
+                        if (!endNodeRoadIntersection)
+                        {
+                            // Add to vector
+                            roads->push_back(tempRoad);
+                            // Set nodes to used
+                            newHighways++;
+                            if (newHighways == quota) return; // If we meet quota, return 
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if (newHighways != 0)
+        LOG(STATUS, "HIGHWAY CREATED!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+}
+
+
+
+// Main generation function
+int generator::GenerateCity(unsigned int seed_in)
+{
+    int seed;
     // Generate new city with new random numbers, else use seed
     if (seed_in == 0)
     {
-        time_t seed = time(nullptr);
+        seed = Random::GenerateSeed();
         std::srand(seed);
     }
     else 
     {
+        seed = seed_in;
         std::srand(seed_in);
     }
     
     // First we need to determine how many smaller cities we are going to have
     // 1-4
-    int numberOfCities = Random::GetIntBetweenInclusive(1, 4);
+    int numberOfCities = Random::GetIntBetweenInclusive(1, 6);
 
-    
     std::vector<CityGenerationParameters> cityParameterVector;
-
-    
+    std::vector<std::vector<road_gen_point>> cityEndNodesVector;
+    std::vector<road_gen_road> cityRoads;
 
     // Then we need to know the parameters to give to each city:
     for (int i = 0; i < numberOfCities; i++)
     {
         cityParameterVector.push_back({
+            glm::vec3{Random::GetIntBetweenInclusive(-200, 200), 0, Random::GetIntBetweenInclusive(-200, 200)},
+            Random::GetFloatBetweenInclusive(0, 2*M_PI),    // Start angle in radians 
             Random::GetIntBetweenInclusive(2, 4),           // Iterations of grammar
             Random::GetFloatBetweenInclusive(3.0f, 5.0f),   // Road length
             1.0f,                                           // Keep road width the same (1.0f)
             Random::GetFloatBetweenInclusive(88.0f, 92.0f), // Angle between roads in degrees
             Random::GetPercentage()                         // The probability of placing a building at any spot
-        }); 
+        });
+
+        // Vector initalizatio
+        std::vector<road_gen_point> cityVector;
+        cityEndNodesVector.push_back(cityVector);
     }
 
-    // TODO next - idea
+    LOG(STATUS, "Number of cities: " << numberOfCities);
+    for (int i = 0; i < numberOfCities; i++)
+    {
+        auto city = cityParameterVector[i];
+        LOG(STATUS, "\nCITY NUMBER " << i+1);
+        LOG(STATUS, "Start vector: " << city.startPosition);
+        LOG(STATUS, "Start angle: " << city.startAngle);
+        LOG(STATUS, "Iteration: " << city.iterations);
+        LOG(STATUS, "Length: " << city.roadLength);
+        LOG(STATUS, "Road width: " << city.roadWidth);
+        LOG(STATUS, "Road angle: " << city.roadAngleDegrees);
+        LOG(STATUS, "Percentage density: " << city.densityFactor);
+    }
+
+    // Valid areas is -200,-200 to 200, 200
+
+    // Thinking out loud:
     //
-    // We want a vector of all the roads in each city so that we can determine the "highways"
-    // Best way is to pass the vector to the generation method by passing it as a pointer
-    // the method will fill up the vector and will also give us a vector of end nodes
-    //
-    // Once we create the highways we can add all the roads to the scene
-    //
+    // We generate a city netork, it deletes all of its dupes and intersections
+    // We then generate a new city network, we delete all dupes and intersection considering all roads in the scene
+    // We then create highways from seperate end nodes
+
+
+    for (int i = 0; i < cityParameterVector.size(); i++)
+    {
+        // Generate and get all end nodes
+        // this->GenerateRoads(..., &cityEndNodesVector[i]);
+        auto city = cityParameterVector[i];
+        auto roads = GenerateRoads(city.startPosition, city.startAngle, city.iterations, city.roadLength, city.roadWidth, city.roadAngleDegrees, &cityEndNodesVector[i]);
+        cityRoads.insert(cityRoads.end(), roads.begin(), roads.end());
+    }
+
+    createHighways(&cityRoads, &cityEndNodesVector, 10.0f, 500.0f, 1.0f);
+
+    // Then we add to the scene for rendering
+    for (auto& road : cityRoads)
+    {
+        auto sceneRoad = Scene::getInstance()->addRoad(road.a, road.b, road.width);
+        if (!road.allowBuildingZones)
+        {
+            sceneRoad->GetZoneA()->SetZoneUsable(false);
+            sceneRoad->GetZoneB()->SetZoneUsable(false);
+        }
+    }
+    // Update the batch renderer buffers
+    Scene::getInstance()->roadBatchRenderer->UpdateAll();
+
+
+    return seed;
+
     // TODO random grammars
     //
     // When generating each of our cities we should pick from a list of predetermined grammars
 }
 
+// @brief removes roads that are the same i.e. overlapping
+// @args roadsVector is the vector of roads created originally and is updated by this method
+void removeDupes(std::vector<road_gen_road>* roadsVector)
+{
+    unsigned int removedRoadsDupes = roadsVector->size();
+    // For each road
 
+    for (auto i_it = roadsVector->begin(); i_it != roadsVector->end(); i_it++)
+    {
+        for (auto j_it = i_it+1; j_it != roadsVector->end(); j_it++)
+        {
+            // If they are the same, remove i
+            if (i_it->a == j_it->a && i_it->b == j_it->b)
+            {
+                j_it = roadsVector->erase(j_it);
+            }
+        }
+    }
+    removedRoadsDupes -= roadsVector->size();
 
-void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, float roadWidth = 3.0f, float roadAngleDegrees = 90.0f)
+    // The numbers will alter based on the length of the roads due to the grammar
+    LOG(STATUS, "[" << removedRoadsDupes << "] roads removed due to duplicates.");
+}
+
+// @brief Creates new roads from the vector of end nodes
+// if a and b are not the same, not used by another node, are close enough and do not intersect other roads
+// @args roadsVector Vector of current generated roads
+// @args endPoints vector of nodes designated as end nodes and are open for connections
+// @args roadWidth 
+// @args roadLength
+void createNewRoads(std::vector<road_gen_road>* roadsVector, std::vector<road_gen_point>* endPoints, float roadWidth, float roadLength)
+{
+
+    // Connect nodes that are allowed to be connected (if they are close enough and do not intersect anything)
+    float connectionThresholdDistance = 5.0f;
+
+    unsigned int endNodeConnections = 0;
+    for(auto i_it = endPoints->begin(); i_it != endPoints->end(); i_it++)
+    {
+        for (auto j_it = endPoints->begin(); j_it != endPoints->end(); j_it++)
+        {
+        
+            // Not looking at the same nodes and they have not already been used
+            if (i_it != j_it && !i_it->endNodeUsed && !j_it->endNodeUsed)
+            {
+                
+                if (inRangeXZPlane(*i_it, *j_it, connectionThresholdDistance, 0, roadWidth, roadLength))
+                {
+                    // Create temporary road
+                    road_gen_road tempRoad = {i_it->point, j_it->point, roadWidth};
+                    bool endNodeRoadIntersection = false; // used to exit deeply nested loops
+                    for (unsigned int i = 0; i < roadsVector->size(); i++)
+                    {
+                        // If intersects then we look at next point
+                        if (tempRoad.isInterceptingAndNodes(roadsVector->at(i)))
+                        {
+                            endNodeRoadIntersection = true;
+                            break;
+                        }
+                    }
+                    // If no intersections we add directy to endPoints
+                    if (!endNodeRoadIntersection)
+                    {
+                        // Add to vector
+                        roadsVector->push_back(tempRoad);
+                        // Set nodes to used
+                        i_it->endNodeUsed = true; j_it->endNodeUsed = true;
+                        endNodeConnections++;
+                    }
+                }
+            }
+        }
+    }
+
+    LOG(STATUS, "[" << endNodeConnections << "] new roads created from end node connections.");
+}
+
+std::vector<road_gen_road> generator::GenerateRoads(glm::vec3 startPos,
+                                                    float startAngle,
+                                                    int iterations,
+                                                    float roadLength, 
+                                                    float roadWidth, 
+                                                    float roadAngleDegrees,
+                                                    std::vector<road_gen_point>* endNodes)
 {
     auto roadGenerateStartTime = StopWatch::GetCurrentTimePoint();
 
@@ -113,11 +314,10 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
     std::stack<road_gen_point> pointStack;
 
     // End nodes from roads that are delted later will still be here, not an issue for the final product
-    std::vector<road_gen_point> endPoints;
 
     // Test point
-    glm::vec3 startPoint = {0.0, 0.0, 0.0};
-    road_gen_point currentPoint = {startPoint, 0.0f}; // Heading of 0 radians
+    // glm::vec3 startPoint = {0.0, 0.0, 0.0};
+    road_gen_point currentPoint = {startPos, startAngle}; // Heading of 0 radians
         
     float degreeRadians = roadAngleDegrees * (M_PI/180);
    
@@ -166,14 +366,14 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
 
             // If the end point is in the vector already we wont add.
             // This is done instead of a set as later on we need to access the values and attributes and dont want to const cast
-            auto iter = std::find_if(endPoints.begin(), endPoints.end(), [&](const road_gen_point& point)
+            auto iter = std::find_if(endNodes->begin(), endNodes->end(), [&](const road_gen_point& point)
             {
                 return ((point.point == nextPoint) && (point.degreeHeading == currentPoint.degreeHeading));
             });
             
-            if (iter == endPoints.end())
+            if (iter == endNodes->end())
             {
-                endPoints.push_back({nextPoint, currentPoint.degreeHeading});
+                endNodes->push_back({nextPoint, currentPoint.degreeHeading});
             }
 
             currentPoint.point = nextPoint; // Update current point, no change to bearing
@@ -213,26 +413,8 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
         } // switch(symbol)
     }
 
-    // Remove duplicate roads
-    unsigned int removedRoadsDupes = roadsVector.size();
-    // For each road
-    for (unsigned int i = 0; i < roadsVector.size(); i++)
-    {
-        // Start at i+1 (next one)
-        for (unsigned int j = i+1; j < roadsVector.size(); j++)
-        {
-            // If road is in the same remove the one we are looking at (i)
-            if (roadsVector[i] == roadsVector[j])
-            {
-                roadsVector.erase(roadsVector.begin() + i);
-            }
-        }
-    }
-    removedRoadsDupes -= roadsVector.size();
-
-    // The numbers will alter based on the length of the roads due to the grammar
-    LOG(STATUS, "[" << removedRoadsDupes << "] roads removed due to duplicates.");
-    
+    // Pass vector as pointer
+    removeDupes(&roadsVector);
 
     // For all the remaining roads we now have to calculate their line properties to determine if they intersect
     for (auto& road : roadsVector)
@@ -242,98 +424,30 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
 
     
     unsigned int removedRoadsIntersect = roadsVector.size(); 
-    for (auto i_it = roadsVector.begin(); i_it != roadsVector.end();)
+    for (auto i_it = roadsVector.begin(); i_it != roadsVector.end(); i_it++)
     {
-        for (auto j_it = roadsVector.begin(); j_it != roadsVector.end();)
+        for (auto j_it = roadsVector.begin(); j_it != roadsVector.end(); j_it++)
         {
-            // if (i_it->isIntercepting(*j_it))
             if (i_it->isInterceptingAndNodes(*j_it))
-            // if (i_it->isIntercepting(*j_it))
             {
                 // If we remove at j then we erase and pass the next valid object back to the iterator
                 removedRoadsIntersect++;
                 j_it = roadsVector.erase(j_it);
             }
-            else 
-            {
-                // Otherwise we move onto the next one
-                ++j_it;
-            }
         }
-        ++i_it;
     }
     removedRoadsIntersect -= roadsVector.size(); 
     LOG(STATUS, "[" << removedRoadsIntersect << "] roads removed due to intersections.");
 
-    // Connect nodes that are allowed to be connected (if they are close enough and do not intersect anything)
-    float connectionThresholdDistance = 5.0f;
-    
-   
-    // This creates new roads based on the end node list generated earlier.
-    // The criteria for a new end node road are the following
-    // - A and B are not the same node
-    // - Neither A or B are in use by another end node
-    // - The two points A and B are in range in the xz plane as specified by a threshold value
-    // - The road between A and B does not intersect any other existing road.
-    // If all of the above are satisfied then a road is generated.
-    unsigned int endNodeConnections = 0;
-    for(auto i_it = endPoints.begin(); i_it != endPoints.end();)
-    {
-    
-        for (auto j_it = endPoints.begin(); j_it != endPoints.end();)
-        {
-        
-            // Not looking at the same nodes and they have not already been used
-            if (i_it != j_it && !i_it->endNodeUsed && !j_it->endNodeUsed)
-            {
-                
-                if (inRangeXZPlane(*i_it, *j_it, connectionThresholdDistance, roadWidth, roadLength))
-                {
-                    // Create temporary road
-                    road_gen_road tempRoad = {i_it->point, j_it->point, roadWidth};
-                    bool endNodeRoadIntersection = false; // used to exit deeply nested loops
-                    for (unsigned int i = 0; i < roadsVector.size(); i++)
-                    {
-                        // If intersects then we look at next point
-                        if (tempRoad.isInterceptingAndNodes(roadsVector[i]))
-                        {
-                            endNodeRoadIntersection = true;
-                            break;
-                        }
-                    }
-                    // If no intersections we add directy to endPoints
-                    if (!endNodeRoadIntersection)
-                    {
-                        // Add to vector
-                        roadsVector.push_back(tempRoad);
-                        // Set nodes to used
-                        i_it->endNodeUsed = true; j_it->endNodeUsed = true;
-                        endNodeConnections++;
-                    }
-                }
-            }
-            ++j_it;
-        }
-        ++i_it;
-    }
-    
-    
+
+    // Create highways before new mini roads
+
+    // Create the new roads between end nodes 
+    createNewRoads(&roadsVector, endNodes, roadWidth, roadLength);
 
 
 
 
-
-
-
-    LOG(STATUS, "[" << endNodeConnections << "] new roads created from end node connections.");
-
-
-
-    // Then we add to the scene for rendering
-    for (auto& road : roadsVector)
-    {
-        Scene::getInstance()->addRoad(road.a, road.b, road.width);
-    }
     
     // Get road number
     size_t numberOfRoads = Scene::getInstance()->GetRoadObjects().size();
@@ -343,9 +457,9 @@ void generator::GenerateRoads(int iterations = 2, float roadLength = 10.0f, floa
     uint64_t timeElapsed = StopWatch::GetTimeElapsed(roadGenerateStartTime);
     LOG(STATUS, "[ GenerateRoads finished. Time elapsed: " << timeElapsed << "ms ]\n");
 
-    // Update the batch renderer buffers
-    Scene::getInstance()->roadBatchRenderer->UpdateAll();
 
+    // Copy return 
+    return roadsVector;
 }
 
 void generator::LSystemGen(std::string *axiom, uint iterations)
@@ -464,7 +578,7 @@ std::array<std::string, 9> buildingModelPaths = {
     "../assets/models/Buildings/LowPoly/low_buildingI.obj"
 };
 
-void generator::GenerateBuildings()
+void generator::GenerateBuildings(float densityFactor)
 {
     LOG(STATUS, "[ Started GeneratedBuildings ]");
     auto buildingGenerateStartTime = StopWatch::GetCurrentTimePoint();
@@ -491,8 +605,12 @@ void generator::GenerateBuildings()
             // Check we still have zones left
             if (zone != nullptr && road->GetZoneA()->IsUsable())
             {
-                areas.push_back(*zone);
-                buildingCount++;
+                // If we fall in range of the density factor we add the area for buildings to be placed
+                if (Random::GetPercentage() < densityFactor)
+                {
+                    areas.push_back(*zone);
+                    buildingCount++;
+                }
             }
             else 
                 break;
@@ -508,8 +626,11 @@ void generator::GenerateBuildings()
             // Check we still have zones left
             if (zone != nullptr && road->GetZoneB()->IsUsable())
             {
-                areas.push_back(*zone);
-                buildingCount++;
+                if (Random::GetPercentage() < densityFactor)
+                {
+                    areas.push_back(*zone);
+                    buildingCount++;
+                }
             }
             else 
                 break;
@@ -540,12 +661,13 @@ void generator::GenerateBuildings()
             // Street lights for roads
             if (i % 10 == 0)
             {
-                scene->addPointLight()
-                    ->SetIsVisible(false) // Disable the sprite
-                    ->SetPosition(areas[i].zoneVerticesArray[0])
-                    ;
+                // scene->addPointLight()
+                //     ->SetIsVisible(false) // Disable the sprite
+                //     ->SetPosition(areas[i].zoneVerticesArray[0])
+                //     ;
             }
 
+            // Add random buildings
             scene->addModel(buildingModelPaths[i%9], &buildingShader)
                 ->SetOriginFrontLeft()
                 ->SetPosition(areas[i].position)

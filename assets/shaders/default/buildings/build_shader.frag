@@ -28,7 +28,7 @@ struct PointLight {
     float quadratic;
 };
 
-#define MAX_NR_POINT_LIGHTS 100 // Max number of lights that can effect this object
+#define MAX_NR_POINT_LIGHTS 50 // Max number of lights that can effect this object
 
 in vec3 FragPos;
 in vec3 Normal;
@@ -59,7 +59,7 @@ void main()
     result = CalcDirLight(dirLight, norm, viewDir);
     
     // point lights
-    for(int i = 0; i < NumValidPointLights; i++)
+    for(int i = 0; i < NumValidPointLights && i < MAX_NR_POINT_LIGHTS; i++)
        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
 
     // Hacky fix

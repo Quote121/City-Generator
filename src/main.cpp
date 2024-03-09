@@ -227,7 +227,7 @@ int main() {
         ->SetModelOriginCenterBottom()
         ->ShowBoundingBox(false)
         ->SetLightingEnabled(true)
-        ->SetIsVisible(true)
+        ->SetIsVisible(false)
         ->SetPosition({0,-0.4, 0})
         ->SetScale(1.5)
         ->SetTextureScale({10.0f, 10.0f});
@@ -279,20 +279,20 @@ int main() {
 
 
     scene->addDirectionalLight()
-        ->SetDirection(glm::vec3(0, 0, 0));
+        ->SetDirection(glm::vec3(0, -3.14, -0.5));
 
     
     Shader lineShader("../assets/shaders/default/line/line_shader.frag",
                      "../assets/shaders/default/line/line_shader.frag");
 
     
-    std::string buildingTest = "../assets/models/Buildings/buildingTest.obj";
-    ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath}; 
-    scene->addModel(buildingTest, &buildingShader)
-        ->SetLightingEnabled(true)
-        ->SetOriginFrontLeft()
-        ->SetPosition({1, 0, 1});
-        // ->SetSpawnOffset();
+    // std::string buildingTest = "../assets/models/Buildings/buildingTest.obj";
+    // ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath}; 
+    // scene->addModel(buildingTest, &buildingShader)
+    //     ->SetLightingEnabled(true)
+    //     ->SetOriginFrontLeft()
+    //     ->SetPosition({1, 0, 1});
+    //     // ->SetSpawnOffset();
 
     // Using builder rather than constructor will have larger overhead as object will be created then modified
     // Builder WILL DO a second UpdateVertices() call as it will need to recalculate based on new width
