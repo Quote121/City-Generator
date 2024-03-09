@@ -15,6 +15,7 @@ struct road_gen_point
     glm::vec3 point;
     float degreeHeading;
     bool endNodeUsed = false; // Used for end node road generation
+    bool hasHighway = false; // used for highway generation
     
     // Struct definition for the set
     inline bool operator<(const road_gen_point& rhs) const
@@ -201,7 +202,8 @@ namespace generator
                                              float roadLength, 
                                              float roadWidth, 
                                              float roadAngleDegrees, 
-                                             std::vector<road_gen_point>* endNodes);
+                                             std::vector<road_gen_point>* endNodes,
+                                             std::vector<road_gen_road>& roadsVector);
     
 
     // Axiom, is the string to have the grammar effect

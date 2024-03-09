@@ -50,7 +50,7 @@ struct CityGenerationParameters
 void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<road_gen_point>>* endNodes, float closest, float furthest, float roadWidth)
 {
     // Set our quota of highways to 8, at 8 we stop
-    int quota = 8;
+    int quota = 3;
     unsigned int newHighways = 0;
 
     // We cannot create highways between less than 2 cites.
@@ -62,17 +62,24 @@ void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<r
     {
         for (unsigned int j = i+1; j < endNodes->size(); j++)
         {
-            std::vector<road_gen_point> cityA = endNodes->at(i);
-            std::vector<road_gen_point> cityB = endNodes->at(j);
+            int interCityHighways = 0;
+            std::vector<road_gen_point>& cityA = endNodes->at(i);
+            std::vector<road_gen_point>& cityB = endNodes->at(j);
 
             // Attempt to create highways
             for(unsigned int k = 0; k < cityA.size(); k++)
             {
+                // Keep the number low for between cities
+                if (interCityHighways >= quota)
+                    break;
+
                 for (unsigned int l = 0; l < cityB.size(); l++)
                 {
-                    auto pointA = cityA[k];
-                    auto pointB = cityB[l];
-                    if (inRangeXZPlane(pointA, pointB, furthest, closest, roadWidth, 1.0f) && !pointA.endNodeUsed && !pointB.endNodeUsed)
+                    auto& pointA = cityA[k];
+                    auto& pointB = cityB[l];
+                    if (inRangeXZPlane(pointA, pointB, furthest, closest, roadWidth, 1.0f) && 
+                        !pointA.endNodeUsed && !pointB.endNodeUsed &&
+                        !pointA.hasHighway && !pointB.hasHighway)
                     {
                         // Create temporary road
                         road_gen_road tempRoad = {pointA.point, pointB.point, roadWidth};
@@ -92,117 +99,23 @@ void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<r
                         {
                             // Add to vector
                             roads->push_back(tempRoad);
-                            // Set nodes to used
-                            newHighways++;
-                            if (newHighways == quota) return; // If we meet quota, return 
+                            newHighways++; interCityHighways++;
+
+                            LOG(STATUS, "HIGHWAY: " << tempRoad.a << " " << tempRoad.b );
+                            
+                            pointA.hasHighway = true; pointB.hasHighway = true;
+                            break;
                         }
                     }
                 }
             }
         }
     }
-    if (newHighways != 0)
-        LOG(STATUS, "HIGHWAY CREATED!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    LOG(STATUS, "[" << newHighways << "] : New highways created.");
 }
 
 
 
-// Main generation function
-int generator::GenerateCity(unsigned int seed_in)
-{
-    int seed;
-    // Generate new city with new random numbers, else use seed
-    if (seed_in == 0)
-    {
-        seed = Random::GenerateSeed();
-        std::srand(seed);
-    }
-    else 
-    {
-        seed = seed_in;
-        std::srand(seed_in);
-    }
-    
-    // First we need to determine how many smaller cities we are going to have
-    // 1-4
-    int numberOfCities = Random::GetIntBetweenInclusive(1, 6);
-
-    std::vector<CityGenerationParameters> cityParameterVector;
-    std::vector<std::vector<road_gen_point>> cityEndNodesVector;
-    std::vector<road_gen_road> cityRoads;
-
-    // Then we need to know the parameters to give to each city:
-    for (int i = 0; i < numberOfCities; i++)
-    {
-        cityParameterVector.push_back({
-            glm::vec3{Random::GetIntBetweenInclusive(-200, 200), 0, Random::GetIntBetweenInclusive(-200, 200)},
-            Random::GetFloatBetweenInclusive(0, 2*M_PI),    // Start angle in radians 
-            Random::GetIntBetweenInclusive(2, 4),           // Iterations of grammar
-            Random::GetFloatBetweenInclusive(3.0f, 5.0f),   // Road length
-            1.0f,                                           // Keep road width the same (1.0f)
-            Random::GetFloatBetweenInclusive(88.0f, 92.0f), // Angle between roads in degrees
-            Random::GetPercentage()                         // The probability of placing a building at any spot
-        });
-
-        // Vector initalizatio
-        std::vector<road_gen_point> cityVector;
-        cityEndNodesVector.push_back(cityVector);
-    }
-
-    LOG(STATUS, "Number of cities: " << numberOfCities);
-    for (int i = 0; i < numberOfCities; i++)
-    {
-        auto city = cityParameterVector[i];
-        LOG(STATUS, "\nCITY NUMBER " << i+1);
-        LOG(STATUS, "Start vector: " << city.startPosition);
-        LOG(STATUS, "Start angle: " << city.startAngle);
-        LOG(STATUS, "Iteration: " << city.iterations);
-        LOG(STATUS, "Length: " << city.roadLength);
-        LOG(STATUS, "Road width: " << city.roadWidth);
-        LOG(STATUS, "Road angle: " << city.roadAngleDegrees);
-        LOG(STATUS, "Percentage density: " << city.densityFactor);
-    }
-
-    // Valid areas is -200,-200 to 200, 200
-
-    // Thinking out loud:
-    //
-    // We generate a city netork, it deletes all of its dupes and intersections
-    // We then generate a new city network, we delete all dupes and intersection considering all roads in the scene
-    // We then create highways from seperate end nodes
-
-
-    for (int i = 0; i < cityParameterVector.size(); i++)
-    {
-        // Generate and get all end nodes
-        // this->GenerateRoads(..., &cityEndNodesVector[i]);
-        auto city = cityParameterVector[i];
-        auto roads = GenerateRoads(city.startPosition, city.startAngle, city.iterations, city.roadLength, city.roadWidth, city.roadAngleDegrees, &cityEndNodesVector[i]);
-        cityRoads.insert(cityRoads.end(), roads.begin(), roads.end());
-    }
-
-    createHighways(&cityRoads, &cityEndNodesVector, 10.0f, 500.0f, 1.0f);
-
-    // Then we add to the scene for rendering
-    for (auto& road : cityRoads)
-    {
-        auto sceneRoad = Scene::getInstance()->addRoad(road.a, road.b, road.width);
-        if (!road.allowBuildingZones)
-        {
-            sceneRoad->GetZoneA()->SetZoneUsable(false);
-            sceneRoad->GetZoneB()->SetZoneUsable(false);
-        }
-    }
-    // Update the batch renderer buffers
-    Scene::getInstance()->roadBatchRenderer->UpdateAll();
-
-
-    return seed;
-
-    // TODO random grammars
-    //
-    // When generating each of our cities we should pick from a list of predetermined grammars
-}
 
 // @brief removes roads that are the same i.e. overlapping
 // @args roadsVector is the vector of roads created originally and is updated by this method
@@ -281,13 +194,125 @@ void createNewRoads(std::vector<road_gen_road>* roadsVector, std::vector<road_ge
     LOG(STATUS, "[" << endNodeConnections << "] new roads created from end node connections.");
 }
 
+
+
+// Main generation function
+int generator::GenerateCity(unsigned int seed_in)
+{
+    int seed;
+    // Generate new city with new random numbers, else use seed
+    if (seed_in == 0)
+    {
+        seed = Random::GenerateSeed();
+        std::srand(seed);
+    }
+    else 
+    {
+        seed = seed_in;
+        std::srand(seed_in);
+    }
+    
+    // First we need to determine how many smaller cities we are going to have
+    // 1-4
+    int numberOfCities = Random::GetIntBetweenInclusive(1, 6);
+
+    std::vector<CityGenerationParameters> cityParameterVector;
+    std::vector<std::vector<road_gen_point>> cityEndNodesVector;
+    std::vector<road_gen_road> cityRoads;
+
+    // Then we need to know the parameters to give to each city:
+    for (int i = 0; i < numberOfCities; i++)
+    {
+        cityParameterVector.push_back({
+            glm::vec3{Random::GetIntBetweenInclusive(-200, 200), 0, Random::GetIntBetweenInclusive(-200, 200)},
+            Random::GetFloatBetweenInclusive(0, 2*M_PI),    // Start angle in radians 
+            Random::GetIntBetweenInclusive(2, 4),           // Iterations of grammar
+            Random::GetFloatBetweenInclusive(3.0f, 5.0f),   // Road length
+            1.0f,                                           // Keep road width the same (1.0f)
+            Random::GetFloatBetweenInclusive(88.0f, 92.0f), // Angle between roads in degrees
+            Random::GetPercentage()                         // The probability of placing a building at any spot
+        });
+
+        // Vector initalizatio
+        std::vector<road_gen_point> cityVector;
+        cityEndNodesVector.push_back(cityVector);
+    }
+
+    LOG(STATUS, "Number of cities: " << numberOfCities);
+    for (int i = 0; i < numberOfCities; i++)
+    {
+        auto city = cityParameterVector[i];
+        LOG(STATUS, "\nCITY NUMBER " << i+1);
+        LOG(STATUS, "Start vector: " << city.startPosition);
+        LOG(STATUS, "Start angle: " << city.startAngle);
+        LOG(STATUS, "Iteration: " << city.iterations);
+        LOG(STATUS, "Length: " << city.roadLength);
+        LOG(STATUS, "Road width: " << city.roadWidth);
+        LOG(STATUS, "Road angle: " << city.roadAngleDegrees);
+        LOG(STATUS, "Percentage density: " << city.densityFactor);
+    }
+
+    // Valid areas is -200,-200 to 200, 200
+
+    // Thinking out loud:
+    //
+    // We generate a city netork, it deletes all of its dupes and intersections
+    // We then generate a new city network, we delete all dupes and intersection considering all roads in the scene
+    // We then create highways from seperate end nodes
+
+
+    for (int i = 0; i < cityParameterVector.size(); i++)
+    {
+        // Generate and get all end nodes
+        // this->GenerateRoads(..., &cityEndNodesVector[i]);
+        auto city = cityParameterVector[i];
+        auto roads = GenerateRoads(city.startPosition, city.startAngle, city.iterations, city.roadLength, city.roadWidth, city.roadAngleDegrees, &cityEndNodesVector[i], cityRoads);
+        cityRoads.insert(cityRoads.end(), roads.begin(), roads.end());
+    }
+
+    createHighways(&cityRoads, &cityEndNodesVector, 50.0f, 500.0f, 1.0f);
+
+
+    for (int i = 0; i < cityParameterVector.size(); i++)
+    {
+        // Create the new roads between end nodes 
+        createNewRoads(&cityRoads, &cityEndNodesVector[i], cityParameterVector[i].roadWidth, cityParameterVector[i].roadLength);
+    }
+    
+    // Get road number
+    size_t numberOfRoads = Scene::getInstance()->GetRoadObjects().size();
+    LOG(STATUS, "Number of roads generated: " << numberOfRoads)
+
+    // Then we add to the scene for rendering
+    for (auto& road : cityRoads)
+    {
+        auto sceneRoad = Scene::getInstance()->addRoad(road.a, road.b, road.width);
+        if (!road.allowBuildingZones)
+        {
+            sceneRoad->GetZoneA()->SetZoneUsable(false);
+            sceneRoad->GetZoneB()->SetZoneUsable(false);
+        }
+    }
+    // Update the batch renderer buffers
+    Scene::getInstance()->roadBatchRenderer->UpdateAll();
+
+
+    return seed;
+
+    // TODO random grammars
+    //
+    // When generating each of our cities we should pick from a list of predetermined grammars
+}
+
+
 std::vector<road_gen_road> generator::GenerateRoads(glm::vec3 startPos,
                                                     float startAngle,
                                                     int iterations,
                                                     float roadLength, 
                                                     float roadWidth, 
                                                     float roadAngleDegrees,
-                                                    std::vector<road_gen_point>* endNodes)
+                                                    std::vector<road_gen_point>* endNodes,
+                                                    std::vector<road_gen_road>& roadsVector)
 {
     auto roadGenerateStartTime = StopWatch::GetCurrentTimePoint();
 
@@ -322,7 +347,7 @@ std::vector<road_gen_road> generator::GenerateRoads(glm::vec3 startPos,
     float degreeRadians = roadAngleDegrees * (M_PI/180);
    
 
-    std::vector<road_gen_road> roadsVector;
+    // std::vector<road_gen_road> roadsVector;
 
 
     // Key:
@@ -441,18 +466,6 @@ std::vector<road_gen_road> generator::GenerateRoads(glm::vec3 startPos,
 
 
     // Create highways before new mini roads
-
-    // Create the new roads between end nodes 
-    createNewRoads(&roadsVector, endNodes, roadWidth, roadLength);
-
-
-
-
-    
-    // Get road number
-    size_t numberOfRoads = Scene::getInstance()->GetRoadObjects().size();
-    LOG(STATUS, "Number of roads generated: " << numberOfRoads)
-
     // When generating, we could give a radius from 0,0 for roads to be permitted, this would give a good effect IMO
     uint64_t timeElapsed = StopWatch::GetTimeElapsed(roadGenerateStartTime);
     LOG(STATUS, "[ GenerateRoads finished. Time elapsed: " << timeElapsed << "ms ]\n");
