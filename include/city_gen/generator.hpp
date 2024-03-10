@@ -195,6 +195,7 @@ namespace generator
     // @args RoadWidth - width of the roads
     // @args roadAngleDegrees - the +/- angles when generating from the grammar
     // @args endNodes - pointer to a 2D dynamic array of the end nodes of each city
+    // @args roadsVector - all the roads generated so far (for collision detection when generating others)
     // @returns a dynamic array of all the generated roads
     std::vector<road_gen_road> GenerateRoads(glm::vec3 startPos,
                                              float startAngle, 
@@ -203,8 +204,7 @@ namespace generator
                                              float roadWidth, 
                                              float roadAngleDegrees, 
                                              std::vector<road_gen_point>* endNodes,
-                                             std::vector<road_gen_road>& roadsVector);
-    
+                                             std::vector<road_gen_road>& roadsVector); 
 
     // Axiom, is the string to have the grammar effect
     // Iterations is amount of iterations on string

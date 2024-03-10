@@ -1,14 +1,16 @@
-#include "config.hpp"
-#include "glm/exponential.hpp"
-#include "road_object.hpp"
-#include <algorithm>
+#include <config.hpp>
+
+#include <glm/exponential.hpp>
+#include <road_object.hpp>
 #include <generator.hpp>
+#include <cityRandom.hpp>
+#include <stopwatch.hpp>
+
+// STD
+#include <algorithm>
 #include <map>
 #include <sstream>    
 #include <stack>
-#include <cityRandom.hpp>
-
-#include <stopwatch.hpp>
 
 // Macro for logging
 #define LOG_GEN "GENERATOR"
@@ -101,8 +103,6 @@ void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<r
                             roads->push_back(tempRoad);
                             newHighways++; interCityHighways++;
 
-                            LOG(STATUS, "HIGHWAY: " << tempRoad.a << " " << tempRoad.b );
-                            
                             pointA.hasHighway = true; pointB.hasHighway = true;
                             break;
                         }
@@ -126,12 +126,15 @@ void removeDupes(std::vector<road_gen_road>* roadsVector)
 
     for (auto i_it = roadsVector->begin(); i_it != roadsVector->end(); i_it++)
     {
-        for (auto j_it = i_it+1; j_it != roadsVector->end(); j_it++)
+        for (auto j_it = i_it+1; j_it != roadsVector->end();)
         {
             // If they are the same, remove i
             if (i_it->a == j_it->a && i_it->b == j_it->b)
             {
                 j_it = roadsVector->erase(j_it);
+            }
+            else {
+                j_it++;
             }
         }
     }
@@ -296,6 +299,7 @@ int generator::GenerateCity(unsigned int seed_in)
     // Update the batch renderer buffers
     Scene::getInstance()->roadBatchRenderer->UpdateAll();
 
+    // LOG(STATUS, "Size of road_gen_road: " << sizeof(road_gen_road)); // 52 bytes last checked
 
     return seed;
 
@@ -451,13 +455,17 @@ std::vector<road_gen_road> generator::GenerateRoads(glm::vec3 startPos,
     unsigned int removedRoadsIntersect = roadsVector.size(); 
     for (auto i_it = roadsVector.begin(); i_it != roadsVector.end(); i_it++)
     {
-        for (auto j_it = roadsVector.begin(); j_it != roadsVector.end(); j_it++)
+        for (auto j_it = roadsVector.begin(); j_it != roadsVector.end();)
         {
-            if (i_it->isInterceptingAndNodes(*j_it))
+            if (i_it->isInterceptingAndNodes(*j_it)) // For some reason this is being set as a garbage value outside the size of raodsVector BUG
             {
                 // If we remove at j then we erase and pass the next valid object back to the iterator
                 removedRoadsIntersect++;
                 j_it = roadsVector.erase(j_it);
+            }
+            else {
+                // If we dont erase we increment
+                j_it++;
             }
         }
     }

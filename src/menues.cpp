@@ -86,11 +86,7 @@ void Menues::display(float deltaTime)
     ImGui::InputText("Seed: ", textBuffer, 20);
 
     ImGui::Text("Building generator settings");
-    bool calculateZones = ImGui::Button("Generate");
-    if (calculateZones)
-    {
-        generator::CalculateValidZones();
-    }
+
     bool removeZoneCollisions = ImGui::Button("Clear zone collisions");
     if (removeZoneCollisions)
     {
@@ -100,7 +96,8 @@ void Menues::display(float deltaTime)
     bool generateBuildings = ImGui::Button("Generate buildings");
     if (generateBuildings)
     {
-        generator::GenerateBuildings(0.5);
+        generator::CalculateValidZones();
+        generator::GenerateBuildings(0.1); // TODO remove and only use the values set by the random generator
     }
 
 

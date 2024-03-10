@@ -113,8 +113,6 @@ void BatchRenderer::Update(const unsigned int renderID)
     // Bind IBO to VAO
     
     // Update indirect buffer
-    glBindBuffer(GL_DRAW_INDIRECT_BUFFER, IBO);
-    glBufferData(GL_DRAW_INDIRECT_BUFFER, indirectCommands.size() * sizeof(DrawElementsIndirectCommand), indirectCommands.data(), GL_STATIC_DRAW); // Might change flag (buffer is updated)
 }
 
 
