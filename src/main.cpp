@@ -72,6 +72,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // Spec what the window should have
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6); // Setting to version 4.6
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    
 
     glfwWindowHint(GLFW_SAMPLES, 4); // MSAA x4
     #ifdef __APPLE__
@@ -97,6 +98,9 @@ int main() {
     glfwMakeContextCurrent(window);
     // Telling open gl that we wanth the resize callback funtion to be called on window when its resized
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+    // Framerate cap disable
+    glfwSwapInterval(0);
 
     // Hide cursor and capture its input
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -407,23 +411,25 @@ int main() {
         // 2 View types of view, perspective and orthographic projections. We use perspective becuase we are human and have 2 eyes and so can measure depth
         //glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, 0.1f, 100.0f); // Makes stuff look 2d
         // FOV, aspect ratio (width/height), near distance, far distance
-        glm::mat4 projection = glm::perspective(glm::radians(camera->Zoom), (float)WINDOW_WIDTH / (float)WINDOW_HEIGHT, 0.1f, 10000.0f);
-        glm::mat4 view = camera->GetViewMatrix();
         
+
+        // Get the window width and height each frame so that we dont skew the image
+        int windowHeight, windowWidth;
+        glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+
+        // Update cameras window paramaters
+        camera->UpdateWindowDimentions(windowWidth, windowHeight);
+
         Menues::display(deltaTime);
         
-        // Remove translation from matrix by casting to mat3 then mat4
-        glm::mat4 viewSB = glm::mat4(glm::mat3(camera->GetViewMatrix()));
-        scene->DrawSkyBox(viewSB, projection);
-        scene->DrawSceneObjects(view, projection);
+        scene->DrawSkyBox();
+        scene->DrawSceneObjects();
 
         // =============== POST-PROCESSING ===================
         // glBindFramebuffer(GL_FRAMEBUFFER, 0);
         // glBlitFramebuffer(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, 0, WINDOW_WIDTH_REDUCED, WINDOW_HEIGHT_REDUCED, GL_COLOR_BUFFER_BIT, GL_NEAREST);
         // Unbind the FBO
         //////////////////////////////////////////////////////
-
-
 
 
         ImGui::ShowDemoWindow();
@@ -471,10 +477,92 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
     }
 }
 
+// Credit: Function from: https://github.com/opengl-tutorials/ogl/tree/master
+void ScreenPosToWorldRay(int mouseX, int mouseY,             // Mouse position, in pixels, from bottom-left corner of the window
+	                     int screenWidth, int screenHeight,  // Window size, in pixels
+	                     glm::mat4 ViewMatrix,               // Camera position and orientation
+                         glm::mat4 ProjectionMatrix,         // Camera parameters (ratio, field of view, near and far planes)
+	                     glm::vec3& out_origin,              // Ouput : Origin of the ray. /!\ Starts at the near plane, so if you want the ray to start at the camera's position instead, ignore this.
+	                     glm::vec3& out_direction)           // Ouput : Direction, in world space, of the ray that goes "through" the mouse.
+
+{
+
+	// The ray Start and End positions, in Normalized Device Coordinates (Have you read Tutorial 4 ?)
+	glm::vec4 lRayStart_NDC(
+		((float)mouseX/(float)screenWidth  - 0.5f) * 2.0f, // [0,1024] -> [-1,1]
+		((float)mouseY/(float)screenHeight - 0.5f) * 2.0f, // [0, 768] -> [-1,1]
+		-1.0, // The near plane maps to Z=-1 in Normalized Device Coordinates
+		1.0f
+	);
+	glm::vec4 lRayEnd_NDC(
+		((float)mouseX/(float)screenWidth  - 0.5f) * 2.0f,
+		((float)mouseY/(float)screenHeight - 0.5f) * 2.0f,
+		0.0,
+		1.0f
+	);
+
+
+	// The Projection matrix goes from Camera Space to NDC.
+	// So inverse(ProjectionMatrix) goes from NDC to Camera Space.
+	glm::mat4 InverseProjectionMatrix = glm::inverse(ProjectionMatrix);
+	
+	// The View Matrix goes from World Space to Camera Space.
+	// So inverse(ViewMatrix) goes from Camera Space to World Space.
+	glm::mat4 InverseViewMatrix = glm::inverse(ViewMatrix);
+	
+	glm::vec4 lRayStart_camera = InverseProjectionMatrix * lRayStart_NDC;    lRayStart_camera/=lRayStart_camera.w;
+	glm::vec4 lRayStart_world  = InverseViewMatrix       * lRayStart_camera; lRayStart_world /=lRayStart_world .w;
+	glm::vec4 lRayEnd_camera   = InverseProjectionMatrix * lRayEnd_NDC;      lRayEnd_camera  /=lRayEnd_camera  .w;
+	glm::vec4 lRayEnd_world    = InverseViewMatrix       * lRayEnd_camera;   lRayEnd_world   /=lRayEnd_world   .w;
+
+
+	// Faster way (just one inverse)
+	//glm::mat4 M = glm::inverse(ProjectionMatrix * ViewMatrix);
+	//glm::vec4 lRayStart_world = M * lRayStart_NDC; lRayStart_world/=lRayStart_world.w;
+	//glm::vec4 lRayEnd_world   = M * lRayEnd_NDC  ; lRayEnd_world  /=lRayEnd_world.w;
+
+
+	glm::vec3 lRayDir_world(lRayEnd_world - lRayStart_world);
+	lRayDir_world = glm::normalize(lRayDir_world);
+
+
+	out_origin = glm::vec3(lRayStart_world);
+	out_direction = glm::normalize(lRayDir_world);
+}
+
+
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     ImGuiIO& io = ImGui::GetIO();
     io.AddMouseButtonEvent(button, action);
+
+    // action 1 - press mbt
+    // action 0 - release mbt
+    //
+    // button 0 - lmb
+    // button 1 - rmb
+    // button 2 - mmb
+    //
+    LOG(STATUS, "Button click!" << button << " " << action << " " << mods);
+   
+    double xpos, ypos;
+    glfwGetCursorPos(window, &xpos, &ypos);
+    LOG(STATUS, "Position: " << xpos << ", " << ypos);
+
+    auto camera = Camera::getInstance();
+
+    glm::vec3 outOrigin;
+    glm::vec3 outDirection;
+
+    ScreenPosToWorldRay(xpos, camera->GetWindowHeight() - ypos, camera->GetWindowWidth(), camera->GetWindowHeight(),
+            camera->GetViewMatrix(), camera->GetProjectionMatrix(), outOrigin, outDirection);
+   
+    // This only works when in "o" mode as in "p" mode we spin about and the x axis can go upto max int 32 so the rays dont make sence
+    // TODO we should check we are in the "o" state before we test our ray
+
+    // Test by adding a line
+    glm::vec3 finalPos = outDirection * 3.0f;
+    Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos);
 
     // if (!io.WantCaptureMouse)
     // mouseButtonCallback (We dont handle mouse buttons yet)
@@ -494,3 +582,4 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
+

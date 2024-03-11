@@ -102,7 +102,7 @@ public:
 
 
     void CreateSkyBox(std::vector<std::string>* images);
-    void DrawSkyBox(glm::mat4 view, glm::mat4 projection);
+    void DrawSkyBox(void);
 
 
     // Particle
@@ -185,5 +185,5 @@ public:
 
 
     // Draws all of the objects form each of the object vectors
-    void DrawSceneObjects(glm::mat4 view, glm::mat4 projection);
+    void DrawSceneObjects(void);
 };

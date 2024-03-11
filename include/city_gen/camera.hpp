@@ -48,15 +48,41 @@ public:
 	float MouseSensitivity;
 	float Zoom;
 
+    // We need to know the window size for projection matrix
+    int windowWidth;
+    int windowHeight;
+
 	// Singleton constructors
 	static Camera* getInstance(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 	static Camera* getInstance(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
 	// returns the view matrix calculated using Euler Angles and the LookAt Matrix
-	glm::mat4 GetViewMatrix()
+	inline glm::mat4 GetViewMatrix()
 	{
 		return glm::lookAt(Position, Position + Front, Up);
 	}
+
+    inline glm::mat4 GetProjectionMatrix()
+    {
+        return glm::perspective(glm::radians(this->Zoom), (float)windowWidth / (float)windowHeight, 0.1f, 10000.0f);
+    }
+
+    // Get window width and height
+    inline int GetWindowWidth(void) const
+    {
+        return windowWidth;
+    }
+
+    inline int GetWindowHeight(void) const
+    {
+        return windowHeight;
+    }
+
+    void UpdateWindowDimentions(const int width, const int height)
+    {
+        windowWidth = width;
+        windowHeight = height;
+    }
 
 	// Process keyboard input // Speed multiplier for movemnt speed increase with shift key
 	void processKeyboard(Camera_Movement direction, float deltaTime, float speedMultiplier = 1) {
@@ -150,3 +176,4 @@ private:
 	// calculates the front vector from the Camera's (updated) Euler Angles
 	void updateCameraVectors();
 };
+

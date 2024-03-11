@@ -1,8 +1,8 @@
-#include <config.hpp>
+#include <generator.hpp>
 
+#include <config.hpp>
 #include <glm/exponential.hpp>
 #include <road_object.hpp>
-#include <generator.hpp>
 #include <cityRandom.hpp>
 #include <stopwatch.hpp>
 
@@ -255,8 +255,11 @@ int generator::GenerateCity(unsigned int seed_in)
         LOG(STATUS, "Percentage density: " << city.densityFactor);
     }
 
-    // Valid areas is -200,-200 to 200, 200
+    
+    // TODO another random value passed to the grammar calculator to use several different grammars
 
+
+    // Valid areas is -200,-200 to 200, 200
     // Thinking out loud:
     //
     // We generate a city netork, it deletes all of its dupes and intersections

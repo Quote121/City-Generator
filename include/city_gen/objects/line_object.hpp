@@ -8,7 +8,7 @@ class LineObject : public BaseObject<LineObject>
 {
 private:
     glm::vec3 scale = {1.0f, 1.0f, 1.0f}; // Acts as a scale
-    glm::vec3 colour;
+    glm::vec3 colour = {0.0f, 0.0f, 0.0f};
 
     // The two vertices that describe the line
     glm::vec3 a; 

@@ -3,6 +3,7 @@
 #include <scene.hpp>
 #include <resourceManager.hpp>
 #include <algorithm>
+#include <camera.hpp>
 
 Scene* Scene::pInstance{nullptr};
 
@@ -327,8 +328,11 @@ bool Scene::SortByDistanceInv(BaseObject<T>* a, BaseObject<U>* b)
     return a->GetDistanceFromCamera() > b->GetDistanceFromCamera();
 }
 
-void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
+void Scene::DrawSceneObjects()
 {
+    glm::mat4 view = Camera::getInstance()->GetViewMatrix();
+    glm::mat4 projection = Camera::getInstance()->GetProjectionMatrix();
+
     // Draw lines
     for (auto& line : GetLineObjects())
     {
@@ -362,7 +366,7 @@ void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
 
 
     auto modelInstanceStartTime = StopWatch::GetCurrentTimePoint();
-    uint64_t timeElapsed = 0;
+    // uint64_t timeElapsed = 0;
 
     // TODO URGENT
     // This takes up a lot of time
@@ -395,12 +399,12 @@ void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
             }
             instancedModels.push_back(obj->GetModelName());
 
-            timeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
+            // timeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
 
             
-            auto instanceDrawStartTime = StopWatch::GetCurrentTimePoint();
+            // auto instanceDrawStartTime = StopWatch::GetCurrentTimePoint();
             obj->DrawInstances(view, projection, &matrices);
-            uint64_t intsanceDrawTimeElapsed = StopWatch::GetTimeElapsed(instanceDrawStartTime);
+            // uint64_t intsanceDrawTimeElapsed = StopWatch::GetTimeElapsed(instanceDrawStartTime);
             // LOG(STATUS, "INSTANCE DRAW TIME: " << intsanceDrawTimeElapsed << "ms")
 
         }
@@ -427,7 +431,7 @@ void Scene::DrawSceneObjects(glm::mat4 view, glm::mat4 projection)
     // GetModelObjects()[0]->DrawInstances(view, projection, &matrices);
      
     // Scene::getInstance()-> 
-    // uint64_t timeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
+    uint64_t timeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
     // LOG(STATUS, "[ Model Instance draw. Time elapsed: " << timeElapsed << "ms ]\n");
 
     roadBatchRenderer->DrawBatch(view, projection);
@@ -467,8 +471,12 @@ void Scene::CreateSkyBox(std::vector<std::string>* images)
     skybox = new SkyBox(*images);
 }
 
-void Scene::DrawSkyBox(glm::mat4 view, glm::mat4 projection)
+void Scene::DrawSkyBox()
 {
+    glm::mat4 projection = Camera::getInstance()->GetProjectionMatrix();
+    // Remove translation from matrix by casting to mat3 then mat4
+    glm::mat4 view = glm::mat4(glm::mat3(Camera::getInstance()->GetViewMatrix()));
+
     // We call the skybox draw call from the skybox object we created.
     if (showSkybox)
     {
