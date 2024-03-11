@@ -491,7 +491,8 @@ bool TestRayOBBIntersection(
     glm::vec3 rayDirection,
     glm::vec3 boundingBoxMin,
     glm::vec3 boundingBoxMax,
-    glm::mat4 modelMatrix
+    glm::mat4 modelMatrix,
+    float &distanceToHit
 ){
     float tMin = 0.0f;
     float tMax = 100000.0f;
@@ -586,6 +587,8 @@ bool TestRayOBBIntersection(
             }
         }
     }
+    
+    distanceToHit = tMin;
     // All planes pass so we have an intersection
     return true;
 }
@@ -594,18 +597,35 @@ bool TestRayOBBIntersection(
 // Scene Intersection function
 bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
 {
+    std::vector<std::string> buildings;
+    std::string closestAlias;
+    float closest = INFINITY;
+
+    bool hit = false;
     // Might have to put all intersecting models into a list and then choose the closest one
     auto models = this->GetModelObjects();
     for (auto model : models)
     {
+        float distanceToHit = 0;
         // model->GetModelMatrix()
-        if (TestRayOBBIntersection(rayOrigin, rayDirection, model->GetBoundingBox()->getMin(), model->GetBoundingBox()->getMax(), model->GetModelMatrix()))
+        if (TestRayOBBIntersection(rayOrigin, rayDirection, model->GetBoundingBox()->getMin(), model->GetBoundingBox()->getMax(), model->GetModelMatrix(), distanceToHit))
         {
-            LOG(STATUS, "Intersects model: " << model->GetModelName() << " " << model->GetAlias());
-            return true;
+            if (distanceToHit < closest)
+            {
+                closest = distanceToHit;
+                closestAlias = model->GetModelName();
+            }
+            // LOG(STATUS, "Intersects model: " << model->GetModelName() << " " << model->GetAlias());
+            buildings.push_back(model->GetModelName());
+            hit = true;
         }
     }
-    return false;
+    if (hit)
+    {
+        LOG(STATUS, "Hit: " << buildings << " || Closest: " << closestAlias);
+    }
+
+    return hit;
 }
 
 

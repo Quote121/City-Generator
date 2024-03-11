@@ -630,7 +630,7 @@ void generator::GenerateBuildings(float densityFactor)
             if (zone != nullptr && road->GetZoneA()->IsUsable())
             {
                 // If we fall in range of the density factor we add the area for buildings to be placed
-                if (Random::GetPercentage() < densityFactor)
+                if (Random::GetPercentage() <= densityFactor)
                 {
                     areas.push_back(*zone);
                     buildingCount++;

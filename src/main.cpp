@@ -210,8 +210,9 @@ int main() {
     //
     //
     scene->addModel(building3)
-        ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, -10})
+        // ->SetModelOriginCenterBottom()
+        ->SetOriginFrontLeft()
+        ->SetPosition(glm::vec3{0, 0, 0})
         ->ShowBoundingBox(true);
     //
     std::string backPathVertShader = "../assets/shaders/backpack/vertexShader.vs";
@@ -287,13 +288,13 @@ int main() {
    
     scene->addRoad({5, 0, 5}, {5, 0, 10}, 1.0f);
     scene->addRoad({7, 0, 10}, {7, 0, 5}, 1.0f);
+    // //
+    // scene->addRoad({-5, 0, 5}, {-10, 0, 5}, 1.0f);
+    // scene->addRoad({-10, 0, 7}, {-5, 0, 7}, 1.0f);
+    // //
+    // scene->addRoad({-1, 0, -1}, {-6, 0, -6});
+    // scene->addRoad({-10, 0, -12}, {-5, 0, -7});
     //
-    scene->addRoad({-5, 0, 5}, {-10, 0, 5}, 1.0f);
-    scene->addRoad({-10, 0, 7}, {-5, 0, 7}, 1.0f);
-    //
-    scene->addRoad({-1, 0, -1}, {-6, 0, -6});
-    scene->addRoad({-10, 0, -12}, {-5, 0, -7});
-
 
 
     // scene->addRoad({4, 0, 0}, {-4, 0, 0}, 1.0f); 

@@ -97,7 +97,7 @@ void Menues::display(float deltaTime)
     if (generateBuildings)
     {
         generator::CalculateValidZones();
-        generator::GenerateBuildings(0.1); // TODO remove and only use the values set by the random generator
+        generator::GenerateBuildings(1); // TODO remove and only use the values set by the random generator
     }
 
 

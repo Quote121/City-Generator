@@ -47,6 +47,9 @@ void RoadZoneObject::UpdateVertices(const std::array<glm::vec3, 4>& vertices_in,
 
         glm::vec3 invUnitVector = {-unitVector.z, unitVector.y, unitVector.x};
 
+        // Scene::getInstance()->addLine(placementVector, {placementVector.x, placementVector.y+5, placementVector.z})
+        //     ->SetColour(BLUE);
+
         // Zone vertices
         glm::vec3 one = placementVector;
         glm::vec3 two = placementVector-unitVector;

@@ -40,7 +40,7 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
 {
     if (isVisible)
     {
-        glm::mat4 result = glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * getScaleMat4(scaleScalar) * getScaleMat4(scale);
+        glm::mat4 result = glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * getScaleMat4(scaleScalar) * getScaleMat4(scale) / getPositionMat4(objectOriginPosition);
         Shader* objectShader = model->GetShader();
 
         if (objectShader == nullptr)
@@ -55,7 +55,6 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
             objectShader->setMat4("projection", projection);
             objectShader->setMat4("model", result);
             // Set the local position based on the bounding box center
-            objectShader->setVec3("localCenterPos", objectOriginPosition);
 
             objectShader->setVec2("textureScale", textureScale);
             // Tells the shader wether to show the lighting or just the base ambient texture
@@ -107,7 +106,6 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
             bbShader->setMat4("view", view);
             bbShader->setMat4("projection", projection);
             bbShader->setMat4("model", result);
-            bbShader->setVec3("localCenterPos", objectOriginPosition);
             bb->Draw();
         }
     }
@@ -195,7 +193,12 @@ void ModelObject::DrawInstances(glm::mat4 view, glm::mat4 projection, std::vecto
 
 glm::mat4 ModelObject::GetModelMatrix(void)
 {
-    return glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * getScaleMat4(scaleScalar) * getScaleMat4(scale);
+    return glm::mat4(1.0f) * 
+        getPositionMat4(position) * 
+        getRotateMat4(rotation) * 
+        getScaleMat4(scaleScalar) * 
+        getScaleMat4(scale) / 
+        getPositionMat4(objectOriginPosition); // To set the models origin
 }
 
 // Model specific builders

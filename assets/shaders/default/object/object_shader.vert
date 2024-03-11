@@ -9,10 +9,9 @@ out vec2 TexCoord;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform vec3 localCenterPos;
 
 void main()
 {
     TexCoord = aTexCoord;
-    gl_Position = projection * view * model * vec4(aPos-localCenterPos, 1.0);
+    gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
