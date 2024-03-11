@@ -1,7 +1,6 @@
 #include <base_object.hpp>
 
 #include <camera.hpp>
-#include <bounding_box.hpp>
 #include <all.hpp>
 
 #include <road_object.hpp>

@@ -306,6 +306,12 @@ bool ModelObject::GetIsInstanceRendered(void) const
     return instanceRender;
 }
 
+
+BoundingBox* ModelObject::GetBoundingBox(void) const
+{
+    return model->GetBoundingBox();
+}
+
 // ImGui reference handles
 glm::vec3& ModelObject::GetScaleImGui()
 {

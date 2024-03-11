@@ -1,6 +1,6 @@
-#include "lights/directionalLight_object.hpp"
-#include "road_object.hpp"
 #include <scene.hpp>
+#include <lights/directionalLight_object.hpp>
+#include <road_object.hpp>
 #include <resourceManager.hpp>
 #include <algorithm>
 #include <camera.hpp>
@@ -483,4 +483,130 @@ void Scene::DrawSkyBox()
         skybox->Draw(view, projection);
     }
 }
+
+// Credit : used from : https://github.com/opengl-tutorials/ogl/tree/master
+// Intersection calculation function
+bool TestRayOBBIntersection(
+    glm::vec3 rayOrigin,
+    glm::vec3 rayDirection,
+    glm::vec3 boundingBoxMin,
+    glm::vec3 boundingBoxMax,
+    glm::mat4 modelMatrix
+){
+    float tMin = 0.0f;
+    float tMax = 100000.0f;
+
+    glm::vec3 OBBposition_worldspace(modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
+    glm::vec3 delta = OBBposition_worldspace - rayOrigin;
+
+    // Using scope to make sure e,f,t1,t2 can be the same for each plane test
+    {
+        // We test each axis:
+        // X - axis
+        glm::vec3 xaxis(modelMatrix[0].x, modelMatrix[0].y, modelMatrix[0].z);
+        float e = glm::dot(xaxis, delta);
+        float f = glm::dot(rayDirection, xaxis);
+
+        // If f is near 0 do not do division
+        if (fabs(f) > 0.0001f)
+        {
+            float t1 = (e+boundingBoxMin.x)/f;
+            float t2 = (e+boundingBoxMax.x)/f;
+
+            if (t1>t2) {float w = t1; t1=t2; t2=w; } // Swap
+            if (t1>tMin) tMin = t1;
+            if (t2<tMax) tMax = t2;
+
+            // No intersection
+            if (tMin > tMax) return false;
+            if (tMax < 0) return false;
+        }
+        else {
+            if (-e+boundingBoxMin.x > 0.0f || -e+boundingBoxMax.x < 0.0f)
+            {
+                return false;
+            }
+        }
+    }
+
+    {
+        // We test each axis:
+        // Y - axis
+        glm::vec3 yaxis(modelMatrix[1].x, modelMatrix[1].y, modelMatrix[1].z);
+        float e = glm::dot(yaxis, delta);
+        float f = glm::dot(rayDirection, yaxis);
+
+        // If f is near 0 do not do division
+        if (fabs(f) > 0.0001f)
+        {
+            float t1 = (e+boundingBoxMin.y)/f;
+            float t2 = (e+boundingBoxMax.y)/f;
+
+            if (t1>t2) {float w = t1; t1=t2; t2=w; } // Swap
+            if (t1>tMin) tMin = t1;
+            if (t2<tMax) tMax = t2;
+
+            // No intersection
+            if (tMin > tMax) return false;
+            if (tMax < 0) return false;
+        }
+        else {
+            if (-e+boundingBoxMin.y > 0.0f || -e+boundingBoxMax.y < 0.0f)
+            {
+                return false;
+            }
+        }
+    }
+
+    {
+        // We test each axis:
+        // Z - axis
+        glm::vec3 zaxis(modelMatrix[2].x, modelMatrix[2].y, modelMatrix[2].z);
+        float e = glm::dot(zaxis, delta);
+        float f = glm::dot(rayDirection, zaxis);
+
+        // If f is near 0 do not do division
+        if (fabs(f) > 0.0001f)
+        {
+            float t1 = (e+boundingBoxMin.z)/f;
+            float t2 = (e+boundingBoxMax.z)/f;
+
+            if (t1>t2) {float w = t1; t1=t2; t2=w; } // Swap
+            if (t1>tMin) tMin = t1;
+            if (t2<tMax) tMax = t2;
+
+            // No intersection
+            if (tMin > tMax) return false;
+            if (tMax < 0) return false;
+        }
+        else {
+            if (-e+boundingBoxMin.z > 0.0f || -e+boundingBoxMax.z < 0.0f)
+            {
+                return false;
+            }
+        }
+    }
+    // All planes pass so we have an intersection
+    return true;
+}
+
+
+// Scene Intersection function
+bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
+{
+    // Might have to put all intersecting models into a list and then choose the closest one
+    auto models = this->GetModelObjects();
+    for (auto model : models)
+    {
+        // model->GetModelMatrix()
+        if (TestRayOBBIntersection(rayOrigin, rayDirection, model->GetBoundingBox()->getMin(), model->GetBoundingBox()->getMax(), model->GetModelMatrix()))
+        {
+            LOG(STATUS, "Intersects model: " << model->GetModelName() << " " << model->GetAlias());
+            return true;
+        }
+    }
+    return false;
+}
+
+
 

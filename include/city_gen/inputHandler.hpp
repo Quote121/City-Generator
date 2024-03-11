@@ -26,9 +26,9 @@ private:
 
     joyStick joystick;
 
+    static bool showMouse;
 public:
 
-    static bool showMouse;
 
     /*
     Returns true or false if connected
@@ -46,5 +46,18 @@ public:
 
     static void scroll_callback_process(GLFWwindow* window, double xoffset, double yoffset);
 
-    
+    static bool GetShowMouse(void) 
+    {
+        return showMouse;
+    }
+
+    static void SetShowMouse(bool state)
+    {
+        showMouse = state;
+    }
+
+    static void ToggleShowMouse(void)
+    {
+        showMouse = !showMouse;
+    }
 };

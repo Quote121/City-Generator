@@ -209,10 +209,10 @@ int main() {
     //     ->ShowBoundingBox(false);
     //
     //
-    // scene->addModel(building3)
-    //     ->SetModelOriginCenterBottom()
-    //     ->SetPosition(glm::vec3{10, 0, -10})
-    //     ->ShowBoundingBox(false);
+    scene->addModel(building3)
+        ->SetModelOriginCenterBottom()
+        ->SetPosition(glm::vec3{10, 0, -10})
+        ->ShowBoundingBox(true);
     //
     std::string backPathVertShader = "../assets/shaders/backpack/vertexShader.vs";
     std::string backPathFragShader = "../assets/shaders/backpack/fragmentShader.fs";
@@ -227,14 +227,14 @@ int main() {
     //
 
     // // GOOD POSITION TERRAIN, USE AGAIN
-    scene->addModel(terrain, &backpackShader)
-        ->SetModelOriginCenterBottom()
-        ->ShowBoundingBox(false)
-        ->SetLightingEnabled(true)
-        ->SetIsVisible(false)
-        ->SetPosition({0,-0.4, 0})
-        ->SetScale(1.5)
-        ->SetTextureScale({10.0f, 10.0f});
+    // scene->addModel(terrain, &backpackShader)
+    //     ->SetModelOriginCenterBottom()
+    //     ->ShowBoundingBox(false)
+    //     ->SetLightingEnabled(true)
+    //     ->SetIsVisible(false)
+    //     ->SetPosition({0,-0.4, 0})
+    //     ->SetScale(1.5)
+    //     ->SetTextureScale({10.0f, 10.0f});
 
 
     // Tree asset generation
@@ -262,24 +262,6 @@ int main() {
             ->SetIsBillboard(true)
             ->SetPosition({0, 0, 0})
             ->SetScale(2.0f);
-
-
-    
-
-    // scene->addPointLight()
-    //     ->SetPosition(glm::vec3{-10, 0, 0});
-    //
-
-    // for (int i = 0; i < 10; i++)
-    // {
-    //     for (int j = 0; j < 1; j++)
-    //     {
-    //         scene->addPointLight()
-    //             ->SetPosition(glm::vec3{i*10, 1, j*10});
-    //     }
-    // }
-    
-
 
 
     scene->addDirectionalLight()
@@ -468,7 +450,7 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
     ImGuiIO& io = ImGui::GetIO();
     io.AddMousePosEvent(xposIn, yposIn);
 
-    if (!io.WantCaptureMouse && !InputHandler::showMouse)
+    if (!io.WantCaptureMouse && !InputHandler::GetShowMouse())
         InputHandler::mouse_callback_process(window, xposIn, yposIn, lastX, lastY, firstMouse);
     else{
         // As we are tabbed out set last mouse position to the one we left it at
@@ -530,6 +512,11 @@ void ScreenPosToWorldRay(int mouseX, int mouseY,             // Mouse position, 
 	out_direction = glm::normalize(lRayDir_world);
 }
 
+#define RELEASE_MOUSE_BUTTON 0
+#define PRESS_MOUSE_BUTTON 1
+#define LEFT_MOUSE_BUTTON 0
+#define RIGHT_MOUSE_BUTTON 1
+#define MIDDLE_MOUSE_BUTTON 2
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
@@ -542,30 +529,44 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     // button 0 - lmb
     // button 1 - rmb
     // button 2 - mmb
-    //
-    LOG(STATUS, "Button click!" << button << " " << action << " " << mods);
+    
+    auto camera = Camera::getInstance();
+    if (action == PRESS_MOUSE_BUTTON && button == RIGHT_MOUSE_BUTTON)
+    {
+        InputHandler::ToggleShowMouse();
+    }
+
+    // LOG(STATUS, "Button click!" << button << " " << action << " " << mods);
    
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
-    LOG(STATUS, "Position: " << xpos << ", " << ypos);
+    // LOG(STATUS, "Position: " << xpos << ", " << ypos);
 
-    auto camera = Camera::getInstance();
 
     glm::vec3 outOrigin;
     glm::vec3 outDirection;
 
-    ScreenPosToWorldRay(xpos, camera->GetWindowHeight() - ypos, camera->GetWindowWidth(), camera->GetWindowHeight(),
-            camera->GetViewMatrix(), camera->GetProjectionMatrix(), outOrigin, outDirection);
-   
-    // This only works when in "o" mode as in "p" mode we spin about and the x axis can go upto max int 32 so the rays dont make sence
-    // TODO we should check we are in the "o" state before we test our ray
+    if (action == PRESS_MOUSE_BUTTON && button == LEFT_MOUSE_BUTTON && InputHandler::GetShowMouse())
+    {
+        ScreenPosToWorldRay(xpos, camera->GetWindowHeight() - ypos, camera->GetWindowWidth(), camera->GetWindowHeight(),
+                            camera->GetViewMatrix(), camera->GetProjectionMatrix(), outOrigin, outDirection);
+       
+        // This only works when in "o" mode as in "p" mode we spin about and the x axis can go upto max int 32 so the rays dont make sence
+        // TODO we should check we are in the "o" state before we test our ray
 
-    // Test by adding a line
-    glm::vec3 finalPos = outDirection * 3.0f;
-    Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos);
+        // Test by adding a line
+        glm::vec3 finalPos = outDirection * 10.0f;
+        if (Scene::getInstance()->CheckForIntersection(outOrigin, outDirection))
+        {
 
-    // if (!io.WantCaptureMouse)
-    // mouseButtonCallback (We dont handle mouse buttons yet)
+            Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(GREEN);
+        }
+        else {
+        
+            Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(RED);
+        }
+    }
+    
 }
 
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
@@ -574,11 +575,12 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     io.AddMouseWheelEvent(xoffset, yoffset);
 
     // Disable scroll when using gui
-    if (!io.WantCaptureMouse && !InputHandler::showMouse)
+    if (!io.WantCaptureMouse && !InputHandler::GetShowMouse())
         InputHandler::scroll_callback_process(window, xoffset, yoffset);
 }
 
-// Callback funtion when the function is resized
+// TODO could change the width and height with this callback function
+// Callback funtion when the window is resized
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }

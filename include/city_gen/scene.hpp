@@ -23,6 +23,15 @@
 
 #include <renderer.hpp>
 
+
+struct SelectedObject
+{
+    // ENUM FOR WHAT OBJECT SO WE CAN CAST VOID*???
+    // Or can we use union instead of void*
+    void* object = nullptr;
+};
+
+
 class Scene
 {
 private:
@@ -105,7 +114,9 @@ public:
     void DrawSkyBox(void);
 
 
-    // Particle
+    // Check for intersection
+    bool CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection);
+
 
     // Remove individual objects
     void removeModel(ModelObject& obj);

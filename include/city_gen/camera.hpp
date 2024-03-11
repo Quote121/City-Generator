@@ -33,6 +33,12 @@ this means that we cannot create another instance of it
 
 
 class Camera {
+
+private:
+    // We need to know the window size for projection matrix
+    int windowWidth;
+    int windowHeight;
+
 public:
 	// Camera attributes
 	glm::vec3 Position;
@@ -48,13 +54,26 @@ public:
 	float MouseSensitivity;
 	float Zoom;
 
-    // We need to know the window size for projection matrix
-    int windowWidth;
-    int windowHeight;
-
 	// Singleton constructors
 	static Camera* getInstance(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
 	static Camera* getInstance(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
+
+
+    // inline bool GetFreeModeMode(void) const
+    // {
+    //     return freeMouseMode;
+    // }
+    //
+    // inline void SetFreeMouseMode(bool mode)
+    // {
+    //     this->freeMouseMode = mode;
+    // }
+    //
+    // inline void ToggleFreeMouseMode(void)
+    // {
+    //     this->freeMouseMode = !this->freeMouseMode;
+    //     InputHandler::SetShowMouse(freeMouseMode);
+    // }
 
 	// returns the view matrix calculated using Euler Angles and the LookAt Matrix
 	inline glm::mat4 GetViewMatrix()

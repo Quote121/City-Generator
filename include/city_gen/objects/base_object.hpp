@@ -7,7 +7,7 @@
 #include <config.hpp>
 
 // Forward declaration
-class BoundingBox;
+// class BoundingBox;
 
 // The base class of an object for other objects to be created from
 template <class T>

@@ -85,6 +85,15 @@ void InputHandler::process(GLFWwindow *window, double deltaTime)
 {
     Camera* camera = Camera::getInstance();
 
+    // Update mouse each time
+    if (showMouse)
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+    else 
+    {
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
 
     // For gamepad // keyboard will still work
     if (glfwJoystickIsGamepad(GLFW_JOYSTICK_1))

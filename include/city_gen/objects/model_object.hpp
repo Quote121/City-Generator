@@ -5,6 +5,7 @@
 // Forward declarations
 class Model;
 class Shader;
+class BoundingBox;
 
 // 3D object
 class ModelObject : public BaseObject<ModelObject>
@@ -60,6 +61,7 @@ public:
     std::string GetModelName() const;
     bool GetShowBoundingBox() const;
     bool GetIsInstanceRendered(void) const;
+    BoundingBox* GetBoundingBox(void) const;
         
     // ImGui
     glm::vec3& GetScaleImGui();
