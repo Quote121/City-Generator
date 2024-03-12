@@ -209,11 +209,18 @@ int main() {
     //     ->ShowBoundingBox(false);
     //
     //
-    scene->addModel(building3)
-        // ->SetModelOriginCenterBottom()
-        ->SetOriginFrontLeft()
-        ->SetPosition(glm::vec3{0, 0, 0})
-        ->ShowBoundingBox(true);
+    // scene->addModel(building3)
+    //     // ->SetModelOriginCenterBottom()
+    //     ->SetOriginFrontLeft()
+    //     ->SetPosition(glm::vec3{0, 0, 0})
+    //     ->ShowBoundingBox(true);
+
+    // for (int i = 0; i < 30; i++)
+    // {
+    //     scene->addModel(building1)
+    //         ->SetPosition({i+3, 0, i+10});
+    // }
+
     //
     std::string backPathVertShader = "../assets/shaders/backpack/vertexShader.vs";
     std::string backPathFragShader = "../assets/shaders/backpack/fragmentShader.fs";

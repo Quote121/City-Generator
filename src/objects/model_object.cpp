@@ -30,10 +30,7 @@ ModelObject::ModelObject(const std::string& modelPath_in,   // Path to .obj
     model = ResourceManager::getInstance()->LoadModel(modelPath_in, shader);
 }
 
-ModelObject::~ModelObject()
-{
-    delete(model);
-}
+ModelObject::~ModelObject() {}
 
 
 void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
@@ -117,7 +114,8 @@ void ModelObject::DrawInstances(glm::mat4 view, glm::mat4 projection, std::vecto
     if (isVisible)
     {
         // Shader* objectShader = model->GetShader();
-        
+
+        // We will want to instance draw other things
         Shader* objectShader = ResourceManager::getInstance()->LoadShader(paths::building_defaultInstancedVertShaderPath, paths::building_defaultFragShaderPath);
         if (objectShader == nullptr)
         {
@@ -130,10 +128,6 @@ void ModelObject::DrawInstances(glm::mat4 view, glm::mat4 projection, std::vecto
             objectShader->setMat4("view", view);
             objectShader->setMat4("projection", projection);
        
-            // Set the local position based on the bounding box center
-            // LOG(WARN, "Object origin: " << objectOriginPosition)
-            objectShader->setVec3("localCenterPos", objectOriginPosition);
-            
             // Tells the shader wether to show the lighting or just the base ambient texture
             objectShader->setBool("ShowLighting", lightingEnable);
             // Lighting
@@ -174,19 +168,6 @@ void ModelObject::DrawInstances(glm::mat4 view, glm::mat4 projection, std::vecto
             model->Model::DrawInstanced(matrices);
             // model->Model::Draw();
         }
-
-        // // Draw bounding box if asked
-        // if (showBoundingBox)
-        // {
-        //     BoundingBox* bb = model->GetBoundingBox();
-        //     Shader* bbShader = bb->getShader();
-        //     bbShader->use();
-        //     bbShader->setMat4("view", view);
-        //     bbShader->setMat4("projection", projection);
-        //     bbShader->setMat4("model", result);
-        //     bbShader->setVec3("localCenterPos", objectOriginPosition);
-        //     bb->Draw();
-        // }
     }
 }
 

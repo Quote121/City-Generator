@@ -50,6 +50,7 @@ public:
 
     // Updates road zones and underlying road renderer
     void UpdateRoad(const glm::vec3 a, const glm::vec3 b);
+    void UpdateRoadAndBatch(const glm::vec3 a, const glm::vec3 b);
 
     // Builders for width and road curve vertices
     RoadObject* SetWidth(float width);               // Calls a vertice update
@@ -93,7 +94,7 @@ public:
     void UpdatePoints(const glm::vec3 a, const glm::vec3 b)
     {
         roadPointA = a; roadPointB = b;
-        UpdateRoad(roadPointA, roadPointB);
+        UpdateRoadAndBatch(roadPointA, roadPointB);
     }
 
     // Other getters and setters

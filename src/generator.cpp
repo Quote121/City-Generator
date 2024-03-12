@@ -52,7 +52,7 @@ struct CityGenerationParameters
 void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<road_gen_point>>* endNodes, float closest, float furthest, float roadWidth)
 {
     // Set our quota of highways to 8, at 8 we stop
-    int quota = 3;
+    int quota = 1;
     unsigned int newHighways = 0;
 
     // We cannot create highways between less than 2 cites.
@@ -84,7 +84,7 @@ void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<r
                         !pointA.hasHighway && !pointB.hasHighway)
                     {
                         // Create temporary road
-                        road_gen_road tempRoad = {pointA.point, pointB.point, roadWidth};
+                        road_gen_road tempRoad = {pointA.point, pointB.point, roadWidth*1.5f};
                         tempRoad.allowBuildingZones = false;
                         bool endNodeRoadIntersection = false; // used to exit deeply nested loops
                         for (unsigned int m = 0; m < roads->size(); m++)

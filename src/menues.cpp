@@ -64,6 +64,7 @@ void Menues::display(float deltaTime)
 
     if (generateRoads)
     {
+        scene->removeAllModels();
         scene->removeAllRoads();
         menu_seed = generator::GenerateCity(0);
     }
@@ -91,6 +92,12 @@ void Menues::display(float deltaTime)
     if (removeZoneCollisions)
     {
         generator::ClearZoneCollisions(); 
+    }
+
+    bool removeModels = ImGui::Button("Remove all models");
+    if (removeModels)
+    {
+        scene->removeAllModels();
     }
 
     bool generateBuildings = ImGui::Button("Generate buildings");

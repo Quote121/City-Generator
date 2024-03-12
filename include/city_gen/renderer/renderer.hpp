@@ -20,8 +20,9 @@
 #define ROAD_MAX_VERTICES 48 // no dupes
 #define ROAD_MAX_INDICES 138 // for the 46 GL_TRIANGLES
 // Max bytes for a buffer, 6 is for xyz aPos and xyz normals
-constexpr unsigned int ROAD_MAX_BUFFER_SIZE_BYTES = ROAD_MAX_VERTICES * 6 * sizeof(float);
-constexpr unsigned int ROAD_MAX_BUFFER_SIZE = ROAD_MAX_VERTICES * 6;
+constexpr unsigned int ROAD_MAX_VERT_BUFFER_SIZE_BYTES = ROAD_MAX_VERTICES * 6 * sizeof(float);
+constexpr unsigned int ROAD_MAX_VERT_BUFFER_SIZE = ROAD_MAX_VERTICES * 6;
+constexpr unsigned int ROAD_MAX_IND_BUFFER_SIZE_BYTES = ROAD_MAX_INDICES * sizeof(float);
 
 // Indrect command structure
 struct DrawElementsIndirectCommand {
@@ -57,7 +58,7 @@ public:
 
     // Update one set of road vertices and indices
     // Roads call an update and pass their renderID which is used to find them in the List
-    void Update(const unsigned int renderID);
+    void Update(const unsigned int renderID, std::vector<float> const* vertices, std::vector<unsigned int> const* indices);
 
     void DrawBatch(glm::mat4 view, glm::mat4 projection) const; 
 

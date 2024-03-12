@@ -266,7 +266,6 @@ void Scene::removeRoad(RoadObject& obj)
 // None of the removeAll.. methods are thread safe
 void Scene::removeAllModels(void)
 {
-    // Call destructor for each object
     for (auto& obj : scene_model_objects)
     {
         delete(obj);

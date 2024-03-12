@@ -54,7 +54,7 @@ void BatchRenderer::UpdateAll(void)
     vbl.AddFloat(3); // normal
 
     // Buffer for all roads
-    VBO->CreateBuffer(ROAD_MAX_BUFFER_SIZE_BYTES * roads.size());
+    VBO->CreateBuffer(ROAD_MAX_VERT_BUFFER_SIZE_BYTES * roads.size());
 
     // count, _, offset, _, _
     // DrawElementsIndirectCommand edic = {8, 0, 1, 0, 0};
@@ -75,7 +75,7 @@ void BatchRenderer::UpdateAll(void)
         assert(renderID >= 0);
 
         // Enter data into VBO and EBO
-        VBO->UpdateBuffer(roadRenderer->GetVertices()->data(), i * ROAD_MAX_BUFFER_SIZE_BYTES, roadRenderer->GetVertices()->size() * sizeof(float));
+        VBO->UpdateBuffer(roadRenderer->GetVertices()->data(), i * ROAD_MAX_VERT_BUFFER_SIZE_BYTES, roadRenderer->GetVertices()->size() * sizeof(float));
         // EBO NEEDS TO BE UPDATED WITH THE VERTEX INDEX FOR EACH ROAD, THEY WILL BE ALL STARING AT 0
         
         // For each index in roadRenderer, itterate by ROAD_MAX_INDICES*i
@@ -95,24 +95,24 @@ void BatchRenderer::UpdateAll(void)
     }
 }
 
-void BatchRenderer::Update(const unsigned int renderID)
+void BatchRenderer::Update(const unsigned int renderID, std::vector<float> const* vertices, std::vector<unsigned int> const* indices)
 {
-    // TODO how to nicly pass the vertex and element data and renderID
-
     // Update vertices
     VAO->Bind();
-    glBufferSubData(GL_VERTEX_ARRAY, 0, 0, 0);
+    VBO->Bind();
+    VBO->UpdateBuffer(vertices->data(), renderID * ROAD_MAX_VERT_BUFFER_SIZE_BYTES, vertices->size() * sizeof(float));
 
+    // TODO check if the number of indices are different, if so we need to recreate the buffer, else just sub the data
+    // this only needs to change if we decide that the sides of the road need to have different LODS (its already fast so probably not)
     // Update indicies
     EBO->Bind();
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, 0, 0);
+    EBO->UpdateBuffer(indices->data(), renderID*ROAD_MAX_IND_BUFFER_SIZE_BYTES, indices->size() * sizeof(unsigned int));
 
-    // Bind VAO
-    // Bind VBO to VAO
-    // Bind EBO to VAO
-    // Bind IBO to VAO
-    
-    // Update indirect buffer
+    GLenum error;
+    while ((error = glGetError()) != GL_NO_ERROR)
+    {
+        LOG(ERROR, "OpenGL Update() Error: " << error);
+    }
 }
 
 

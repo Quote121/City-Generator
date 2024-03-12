@@ -110,10 +110,18 @@ void RoadObject::UpdateRoad(const glm::vec3 a, const glm::vec3 b)
     if (zoneA == nullptr) zoneA = new RoadZoneObject(road_renderer->road_left_zone_vertices, roadWidth);
     else zoneA->UpdateVertices(road_renderer->road_left_zone_vertices, roadWidth); 
     if (zoneB == nullptr) zoneB = new RoadZoneObject(road_renderer->road_right_zone_vertices, roadWidth);
-    else zoneB->UpdateVertices(road_renderer->road_right_zone_vertices, roadWidth); 
+    else zoneB->UpdateVertices(road_renderer->road_right_zone_vertices, roadWidth);
+
 }
 
 
+void RoadObject::UpdateRoadAndBatch(const glm::vec3 a, const glm::vec3 b)
+{
+    this->UpdateRoad(a, b);
+
+    // Update our vertices in the BatchRenderer
+    Scene::getInstance()->roadBatchRenderer->Update(road_renderer->GetBatchRenderID(), road_renderer->GetVertices(), road_renderer->GetIndices());
+}
 
 
 bool RoadObject::TooFarForCollision(const RoadObject* road, const float threshold)
