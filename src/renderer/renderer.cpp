@@ -32,7 +32,6 @@ void InstanceRenderer<T>::Append(T object)
     // Add object to list
     objects.push_back({static_cast<void*>(object), objects.size()});
     
-
     glm::mat4 mat = object->GetModelMatrix();
     // Push back matrix
     for (int i = 0; i < 4; i++)
@@ -119,8 +118,8 @@ void InstanceRenderer<T>::Draw()
 
     if (objects.size() != 0)
     {
-        static_cast<T>(objects[0].address)->DrawInstanced(camera->GetViewMatrix(), 
-            camera->GetProjectionMatrix(), matrices.data());
+        static_cast<T>(objects[0].address)->DrawInstances(camera->GetViewMatrix(), 
+            camera->GetProjectionMatrix(), &matrices);
     }
     else 
     {

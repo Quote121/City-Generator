@@ -113,13 +113,12 @@ void Menues::display(float deltaTime)
 
     ImGui::End();
 
-
-
     // Selected object menu
-
     if (scene->sceneSelectedObject->HasObjectSelected())
     {
         ImGui::Begin("Selected object");
+        // Remove focus from the window so we dont have to double click to deselect
+        ImGui::SetWindowFocus(nullptr);
        
         std::string testText = "";
 
@@ -163,7 +162,8 @@ void Menues::display(float deltaTime)
     // Show XYZ lines
     ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui());
     ImGui::Checkbox("Show Skybox", &scene->GetShowSkyBoxImGui());    
-
+    ImGui::Checkbox("Show terrain", &scene->GetShowTerrainImGui());
+    
     ImGui::PushItemWidth(100);
     ImGui::Text("Camera Position:");
     ImGui::SliderFloat("X##POS", &cam->GetPositionHandle().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();

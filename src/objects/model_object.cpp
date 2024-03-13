@@ -13,21 +13,9 @@ ModelObject::ModelObject(const std::string& modelPath_in,   // Path to .obj
                          Shader *shader_in) :                        
                          BaseObject()
 {
-    Shader* shader;
-    // Get the model name
-    
-    // Create the default shader unless passed one
-    if (shader_in == nullptr)
-    {
-        // Create heap object shader
-        shader = ResourceManager::getInstance()->LoadShader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
-    }
-    else
-    {
-        shader = shader_in;
-    }
-
-    model = ResourceManager::getInstance()->LoadModel(modelPath_in, shader);
+    // Make sure we dont pass a nullptr to the modelObject constructor
+    assert(shader_in != nullptr);
+    model = ResourceManager::getInstance()->LoadModel(modelPath_in, shader_in);
 }
 
 ModelObject::~ModelObject() {}

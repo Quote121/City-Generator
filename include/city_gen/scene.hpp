@@ -12,17 +12,12 @@
 ////////////////
 #pragma once
 
-#include "lights/directionalLight_object.hpp"
-#include "road_object.hpp"
-#include <vector>
-
 #include <objects/all.hpp>
-
 #include <skybox.hpp>
 #include <shader.hpp>
-
 #include <renderer.hpp>
 
+#include <vector>
 
 // SceneObject types
 typedef enum class e_SceneType
@@ -88,12 +83,13 @@ private:
     std::vector<PointLightObject*> scene_pointLight_objects;
     std::vector<DirectionalLightObject*> scene_directionalLight_objects;
 
-
     std::vector<LineObject*> scene_axis_lines;
     bool showSceneAxis = true;
     bool showSkybox = true;
-    bool showRoadZones = true;
-    bool removeIntersectingZones = false; // If a road zone has been labled as cannot be used (intersect then dont render it)
+    bool showTerrain = true;
+    bool showRoadZones = true; // TODO REDUNDANT?
+    bool removeIntersectingZones = false; // TODO REDUNDANT? 
+    // If a road zone has been labled as cannot be used (intersect then dont render it)
 
     SkyBox* skybox;       // The skybox object
     ModelObject* terrain; // Terrain object
@@ -112,7 +108,21 @@ private:
     int dirLightCount = 0;
     int pointLightCount = 0;
 
-   
+    // Instance renderers
+    std::vector<InstanceRenderer<ModelObject*>*> modelInstanceRenderers;
+    std::vector<InstanceRenderer<SpriteObject*>*> spriteInstanceRenderers;
+    std::vector<InstanceRenderer<LineObject*>*> lineInstanceRenderers;
+
+    // Methods to add objects to instance renderers
+    void addModelToInstanceRenderer(ModelObject const* modelObject_in,
+                                    const std::string& modelPath_in,
+                                    const ShaderPath* shader_in);
+    void addSpriteToInstanceRenderer(SpriteObject const* SpriteObject_in,
+                                     const std::string& spriteTexture_in,
+                                     const ShaderPath* shader_in);
+    void addLineToInstanceRenderer(LineObject const* LineObject_in,
+                                   const ShaderPath* shader_in);
+
 
     template<class T, class U>
     static bool SortByDistanceInv(BaseObject<T>* a, BaseObject<U>* b);
@@ -121,7 +131,6 @@ private:
     LineObject* addLineAxis(glm::vec3 point_a,
                             glm::vec3 point_b,
                             const ShaderPath* shader_in = nullptr);
-
 public:
     // Only batch renderer for roads
     BatchRenderer* roadBatchRenderer;
@@ -140,16 +149,19 @@ public:
 
     // 3D models
     ModelObject* addModel(const std::string& modelPath_in,
-                          const ShaderPath* shader_in = nullptr);
+                          const ShaderPath* shader_in = nullptr,
+                          const bool instanced = false);
 
     // 2D sprites
     SpriteObject* addSprite(std::string& spriteTexture_in,
-                            const ShaderPath* shader_in = nullptr);
+                            const ShaderPath* shader_in = nullptr,
+                            const bool instanced = false);
 
     // Line
     LineObject* addLine(glm::vec3 point_a,
                         glm::vec3 point_b,
-                        const ShaderPath* shader_in = nullptr);
+                        const ShaderPath* shader_in = nullptr,
+                        const bool instanced = false);
 
     // Roads
     RoadObject* addRoad(glm::vec3 point_a,
@@ -234,7 +246,12 @@ public:
     bool& GetShowSkyBoxImGui()
     {
         return showSkybox;
-    } 
+    }
+
+    bool& GetShowTerrainImGui()
+    {
+        return showTerrain;
+    }
 
     bool& GetShowRoadZones()
     {

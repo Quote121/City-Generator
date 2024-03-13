@@ -66,8 +66,23 @@ ModelObject* Scene::addTerrain(const std::string& modelPath_in,
 }
 
 
+void Scene::addModelToInstanceRenderer(ModelObject const* modelObject_in,
+                                       const std::string& modelPath_in,
+                                       const ShaderPath* shader_in)
+{
+    // Find which instance renderer to add it to
+    
+    // For each instance renderer, check if it has the same model, if so add it
+    // Admittidly this could be an issue if other things are different but hey, should be fine
+
+
+}
+
+
+
 ModelObject* Scene::addModel(const std::string& modelPath_in,
-                      const ShaderPath* shader_in)
+                             const ShaderPath* shader_in,
+                             const bool instanced)
 {
     // If we have passed nullptr load default shader
     Shader* shader = nullptr;
@@ -75,10 +90,20 @@ ModelObject* Scene::addModel(const std::string& modelPath_in,
     {
         shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
     }
+    else {
+        shader = ResourceManager::getInstance()->
+            LoadShader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
+    }
 
     ModelObject* model = new ModelObject(
         modelPath_in, shader
     );
+    
+    // Set instanced boolean and add to an instanceRenderer
+    model->SetInstaceRendering(instanced);
+
+     
+
     scene_model_objects.push_back(model);
 
     modelCount++;
@@ -123,7 +148,8 @@ RoadObject* Scene::addRoad(glm::vec3 point_a,
 
 
 SpriteObject* Scene::addSprite(std::string& spriteTexture_in,
-                               const ShaderPath* shader_in)
+                               const ShaderPath* shader_in,
+                               const bool instanced)
 {
     // If we have passed nullptr load default shader
     Shader* shader = nullptr;
@@ -149,7 +175,8 @@ SpriteObject* Scene::addSprite(std::string& spriteTexture_in,
 
 LineObject* Scene::addLine(glm::vec3 point_a,
                            glm::vec3 point_b,
-                           const ShaderPath* shader_in)
+                           const ShaderPath* shader_in,
+                           const bool instanced)
 {
     // If we have passed nullptr load default shader
     Shader* shader = nullptr;
@@ -350,7 +377,10 @@ void Scene::DrawSceneObjects()
     glm::mat4 projection = Camera::getInstance()->GetProjectionMatrix();
 
     // Draw terrain
-    this->terrain->Draw(view, projection);
+    if (showTerrain)
+    {
+        this->terrain->Draw(view, projection);
+    }
 
     // Draw lines
     for (auto& line : GetLineObjects())
@@ -619,6 +649,7 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
     for (auto& model : this->GetModelObjects())
     {
         float distanceToHit = 0;
+        // Note here, models can be unselectable if set
         if (model->GetIsSelectable() && TestRayOBBIntersection(rayOrigin, rayDirection, model->GetBoundingBox()->getMin(), model->GetBoundingBox()->getMax(), model->GetModelMatrix(), distanceToHit))
         {
             if (distanceToHit < closest)
@@ -627,7 +658,6 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
                 object = static_cast<void*>(model);
                 type = SceneType::MODEL;
                 hit = true;
-                LOG(STATUS, "Model hit: " << model->GetAlias());
             }
         }
     }
@@ -644,7 +674,6 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
                 object = static_cast<void*>(road);
                 type = SceneType::ROAD;
                 hit = true;
-                LOG(STATUS, "ROAD HIT: " << road->GetAlias());
             }
         }
     }
@@ -657,13 +686,10 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
 
     // If we get a hit, apply which object is selected
     if (hit)
-    {
         sceneSelectedObject->Select(object, type);
-    }
     else 
-    {
         sceneSelectedObject->Deselect();
-    }
+
     return hit;
 }
 

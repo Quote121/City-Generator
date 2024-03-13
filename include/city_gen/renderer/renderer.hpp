@@ -39,19 +39,23 @@ private:
 
 public:
     // @brief Add another object
+    // @param object pointer to add
     void Append(T object);
 
     // @brief Remove an object
+    // @param object pointer to remove
     void Remove(T object);
 
     // @brief Remove all objects
-    void Clear();
+    void Clear(void);
 
     // @brief Update one of the objects
+    // @brief object pointer to update
     void Update(T object);
 
-   // @brief Render to screen
+    // @brief Render to screen
     void Draw(void);
+
 };
 
 // Batch renderer, for now will only batch render roads as we have no other objects that need this. (Others needs instancing, sprites and buildings)
@@ -83,16 +87,6 @@ public:
 
 };
 
-
-// class InstanceRenderer
-// {
-// private:
-//     std::vector<float> modelMatrices;
-//
-// public:
-//      
-//
-// };
 
 class Renderer
 {
