@@ -114,6 +114,48 @@ void Menues::display(float deltaTime)
     ImGui::End();
 
 
+
+    // Selected object menu
+
+    if (scene->sceneSelectedObject->HasObjectSelected())
+    {
+        ImGui::Begin("Selected object");
+       
+        std::string testText = "";
+
+        // Model
+        switch(scene->sceneSelectedObject->GetType())
+        {
+            case SceneType::MODEL: {
+                const ModelObject* model = static_cast<const ModelObject*>(scene->sceneSelectedObject->GetObject());
+                testText = model->GetAlias();
+                break;
+            }
+
+            case SceneType::ROAD: {
+                const RoadObject* road = static_cast<const RoadObject*>(scene->sceneSelectedObject->GetObject());
+                testText = road->GetAlias();
+                break;
+            }
+                
+            case SceneType::SPRITE: {
+                break;
+            }
+            case SceneType::P_LIGHT: {
+                break;
+            }
+
+            case SceneType::LINE:
+            case SceneType::D_LIGHT:
+            default:
+                LOG(WARN, "Switch default hit.");
+        }
+
+        ImGui::Text("Name: %s", testText.c_str());
+        ImGui::End();
+    }
+
+
     // Later on with the resource manager, the user will be able to select from a list of things to spawn into the world
 
     ImGui::Begin("World controls");

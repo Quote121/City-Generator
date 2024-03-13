@@ -209,11 +209,11 @@ int main() {
     //     ->ShowBoundingBox(false);
     //
     //
-    // scene->addModel(building3)
-    //     // ->SetModelOriginCenterBottom()
-    //     ->SetOriginFrontLeft()
-    //     ->SetPosition(glm::vec3{0, 0, 0})
-    //     ->ShowBoundingBox(true);
+    scene->addModel(building3)
+        // ->SetModelOriginCenterBottom()
+        ->SetOriginFrontLeft()
+        ->SetPosition(glm::vec3{0, 0, 0})
+        ->ShowBoundingBox(true);
 
     // for (int i = 0; i < 30; i++)
     // {

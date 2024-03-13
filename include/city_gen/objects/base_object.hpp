@@ -49,7 +49,7 @@ public:
     {
         alias = *alias_in;
     }
-    inline std::string& GetAlias()
+    inline std::string const& GetAlias() const
     {
         return alias;
     }

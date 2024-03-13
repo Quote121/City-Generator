@@ -48,6 +48,11 @@ public:
 
     void Draw(glm::mat4 view, glm::mat4 projection);
 
+    glm::mat4 GetModelMatrix(void) const
+    {
+        return glm::mat4{1.0f};
+    }
+
     // Updates road zones and underlying road renderer
     void UpdateRoad(const glm::vec3 a, const glm::vec3 b);
     void UpdateRoadAndBatch(const glm::vec3 a, const glm::vec3 b);
@@ -76,7 +81,6 @@ public:
     {
         return roadBBPoints;
     }
-
 
     // Called update instead of set as we update vertices too
     void UpdatePointA(const glm::vec3 a)

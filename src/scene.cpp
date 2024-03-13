@@ -29,7 +29,8 @@ Scene::Scene()
     this->addLineAxis(glm::vec3{0, 0, -1000.0}, glm::vec3{0, 0, 1000.0})
         ->SetColour(glm::vec3{0, 0, 1});
 
-    roadBatchRenderer = new BatchRenderer(); 
+    roadBatchRenderer = new BatchRenderer();
+    sceneSelectedObject = new SelectedObject();
 }
 
 
@@ -37,7 +38,7 @@ Scene::Scene()
 Scene::~Scene()
 {
     delete(roadBatchRenderer);
-    delete(pInstance);
+    delete(sceneSelectedObject);
 
     // Free all allocated objects
     removeAllModels();
@@ -46,6 +47,8 @@ Scene::~Scene()
     removeAllPointLights();
     removeAllDirectionalLights();
     removeAllRoads();
+
+    delete(pInstance);
 }
 
 
@@ -596,36 +599,60 @@ bool TestRayOBBIntersection(
 // Scene Intersection function
 bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
 {
-    std::vector<std::string> buildings;
-    std::string closestAlias;
     float closest = INFINITY;
-
+    void* object = nullptr;
+    SceneType type;
     bool hit = false;
-    // Might have to put all intersecting models into a list and then choose the closest one
-    auto models = this->GetModelObjects();
-    for (auto model : models)
+
+    // Check models
+    for (auto& model : this->GetModelObjects())
     {
         float distanceToHit = 0;
-        // model->GetModelMatrix()
         if (TestRayOBBIntersection(rayOrigin, rayDirection, model->GetBoundingBox()->getMin(), model->GetBoundingBox()->getMax(), model->GetModelMatrix(), distanceToHit))
         {
             if (distanceToHit < closest)
             {
                 closest = distanceToHit;
-                closestAlias = model->GetModelName();
+                object = static_cast<void*>(model);
+                type = SceneType::MODEL;
+                hit = true;
+                LOG(STATUS, "Model hit: " << model->GetAlias());
             }
-            // LOG(STATUS, "Intersects model: " << model->GetModelName() << " " << model->GetAlias());
-            buildings.push_back(model->GetModelName());
-            hit = true;
         }
     }
-    if (hit)
+
+    // Check roads
+    for (auto& road : this->GetRoadObjects())
     {
-        LOG(STATUS, "Hit: " << buildings << " || Closest: " << closestAlias);
+        float distanceToHit = 0;
+        if (TestRayOBBIntersection(rayOrigin, rayDirection, road->GetRoadRenderer()->GetOBBMin(), road->GetRoadRenderer()->GetOBBMax(), road->GetModelMatrix(), distanceToHit))
+        {
+            if (distanceToHit < closest)
+            {
+                closest = distanceToHit;
+                object = static_cast<void*>(road);
+                type = SceneType::ROAD;
+                hit = true;
+                LOG(STATUS, "ROAD HIT: " << road->GetAlias());
+            }
+        }
     }
 
+    // Check sprites
+
+    // Check point lights
+
+
+    // If we get a hit, apply which object is selected
+    if (hit)
+    {
+        sceneSelectedObject->Select(object, type);
+    }
+    else 
+    {
+        sceneSelectedObject->Deselect();
+    }
     return hit;
+
 }
-
-
 

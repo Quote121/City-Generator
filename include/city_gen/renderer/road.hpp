@@ -3,11 +3,12 @@
 #include <glm/fwd.hpp>
 #include <glm/glm.hpp>
 #include <bounding_box.hpp>
-#include <array>
 
 #include <vertexArray.hpp>
 #include <vertexBuffer.hpp>
 #include <indexBuffer.hpp>
+
+#include <array>
 
 // Forward declaration
 class Shader;
@@ -15,25 +16,23 @@ class Shader;
 class Road
 {
 private:
-   
     VertexArray* VAO;
     VertexBuffer* VBO;
     IndexBuffer* EBO; 
 
     // as to be multiple of 4, at least 4 (Will createa point at the end of the road at 4)
-    // TODO In future this could be set to ranges based on level of detail (close more vertices, further the less)
     unsigned int roadCurveSides = 40; 
-    // unsigned int roadCurveSides = 4;//0;     
 
     Shader* roadShader;
 
     // Array of the 4 points of the road, all 2d in the xz plane
     std::array<glm::vec3, 4> road_OBB;
-    // Array for left zone
-    std::array<glm::vec3, 4> road_left_zone_vertices;
-    // Array for right zone
-    std::array<glm::vec3, 4> road_right_zone_vertices;
+    glm::vec3 road_obb_min; // For collision detection
+    glm::vec3 road_obb_max;
 
+    // Array for left and right zone
+    std::array<glm::vec3, 4> road_left_zone_vertices;
+    std::array<glm::vec3, 4> road_right_zone_vertices;
 
     // Road vertices and indices to use for batch renderer
     std::vector<float> gVertices;
@@ -50,11 +49,9 @@ public:
 
     // Make the opengl draw calls
     void Draw();
-    // void DrawZones();
 
     Road(Shader* shader);
     ~Road();
-
 
     inline std::vector<float> const* GetVertices(void) const
     {
@@ -114,5 +111,14 @@ public:
         return road_right_zone_vertices;
     }
 
+    inline glm::vec3 GetOBBMin(void) const
+    {
+        return road_obb_min;
+    }
+
+    inline glm::vec3 GetOBBMax(void) const
+    {
+        return road_obb_max;
+    }
 };
 

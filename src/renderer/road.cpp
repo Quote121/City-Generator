@@ -151,7 +151,21 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     glm::vec3 topLeftPoint = point_a_offset_out + (invUnitVecAB * radius);
     glm::vec3 bottomLeftPoint = point_a_offset_out - (invUnitVecAB * radius);
 
-    road_OBB = {topRightPoint, bottomRightPoint, bottomLeftPoint, topLeftPoint};
+    this->road_OBB = {topRightPoint, bottomRightPoint, bottomLeftPoint, topLeftPoint};
+    
+    this->road_obb_min = {INFINITY, INFINITY, INFINITY};
+    this->road_obb_max = {-INFINITY, -INFINITY, -INFINITY};
+    // Get road OBB min and max for bounding box testing
+    for (int i = 0; i < 4; i++)
+    {
+        if (road_OBB[i].x < road_obb_min.x) road_obb_min.x = road_OBB[i].x; 
+        if (road_OBB[i].y < road_obb_min.y) road_obb_min.y = road_OBB[i].y; 
+        if (road_OBB[i].z < road_obb_min.z) road_obb_min.z = road_OBB[i].z;
+
+        if (road_OBB[i].x > road_obb_max.x) road_obb_max.x = road_OBB[i].x;
+        if (road_OBB[i].y > road_obb_max.y) road_obb_max.y = road_OBB[i].y;
+        if (road_OBB[i].z > road_obb_max.z) road_obb_max.z = road_OBB[i].z;
+    }
     
     // 
     // We need the 8 vertices that will define out left and right zone for the zoning algorithm
@@ -160,13 +174,12 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
     // left zone, 3 and 5 used
     glm::vec3 leftZone_topLeft = three + (invUnitVecAB * (radius*2));
     glm::vec3 leftZone_topRight = five + (invUnitVecAB * (radius*2));
-    road_left_zone_vertices = {three, five, leftZone_topRight, leftZone_topLeft};
+    this->road_left_zone_vertices = {three, five, leftZone_topRight, leftZone_topLeft};
 
     // Right zone, 4 and 6 used
     glm::vec3 rightZone_bottomLeft = four - (invUnitVecAB * (radius*2));
     glm::vec3 rightZone_bottomRight = six - (invUnitVecAB * (radius*2));
-    // road_right_zone_vertices = {four, six, rightZone_bottomRight, rightZone_bottomLeft};
-    road_right_zone_vertices = {six, four, rightZone_bottomLeft, rightZone_bottomRight};
+    this->road_right_zone_vertices = {six, four, rightZone_bottomLeft, rightZone_bottomRight};
     
     std::vector<unsigned int> indices;
     

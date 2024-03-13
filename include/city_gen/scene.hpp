@@ -24,11 +24,54 @@
 #include <renderer.hpp>
 
 
-struct SelectedObject
+// SceneObject types
+typedef enum class e_SceneType
 {
-    // ENUM FOR WHAT OBJECT SO WE CAN CAST VOID*???
-    // Or can we use union instead of void*
-    void* object = nullptr;
+    MODEL,
+    SPRITE,
+    LINE,
+    ROAD,
+    P_LIGHT,
+    D_LIGHT
+} SceneType;
+
+// Type used for object selection
+class SelectedObject
+{
+private:
+    bool isSelected = false; // boolean used to check if the data is valid or garbage
+    void* object = nullptr;  // pointer to the class object
+    SceneType type;          // type of class for casting
+
+public:
+    SelectedObject() = default;
+
+    bool HasObjectSelected(void) const
+    {
+        return isSelected;
+    }
+
+    void Select(void* object, SceneType type)
+    {
+        this->object = object;
+        this->type = type;
+        isSelected = true;
+    }
+
+    void Deselect(void)
+    {
+        isSelected = false;
+    }
+
+    void const* GetObject(void)
+    {
+        return object;
+    }
+
+    SceneType GetType(void)
+    {
+        return type;
+    }
 };
 
 
@@ -68,6 +111,8 @@ private:
     int dirLightCount = 0;
     int pointLightCount = 0;
 
+   
+
     template<class T, class U>
     static bool SortByDistanceInv(BaseObject<T>* a, BaseObject<U>* b);
 
@@ -77,8 +122,11 @@ private:
                             const ShaderPath* shader_in = nullptr);
 
 public:
-
+    // Only batch renderer for roads
     BatchRenderer* roadBatchRenderer;
+
+    // Currently selected object 
+    SelectedObject* sceneSelectedObject;
 
     // Singleton setup //  
     Scene(Scene &other) = delete;

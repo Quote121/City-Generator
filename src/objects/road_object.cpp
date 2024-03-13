@@ -41,13 +41,12 @@ void RoadObject::Draw(glm::mat4 view, glm::mat4 projection)
 {
     // Set all shader properties in here
 
-    glm::mat4 result = glm::mat4(1.0f);
     Shader* objectShader = road_renderer->GetRoadShader();
 
     objectShader->use();
     objectShader->setMat4("view", view);
     objectShader->setMat4("projection", projection);
-    objectShader->setMat4("model", result);
+    objectShader->setMat4("model", this->GetModelMatrix());
     objectShader->setVec3("colour", roadColour); 
 
     objectShader->setBool("ShowLighting", enableLighting);

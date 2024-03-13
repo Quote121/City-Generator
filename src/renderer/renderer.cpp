@@ -124,7 +124,7 @@ void BatchRenderer::DrawBatch(glm::mat4 view, glm::mat4 projection) const
     objectShader->use();
     objectShader->setMat4("view", view);
     objectShader->setMat4("projection", projection);
-    objectShader->setMat4("model", result); // TODO remove from shader as we cannot translate/rotate/scale the model
+    objectShader->setMat4("model", result); 
     objectShader->setVec3("colour", DEFAULT_ROAD_COLOUR); 
 
     objectShader->setBool("ShowLighting", true);
@@ -176,7 +176,6 @@ void BatchRenderer::DrawBatch(glm::mat4 view, glm::mat4 projection) const
     while ((error = glGetError()) != GL_NO_ERROR) {
         LOG(ERROR, "OpenGL DrawBatch() Error: " << error);
     }
-
 }
 
 ///////////////
@@ -204,7 +203,7 @@ void Renderer::SetClearScreenColour(glm::vec3 colour)
 
 void Renderer::ClearScreen(void) const
 {
-    glClearColor(backgroundColour.x, backgroundColour.y, backgroundColour.z, 1.0f);
+    glClearColor(backgroundColour.r, backgroundColour.g, backgroundColour.b, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
