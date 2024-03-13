@@ -43,6 +43,7 @@ public:
     ModelObject* SetScale(glm::vec3 scale_in);
     ModelObject* SetScale(float scale_in);
     ModelObject* IsVisible(bool toggle);
+    ModelObject* IsSelectable(bool toggle);
     ModelObject* SetLightingEnabled(bool toggle);
 
     ModelObject* ShowBoundingBox(bool toggle);

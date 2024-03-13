@@ -213,6 +213,12 @@ ModelObject* ModelObject::IsVisible(bool toggle)
     return this;
 }
 
+ModelObject* ModelObject::IsSelectable(bool toggle)
+{
+    isSelectable = toggle;
+    return this;
+}
+
 ModelObject* ModelObject::SetLightingEnabled(bool toggle)
 {
     lightingEnable = toggle;

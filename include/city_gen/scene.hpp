@@ -88,14 +88,15 @@ private:
     std::vector<PointLightObject*> scene_pointLight_objects;
     std::vector<DirectionalLightObject*> scene_directionalLight_objects;
 
-    
+
     std::vector<LineObject*> scene_axis_lines;
     bool showSceneAxis = true;
     bool showSkybox = true;
     bool showRoadZones = true;
     bool removeIntersectingZones = false; // If a road zone has been labled as cannot be used (intersect then dont render it)
 
-    SkyBox* skybox; // The skybox object
+    SkyBox* skybox;       // The skybox object
+    ModelObject* terrain; // Terrain object
 
     Scene();
     ~Scene();
@@ -133,6 +134,9 @@ public:
     void operator=(const Scene &) = delete;
     static Scene* getInstance();
     /////////////////////
+
+    ModelObject* addTerrain(const std::string& modelPath_in,
+                            const ShaderPath* shader_in = nullptr);
 
     // 3D models
     ModelObject* addModel(const std::string& modelPath_in,

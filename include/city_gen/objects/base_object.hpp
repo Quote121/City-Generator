@@ -28,6 +28,8 @@ protected:
     
     float scaleScalar = 1.0f;                   // Float to scale object in all directions
     bool isVisible = true;                      // Visability Flag
+    bool isSelectable = true;                  // flag to allow mouse selection
+
 
     BaseObject();
     virtual ~BaseObject();
@@ -64,7 +66,12 @@ public:
         return rotation;
     }
 
-    bool GetIsVisible() const
+    inline bool GetIsSelectable(void) const
+    {
+        return isSelectable;
+    }
+
+    inline bool GetIsVisible() const
     {
         return isVisible;
     }

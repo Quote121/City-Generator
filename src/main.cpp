@@ -196,24 +196,35 @@ int main() {
 
 
     //
-    // scene->addModel(building1)
-    //     ->SetModelOriginCenterBottom()
-    //     ->SetPosition(glm::vec3{10, 0, 0})
-    //     ->ShowBoundingBox(false);
-    //     
-    //
-    //
-    // scene->addModel(building2)
-    //     ->SetModelOriginCenterBottom()
-    //     ->SetPosition(glm::vec3{10, 0, 10})
-    //     ->ShowBoundingBox(false);
-    //
-    //
-    scene->addModel(building3)
+    auto testobj1 = scene->addModel(building1)
+        ->SetModelOriginCenterBottom()
+        ->SetPosition(glm::vec3{10, 0, 0})
+        ->ShowBoundingBox(false);
+        
+
+
+    auto testobj2 = scene->addModel(building2)
+        ->SetModelOriginCenterBottom()
+        ->SetPosition(glm::vec3{10, 0, 10})
+        ->ShowBoundingBox(false);
+    auto testObj3 = scene->addModel(building3)
         // ->SetModelOriginCenterBottom()
         ->SetOriginFrontLeft()
         ->SetPosition(glm::vec3{0, 0, 0})
         ->ShowBoundingBox(true);
+
+    
+    // testing instance renderer
+    InstanceRenderer<ModelObject*>* IR = new InstanceRenderer<ModelObject*>();
+    
+    IR->Append(testobj1);
+    IR->Append(testobj2);
+    IR->Append(testObj3);
+    IR->Remove(testobj2);
+
+    testobj1->SetScale(5)->SetPosition({12, 232, 12})->SetRotation({2, 3, 2});
+
+    IR->Update(testobj1);
 
     // for (int i = 0; i < 30; i++)
     // {
@@ -235,14 +246,15 @@ int main() {
     //
 
     // // GOOD POSITION TERRAIN, USE AGAIN
-    // scene->addModel(terrain, &backpackShader)
-    //     ->SetModelOriginCenterBottom()
-    //     ->ShowBoundingBox(false)
-    //     ->SetLightingEnabled(true)
-    //     ->SetIsVisible(false)
-    //     ->SetPosition({0,-0.4, 0})
-    //     ->SetScale(1.5)
-    //     ->SetTextureScale({10.0f, 10.0f});
+    scene->addTerrain(terrain, &backpackShader)
+        ->SetModelOriginCenterBottom()
+        ->ShowBoundingBox(false)
+        ->SetLightingEnabled(true)
+        ->SetIsVisible(true)
+        ->IsSelectable(false)
+        ->SetPosition({0,-0.4, 0})
+        ->SetScale(1.5)
+        ->SetTextureScale({10.0f, 10.0f});
 
 
     // Tree asset generation
@@ -531,25 +543,22 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
     ImGuiIO& io = ImGui::GetIO();
     io.AddMouseButtonEvent(button, action);
 
-    // action 1 - press mbt
-    // action 0 - release mbt
-    //
-    // button 0 - lmb
-    // button 1 - rmb
-    // button 2 - mmb
-    
     auto camera = Camera::getInstance();
+    
+    // This should not be effected by the capture of ImGui
     if (action == PRESS_MOUSE_BUTTON && button == RIGHT_MOUSE_BUTTON)
     {
         InputHandler::ToggleShowMouse();
     }
 
-    // LOG(STATUS, "Button click!" << button << " " << action << " " << mods);
-   
+    // If we are interacting with the imgui menu then we dont want to test for another mouse hit
+    if (io.WantCaptureMouse || io.WantCaptureKeyboard)
+        return;
+    
+    
+
     double xpos, ypos;
     glfwGetCursorPos(window, &xpos, &ypos);
-    // LOG(STATUS, "Position: " << xpos << ", " << ypos);
-
 
     glm::vec3 outOrigin;
     glm::vec3 outDirection;
@@ -559,9 +568,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         ScreenPosToWorldRay(xpos, camera->GetWindowHeight() - ypos, camera->GetWindowWidth(), camera->GetWindowHeight(),
                             camera->GetViewMatrix(), camera->GetProjectionMatrix(), outOrigin, outDirection);
        
-        // This only works when in "o" mode as in "p" mode we spin about and the x axis can go upto max int 32 so the rays dont make sence
-        // TODO we should check we are in the "o" state before we test our ray
-
         // Test by adding a line
         glm::vec3 finalPos = outDirection * 10.0f;
         if (Scene::getInstance()->CheckForIntersection(outOrigin, outDirection))

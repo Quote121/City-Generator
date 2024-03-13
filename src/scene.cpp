@@ -51,6 +51,20 @@ Scene::~Scene()
     delete(pInstance);
 }
 
+ModelObject* Scene::addTerrain(const std::string& modelPath_in,
+                               const ShaderPath* shader_in)
+{
+    Shader* shader = nullptr;
+    if (shader_in != nullptr)
+        shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
+
+    ModelObject* model = new ModelObject(
+            modelPath_in, shader
+    );
+    this->terrain = model;
+    return model;
+}
+
 
 ModelObject* Scene::addModel(const std::string& modelPath_in,
                       const ShaderPath* shader_in)
@@ -335,6 +349,9 @@ void Scene::DrawSceneObjects()
     glm::mat4 view = Camera::getInstance()->GetViewMatrix();
     glm::mat4 projection = Camera::getInstance()->GetProjectionMatrix();
 
+    // Draw terrain
+    this->terrain->Draw(view, projection);
+
     // Draw lines
     for (auto& line : GetLineObjects())
     {
@@ -377,7 +394,7 @@ void Scene::DrawSceneObjects()
     // Draw objects
     for (auto& obj : GetModelObjects())
     {
-        std::vector<float> matrices;
+        std::vector<float> matrices;  
         
         if (obj->GetIsInstanceRendered()) 
         {
@@ -436,14 +453,8 @@ void Scene::DrawSceneObjects()
     uint64_t timeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
     // LOG(STATUS, "[ Model Instance draw. Time elapsed: " << timeElapsed << "ms ]\n");
 
+    // Draw all the roads
     roadBatchRenderer->DrawBatch(view, projection);
-
-    // Draw roadsscene
-    // for (auto& obj : GetRoadObjects())
-    // {
-    //   obj->Draw(view, projection);
-    // }
-
 
     // Get the sprites and point light sprites and order both by distance to 
     // avoid alpha bug, this inner vector also avoids bug of ImGui menu displaying
@@ -608,7 +619,7 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
     for (auto& model : this->GetModelObjects())
     {
         float distanceToHit = 0;
-        if (TestRayOBBIntersection(rayOrigin, rayDirection, model->GetBoundingBox()->getMin(), model->GetBoundingBox()->getMax(), model->GetModelMatrix(), distanceToHit))
+        if (model->GetIsSelectable() && TestRayOBBIntersection(rayOrigin, rayDirection, model->GetBoundingBox()->getMin(), model->GetBoundingBox()->getMax(), model->GetModelMatrix(), distanceToHit))
         {
             if (distanceToHit < closest)
             {
@@ -639,6 +650,7 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
     }
 
     // Check sprites
+    
 
     // Check point lights
 
@@ -653,6 +665,5 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
         sceneSelectedObject->Deselect();
     }
     return hit;
-
 }
 

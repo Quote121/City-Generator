@@ -24,21 +24,40 @@ constexpr unsigned int ROAD_MAX_VERT_BUFFER_SIZE_BYTES = ROAD_MAX_VERTICES * 6 *
 constexpr unsigned int ROAD_MAX_VERT_BUFFER_SIZE = ROAD_MAX_VERTICES * 6;
 constexpr unsigned int ROAD_MAX_IND_BUFFER_SIZE_BYTES = ROAD_MAX_INDICES * sizeof(float);
 
-// Indrect command structure
-struct DrawElementsIndirectCommand {
-    unsigned int count;
-    unsigned int instanceCount; // not used
-    unsigned int firstIndex;
-    unsigned int baseVertex;    // not used
-    unsigned int baseInstance;  // not used
+struct InstanceObject
+{
+    void* address;
+    unsigned long renderID;
+};
+
+template<typename T>
+class InstanceRenderer
+{
+private:
+    std::vector<InstanceObject> objects;
+    std::vector<float> matrices;
+
+public:
+    // @brief Add another object
+    void Append(T object);
+
+    // @brief Remove an object
+    void Remove(T object);
+
+    // @brief Remove all objects
+    void Clear();
+
+    // @brief Update one of the objects
+    void Update(T object);
+
+   // @brief Render to screen
+    void Draw(void);
 };
 
 // Batch renderer, for now will only batch render roads as we have no other objects that need this. (Others needs instancing, sprites and buildings)
 class BatchRenderer
 {
 private:
-    // List of commands for each road (will be mostly the same)
-    std::vector<DrawElementsIndirectCommand> indirectCommands;
 
     VertexBuffer* VBO;
     VertexArray* VAO;

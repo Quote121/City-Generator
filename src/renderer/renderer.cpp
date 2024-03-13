@@ -16,6 +16,124 @@ void checkGLError(const std::string& functionName) {
     }
 }
 
+//#########################
+//
+// Instance renderer
+//
+//#########################
+
+// template class InstanceRenderer<SpriteObject*>;
+template class InstanceRenderer<ModelObject*>;
+// template class InstanceRenderer<LineObject*>;
+
+template<typename T>
+void InstanceRenderer<T>::Append(T object)
+{
+    // Add object to list
+    objects.push_back({static_cast<void*>(object), objects.size()});
+    
+
+    glm::mat4 mat = object->GetModelMatrix();
+    // Push back matrix
+    for (int i = 0; i < 4; i++)
+    {
+        matrices.insert(matrices.end(), {mat[i].x, mat[i].y, mat[i].z, mat[i].w});
+    }
+}
+
+template<typename T>
+void InstanceRenderer<T>::Remove(T object)
+{
+    // Find the address
+    auto iter = std::find_if(objects.begin(), 
+        objects.end(), [&](const InstanceObject& iObject)
+    {
+        return (static_cast<void*>(object) == iObject.address);
+    });
+
+    // If found remove the matrices and objects
+    if (iter != objects.end())
+    {
+        // Remove and update iterator
+        iter = objects.erase(iter);
+
+        // Remove the 16 floats of the matrix
+        size_t index = std::distance(objects.begin(), iter);
+        matrices.erase(matrices.begin() + (index*4), matrices.begin() + (index*4)+16);
+
+        // TODO REMOVE once we know it passes
+        assert(matrices.size() % 16 == 0);
+
+        // Update renderIDs of all objects after this removal
+        for (unsigned int i = std::distance(objects.begin(), iter); i < objects.size(); i++)
+        {
+            objects.at(i).renderID--;
+        }
+    }
+    else {
+        LOG(WARN, "InstanceRenderer::Remove() not found object.");
+    }
+}
+
+template<typename T>
+void InstanceRenderer<T>::Clear()
+{
+    objects.clear();
+    matrices.clear();
+}
+
+template<typename T>
+void InstanceRenderer<T>::Update(T object)
+{
+    // Find the address
+    auto iter = std::find_if(objects.begin(), 
+        objects.end(), [&](const InstanceObject& iObject)
+    {
+        return (static_cast<void*>(object) == iObject.address);
+    });
+
+    // Found
+    if (iter != objects.end())
+    {
+        glm::mat4 mat = object->GetModelMatrix();
+        std::vector<float> matrixNew;
+        for (int i = 0; i < 4; i++)
+        {
+            matrixNew.insert(matrixNew.end(), {mat[i].x, mat[i].y, mat[i].z, mat[i].w});
+        }
+        // Replace the matrix data
+        size_t index = std::distance(objects.begin(), iter);
+        
+        std::copy(matrixNew.begin(), matrixNew.end(), matrices.begin() + (index*4));
+    }
+    else {
+        LOG(WARN, "InstanceRenderer::Update() not found object.");
+    }
+}
+
+template<typename T>
+void InstanceRenderer<T>::Draw()
+{
+    // ModelObject - 
+    Camera* camera = Camera::getInstance();
+
+    if (objects.size() != 0)
+    {
+        static_cast<T>(objects[0].address)->DrawInstanced(camera->GetViewMatrix(), 
+            camera->GetProjectionMatrix(), matrices.data());
+    }
+    else 
+    {
+        LOG(WARN, "Draw() : Instance renderer is empty.");
+    }
+}
+
+
+//#########################
+//
+// Batch renderer
+//
+//#########################
 BatchRenderer::BatchRenderer()
 {
     VAO = new VertexArray();
@@ -35,13 +153,6 @@ BatchRenderer::~BatchRenderer()
 void BatchRenderer::UpdateAll(void)
 {
     // Gives new renderIDs
-
-    // Clear out the vector
-    if (!indirectCommands.empty())
-    {
-        indirectCommands.clear();
-    }
-
     auto roads = Scene::getInstance()->GetRoadObjects();
 
     // Create buffers based on this size
@@ -178,11 +289,11 @@ void BatchRenderer::DrawBatch(glm::mat4 view, glm::mat4 projection) const
     }
 }
 
-///////////////
+//######################
 //
 // Renderer
 //
-///////////////
+//######################
 
 Renderer* Renderer::pInstance{nullptr};
 

@@ -267,7 +267,7 @@ int generator::GenerateCity(unsigned int seed_in)
     // We then create highways from seperate end nodes
 
 
-    for (int i = 0; i < cityParameterVector.size(); i++)
+    for (size_t i = 0; i < cityParameterVector.size(); i++)
     {
         // Generate and get all end nodes
         // this->GenerateRoads(..., &cityEndNodesVector[i]);
@@ -279,7 +279,7 @@ int generator::GenerateCity(unsigned int seed_in)
     createHighways(&cityRoads, &cityEndNodesVector, 50.0f, 500.0f, 1.0f);
 
 
-    for (int i = 0; i < cityParameterVector.size(); i++)
+    for (size_t i = 0; i < cityParameterVector.size(); i++)
     {
         // Create the new roads between end nodes 
         createNewRoads(&cityRoads, &cityEndNodesVector[i], cityParameterVector[i].roadWidth, cityParameterVector[i].roadLength);
@@ -664,10 +664,10 @@ void generator::GenerateBuildings(float densityFactor)
  
     // Pass to remove overlapping buildings
     int intersectingBuildings = 0;
-    for (int i = 0; i < areas.size(); i++)
+    for (size_t i = 0; i < areas.size(); i++)
     {
         bool intersects = false;
-        for (int j = i+1; j < areas.size(); j++)
+        for (size_t j = i+1; j < areas.size(); j++)
         {
             if (areas[i].TooFarForCollision(&areas[j]))
             {
