@@ -178,6 +178,9 @@ public:
     void CreateSkyBox(std::vector<std::string>* images);
     void DrawSkyBox(void);
 
+    // @brief Called after a shader is bound to setup all lights for a shader
+    // @param shader being used, should be bound before call
+    void SetShaderLights(const Shader* shader);
 
     // Check for intersection
     bool CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection);

@@ -508,6 +508,42 @@ void Scene::DrawSkyBox()
     }
 }
 
+
+void Scene::SetShaderLights(const Shader* shader)
+{
+    // TEMP we go through all point lights and assign the values form it here
+    shader->setVec3("viewPos", Camera::getInstance()->Position);
+    shader->setFloat("material.shininess", 5.0f);
+    
+    size_t pointLightSize = Scene::getInstance()->GetPointLightObjects().size();
+    
+    shader->setInt("NumValidPointLights", pointLightSize);
+
+    // For each point light set the corresponding values
+    for (long unsigned int i = 0; i < pointLightSize; i++)
+    {
+        auto& light = Scene::getInstance()->GetPointLightObjects().at(i);
+        std::string lightName = "pointLights[" + std::to_string(i) + "]";
+        
+        shader->setVec3((lightName + ".position"), light->GetPosition());
+        shader->setVec3((lightName + ".ambient"), light->GetAmbient());
+        shader->setVec3((lightName + ".diffuse"), light->GetDiffuse());
+        shader->setVec3((lightName + ".specular"), light->GetSpecular());
+        shader->setFloat((lightName + ".constant"), light->GetConstant());
+        shader->setFloat((lightName + ".linear"), light->GetLinear());
+        shader->setFloat((lightName + ".quadratic"), light->GetQuadratic());
+    }
+
+    // Directional lights
+    DirectionalLightObject* dirLight = Scene::getInstance()->GetDirectionalLightObjects().at(0);
+    shader->setVec3(("dirLight.direction"), dirLight->GetDirection());
+
+    shader->setVec3(("dirLight.ambient"), dirLight->GetAmbient());
+    shader->setVec3(("dirLight.diffuse"), dirLight->GetDiffuse());
+    shader->setVec3(("dirLight.specular"), dirLight->GetSpecular());
+}
+
+
 // Credit : used from : https://github.com/opengl-tutorials/ogl/tree/master
 // Intersection calculation function
 bool TestRayOBBIntersection(

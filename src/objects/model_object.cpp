@@ -47,37 +47,7 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
             // Lighting
             if (lightingEnable)
             {
-                // TEMP we go through all point lights and assign the values form it here
-                objectShader->setVec3("viewPos", Camera::getInstance()->Position);
-                objectShader->setFloat("material.shininess", 10.0f);
-                
-                size_t pointLightSize = Scene::getInstance()->GetPointLightObjects().size();
-                
-                objectShader->setInt("NumValidPointLights", pointLightSize);
-
-                // For each point light set the corresponding values
-                for (long unsigned int i = 0; i < pointLightSize; i++)
-                {
-                    auto& light = Scene::getInstance()->GetPointLightObjects().at(i);
-                    std::string lightName = "pointLights[" + std::to_string(i) + "]";
-                    
-                    objectShader->setVec3((lightName + ".position"), light->GetPosition());
-                    objectShader->setVec3((lightName + ".ambient"), light->GetAmbient());
-                    objectShader->setVec3((lightName + ".diffuse"), light->GetDiffuse());
-                    objectShader->setVec3((lightName + ".specular"), light->GetSpecular());
-                    objectShader->setFloat((lightName + ".constant"), light->GetConstant());
-                    objectShader->setFloat((lightName + ".linear"), light->GetLinear());
-                    objectShader->setFloat((lightName + ".quadratic"), light->GetQuadratic());
-                }
-
-                // Directional lights
-                DirectionalLightObject* dirLight = Scene::getInstance()->GetDirectionalLightObjects().at(0);
-                objectShader->setVec3(("dirLight.direction"), dirLight->GetDirection());
-
-                objectShader->setVec3(("dirLight.ambient"), dirLight->GetAmbient());
-                objectShader->setVec3(("dirLight.diffuse"), dirLight->GetDiffuse());
-                objectShader->setVec3(("dirLight.specular"), dirLight->GetSpecular());
-
+                Scene::getInstance()->SetShaderLights(objectShader); 
             }
             model->Model::Draw();
         }
@@ -121,37 +91,7 @@ void ModelObject::DrawInstances(glm::mat4 view, glm::mat4 projection, std::vecto
             // Lighting
             if (lightingEnable)
             {
-                // TEMP we go through all point lights and assign the values form it here
-                objectShader->setVec3("viewPos", Camera::getInstance()->Position);
-                objectShader->setFloat("material.shininess", 10.0f);
-                
-                size_t pointLightSize = Scene::getInstance()->GetPointLightObjects().size();
-                
-                objectShader->setInt("NumValidPointLights", pointLightSize);
-
-                // For each point light set the corresponding values
-                for (long unsigned int i = 0; i < pointLightSize; i++)
-                {
-                    auto& light = Scene::getInstance()->GetPointLightObjects().at(i);
-                    std::string lightName = "pointLights[" + std::to_string(i) + "]";
-                    
-                    objectShader->setVec3((lightName + ".position"), light->GetPosition());
-                    objectShader->setVec3((lightName + ".ambient"), light->GetAmbient());
-                    objectShader->setVec3((lightName + ".diffuse"), light->GetDiffuse());
-                    objectShader->setVec3((lightName + ".specular"), light->GetSpecular());
-                    objectShader->setFloat((lightName + ".constant"), light->GetConstant());
-                    objectShader->setFloat((lightName + ".linear"), light->GetLinear());
-                    objectShader->setFloat((lightName + ".quadratic"), light->GetQuadratic());
-                }
-
-                // Directional lights
-                DirectionalLightObject* dirLight = Scene::getInstance()->GetDirectionalLightObjects().at(0);
-                objectShader->setVec3(("dirLight.direction"), dirLight->GetDirection());
-
-                objectShader->setVec3(("dirLight.ambient"), dirLight->GetAmbient());
-                objectShader->setVec3(("dirLight.diffuse"), dirLight->GetDiffuse());
-                objectShader->setVec3(("dirLight.specular"), dirLight->GetSpecular());
-
+                Scene::getInstance()->SetShaderLights(objectShader);
             }
             model->Model::DrawInstanced(matrices);
             // model->Model::Draw();
