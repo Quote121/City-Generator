@@ -337,7 +337,8 @@ void Scene::removeAllModels(void)
     for(auto& ir : modelInstanceRenderers)
     {
         ir->Clear();
-        this->removeAllInstanceRenderers();
+        delete(ir);
+        modelInstanceRenderers.clear();
     }
 
     for (auto& obj : scene_model_objects)
@@ -448,16 +449,13 @@ void Scene::DrawSceneObjects()
         }
     }
    
-    // Instance model drawing:
-
     // Draw all instanceRenderers
-    //
-    auto modelInstanceStartTime = StopWatch::GetCurrentTimePoint();
     for (auto& renderer : modelInstanceRenderers)
     {
         renderer->Draw();
     }
-
+    
+    // Then draw all objects that are not instanced
     for (auto& object : scene_model_objects)
     {
         if (!object->GetIsInstanceRendered())
@@ -465,9 +463,6 @@ void Scene::DrawSceneObjects()
             object->Draw(view, projection);
         }
     }
-
-    uint64_t intsanceDrawTimeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
-    LOG(STATUS, "INSTANCE DRAW TIME: " << intsanceDrawTimeElapsed << "ms")
     
     // Draw all the roads
     roadBatchRenderer->DrawBatch(view, projection);
