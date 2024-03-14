@@ -195,36 +195,49 @@ int main() {
     std::string building3 = "../assets/models/Buildings/NoTextureStarter/AngledRoofHouse.obj";
 
 
-    //
-    auto testobj1 = scene->addModel(building1)
-        ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, 0})
-        ->ShowBoundingBox(false);
-        
+ //    //
+ //    auto testobj1 = scene->addModel(building1, nullptr, true)
+ //        ->SetModelOriginCenterBottom()
+ //        ->SetPosition(glm::vec3{10, 0, 0})
+ //        ->ShowBoundingBox(false);
+ //        
+ //    auto testobj21 = scene->addModel(building1, nullptr, true)
+ //        ->SetModelOriginCenterBottom()
+ //        ->SetPosition(glm::vec3{7, 0, 0})
+ //        ->ShowBoundingBox(false);
+ // 
+ //
+ //    auto testobj2 = scene->addModel(building2, nullptr, false)
+ //        ->SetModelOriginCenterBottom()
+ //        ->SetPosition(glm::vec3{10, 0, 10})
+ //        ->ShowBoundingBox(false);
+ //    auto testObj3 = scene->addModel(building3, nullptr, false)
+ //        // ->SetModelOriginCenterBottom()
+ //        ->SetOriginFrontLeft()
+ //        ->SetPosition(glm::vec3{0, 0, 0})
+ //        ->ShowBoundingBox(true);
+ //
+ //    
+ //    // testing instance renderer
+ //    InstanceRenderer<ModelObject*>* IR = new InstanceRenderer<ModelObject*>();
+ //    
+ //    IR->Append(testobj1);
+ //    IR->Append(testobj2);
+ //    IR->Append(testObj3);
+ //    IR->Remove(testobj2);
+ //
+ //    testobj1->SetScale(5);
+ //
+ //    // IR->Update(testobj1);
+ //    
+ //    testobj1->SetScale(2);
+ //
+ //    // IR->UpdateAll();
 
 
-    auto testobj2 = scene->addModel(building2)
-        ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, 10})
-        ->ShowBoundingBox(false);
-    auto testObj3 = scene->addModel(building3)
-        // ->SetModelOriginCenterBottom()
-        ->SetOriginFrontLeft()
-        ->SetPosition(glm::vec3{0, 0, 0})
-        ->ShowBoundingBox(true);
+    // scene->ForceReloadInstanceRendererData();
 
-    
-    // testing instance renderer
-    InstanceRenderer<ModelObject*>* IR = new InstanceRenderer<ModelObject*>();
-    
-    IR->Append(testobj1);
-    IR->Append(testobj2);
-    IR->Append(testObj3);
-    IR->Remove(testobj2);
-
-    testobj1->SetScale(5)->SetPosition({12, 232, 12})->SetRotation({2, 3, 2});
-
-    IR->Update(testobj1);
+    // IR->Draw();
 
     // for (int i = 0; i < 30; i++)
     // {

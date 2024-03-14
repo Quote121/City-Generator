@@ -131,12 +131,8 @@ void Mesh::Draw(Shader &shader)
 
 void Mesh::DrawInstanced(Shader &shader_unused, unsigned int instanceCount, std::vector<float>* matrices)
 {
-
-
-     
     Shader shader = *ResourceManager::getInstance()->LoadShader(paths::building_defaultInstancedVertShaderPath, paths::building_defaultFragShaderPath);
 
-    //
     // unsigned int diffuseNr = 1;
     // unsigned int specularNr = 1;
     //

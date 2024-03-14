@@ -60,6 +60,7 @@ public:
 
     // Getters
     std::string GetModelName() const;
+    std::string GetModelPath() const;
     bool GetShowBoundingBox() const;
     bool GetIsInstanceRendered(void) const;
     BoundingBox* GetBoundingBox(void) const;

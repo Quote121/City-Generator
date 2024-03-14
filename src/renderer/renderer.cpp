@@ -27,7 +27,7 @@ template class InstanceRenderer<ModelObject*>;
 // template class InstanceRenderer<LineObject*>;
 
 template<typename T>
-void InstanceRenderer<T>::Append(T object)
+void InstanceRenderer<T>::Append(const T object)
 {
     // Add object to list
     objects.push_back({static_cast<void*>(object), objects.size()});
@@ -103,10 +103,28 @@ void InstanceRenderer<T>::Update(T object)
         // Replace the matrix data
         size_t index = std::distance(objects.begin(), iter);
         
-        std::copy(matrixNew.begin(), matrixNew.end(), matrices.begin() + (index*4));
+        std::copy(matrixNew.begin(), matrixNew.end(), matrices.begin() + (index*16));
     }
     else {
         LOG(WARN, "InstanceRenderer::Update() not found object.");
+    }
+}
+
+template<typename T>
+void InstanceRenderer<T>::UpdateAll()
+{
+    // Faster to do this rather than calling this->update(T)
+    for (size_t i = 0; i < objects.size(); i++)
+    {
+        glm::mat4 mat = static_cast<ModelObject*>(objects[i].address)->GetModelMatrix();
+        std::vector<float> matrixNew;
+        for (int j = 0; j < 4; j++)
+        {
+            matrixNew.insert(matrixNew.end(), {mat[j].x, mat[j].y, mat[j].z, mat[j].w});
+        }
+
+        // Replace the matrix data
+        std::copy(matrixNew.begin(), matrixNew.end(), matrices.begin() + (i*16));
     }
 }
 
@@ -127,6 +145,21 @@ void InstanceRenderer<T>::Draw()
     }
 }
 
+template<typename T>
+const T InstanceRenderer<T>::GetInstanceType(void) const
+{
+    // Return nullptr if we dont have anything
+    if (objects.size() == 0)
+        return nullptr;
+
+    return static_cast<T>(objects[0].address);
+}
+
+template<typename T>
+const size_t InstanceRenderer<T>::size(void) const
+{
+    return objects.size();
+}
 
 //#########################
 //

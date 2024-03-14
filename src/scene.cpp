@@ -47,6 +47,7 @@ Scene::~Scene()
     removeAllPointLights();
     removeAllDirectionalLights();
     removeAllRoads();
+    removeAllInstanceRenderers();
 
     delete(pInstance);
 }
@@ -66,18 +67,38 @@ ModelObject* Scene::addTerrain(const std::string& modelPath_in,
 }
 
 
-void Scene::addModelToInstanceRenderer(ModelObject const* modelObject_in,
+void Scene::addModelToInstanceRenderer(ModelObject* modelObject_in,
                                        const std::string& modelPath_in,
                                        const ShaderPath* shader_in)
 {
-    // Find which instance renderer to add it to
-    
-    // For each instance renderer, check if it has the same model, if so add it
-    // Admittidly this could be an issue if other things are different but hey, should be fine
-
-
+    bool added = false;
+    // We check all of the instance renderers for a same object
+    for (auto& ir : modelInstanceRenderers)
+    {
+        // Same model must be added
+        if (ir->GetInstanceType()->GetModelPath() == modelPath_in)
+        {
+            added = true;
+            ir->Append(modelObject_in);
+        }
+    }
+    if (!added)
+    {
+        InstanceRenderer<ModelObject*>* IR = new InstanceRenderer<ModelObject*>(); 
+        IR->Append(modelObject_in);
+        modelInstanceRenderers.push_back(IR);
+    }
 }
 
+
+
+void Scene::ForceReloadInstanceRendererData(void) const
+{
+    for (auto& a : modelInstanceRenderers)
+    {
+        a->UpdateAll();
+    }
+}
 
 
 ModelObject* Scene::addModel(const std::string& modelPath_in,
@@ -101,8 +122,10 @@ ModelObject* Scene::addModel(const std::string& modelPath_in,
     
     // Set instanced boolean and add to an instanceRenderer
     model->SetInstaceRendering(instanced);
-
-     
+    if (instanced)
+    {
+        addModelToInstanceRenderer(model, modelPath_in, shader_in);
+    }
 
     scene_model_objects.push_back(model);
 
@@ -310,6 +333,13 @@ void Scene::removeRoad(RoadObject& obj)
 // None of the removeAll.. methods are thread safe
 void Scene::removeAllModels(void)
 {
+    // remove all models from the instance renderer
+    for(auto& ir : modelInstanceRenderers)
+    {
+        ir->Clear();
+        this->removeAllInstanceRenderers();
+    }
+
     for (auto& obj : scene_model_objects)
     {
         delete(obj);
@@ -363,6 +393,27 @@ void Scene::removeAllRoads(void)
     scene_road_objects.clear();
 }
 
+void Scene::removeAllInstanceRenderers(void)
+{
+    for (auto& a : modelInstanceRenderers)
+    {
+        delete(a);
+    }
+    modelInstanceRenderers.clear();
+    
+    // for (auto& a : spriteInstanceRenderers)
+    // {
+    //     delete(a);
+    // }
+    // spriteInstanceRenderers.clear();
+    //
+    // for(auto& a : lineInstanceRenderers)
+    // {
+    //     delete(a);
+    // }
+    // lineInstanceRenderers.clear();
+}
+
 
 // BaseObject is a class template and so we have to specify the objects we are comparing
 template<class T, class U>
@@ -398,91 +449,26 @@ void Scene::DrawSceneObjects()
     }
    
     // Instance model drawing:
+
+    // Draw all instanceRenderers
     //
-    // For each model, if not in vector add and then get all the same momdels
-    // Do until end of model objects and then call each of their instance renderers
-
-
-    // // NOTE
-    // 
-    // For all model drawn if they are to be instanced, the only difference
-    // is their model matrix. If we want the same model to have other qualities
-    // then we need to render it normally. For this we should have a bool to indicate
-    // if it should be instance rendered or normally rendered.
-    //
-    
-    std::vector<std::string> instancedModels;
-
-
     auto modelInstanceStartTime = StopWatch::GetCurrentTimePoint();
-    // uint64_t timeElapsed = 0;
-
-    // TODO URGENT
-    // This takes up a lot of time
-    // 45 ms at itteration 3. This needs to be dealt with
-
-    // Draw objects
-    for (auto& obj : GetModelObjects())
+    for (auto& renderer : modelInstanceRenderers)
     {
-        std::vector<float> matrices;  
-        
-        if (obj->GetIsInstanceRendered()) 
-        {
-            if (std::find(instancedModels.begin(), instancedModels.end(), obj->GetModelName()) != instancedModels.end())
-            {
-                // Skip this object as we've already done it
-                continue;
-            }
-
-            // Check if we've already instanced rendered it, if not then we get all the 
-            // same models and instance render
-            for (auto& obj2 : GetModelObjects())
-            {
-                if (obj2->GetModelName() == obj->GetModelName())
-                {
-                    glm::mat4 matrix = obj2->GetModelMatrix();
-
-                    for (int i = 0; i < 4; i++)
-                        matrices.insert(matrices.end(), {matrix[i].x, matrix[i].y, matrix[i].z, matrix[i].w});
-                }
-            }
-            instancedModels.push_back(obj->GetModelName());
-
-            // timeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
-
-            
-            // auto instanceDrawStartTime = StopWatch::GetCurrentTimePoint();
-            obj->DrawInstances(view, projection, &matrices);
-            // uint64_t intsanceDrawTimeElapsed = StopWatch::GetTimeElapsed(instanceDrawStartTime);
-            // LOG(STATUS, "INSTANCE DRAW TIME: " << intsanceDrawTimeElapsed << "ms")
-
-        }
-        // If not instanced, draw normally
-        else 
-        {
-            obj->Draw(view, projection);
-        }        
-        
-
-        // glm::mat4 matrix = obj->GetModelMatrix();
-        // for (int i = 0; i < 4; i++)
-        // {
-        //     matrices.insert(matrices.end(), {matrix[i].x, matrix[i].y, matrix[i].z, matrix[i].w});
-        // }
-        // obj->Draw(view, projection);
-        
-        // For all the same model names
-        // Append them to the temp matrices vector and then call the DrawInstances
-
-        // obj->GetModelName();
+        renderer->Draw();
     }
-    // Assume all are the same TEST
-    // GetModelObjects()[0]->DrawInstances(view, projection, &matrices);
-     
-    // Scene::getInstance()-> 
-    uint64_t timeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
-    // LOG(STATUS, "[ Model Instance draw. Time elapsed: " << timeElapsed << "ms ]\n");
 
+    for (auto& object : scene_model_objects)
+    {
+        if (!object->GetIsInstanceRendered())
+        {
+            object->Draw(view, projection);
+        }
+    }
+
+    uint64_t intsanceDrawTimeElapsed = StopWatch::GetTimeElapsed(modelInstanceStartTime);
+    LOG(STATUS, "INSTANCE DRAW TIME: " << intsanceDrawTimeElapsed << "ms")
+    
     // Draw all the roads
     roadBatchRenderer->DrawBatch(view, projection);
 

@@ -40,7 +40,7 @@ private:
 public:
     // @brief Add another object
     // @param object pointer to add
-    void Append(T object);
+    void Append(const T object);
 
     // @brief Remove an object
     // @param object pointer to remove
@@ -53,8 +53,18 @@ public:
     // @brief object pointer to update
     void Update(T object);
 
+    // @brief sometimes we will need to update all matrix data
+    void UpdateAll(void);
+
     // @brief Render to screen
     void Draw(void);
+
+    // @brief Get the object the instancerenderer is using
+    // @return A pointer to the first object in the instance renderer, if empty then nullptr
+    const T GetInstanceType(void) const;
+
+    // @brief Get number of objects in renderer
+    const size_t size(void) const;
 
 };
 

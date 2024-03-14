@@ -59,6 +59,7 @@ void Menues::display(float deltaTime)
     {
         scene->removeAllRoads();
     }
+
     
     bool generateRoads = ImGui::Button("Clear and Generate.");
 

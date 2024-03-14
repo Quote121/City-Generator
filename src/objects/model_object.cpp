@@ -273,6 +273,11 @@ std::string ModelObject::GetModelName() const
     return model->GetModelName();
 }
 
+std::string ModelObject::GetModelPath() const
+{
+    return model->GetModelPath();
+}
+
 bool ModelObject::GetShowBoundingBox() const
 {
     return showBoundingBox;

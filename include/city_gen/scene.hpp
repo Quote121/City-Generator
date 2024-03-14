@@ -110,11 +110,11 @@ private:
 
     // Instance renderers
     std::vector<InstanceRenderer<ModelObject*>*> modelInstanceRenderers;
-    std::vector<InstanceRenderer<SpriteObject*>*> spriteInstanceRenderers;
-    std::vector<InstanceRenderer<LineObject*>*> lineInstanceRenderers;
-
+    // std::vector<InstanceRenderer<const SpriteObject*>*> spriteInstanceRenderers;
+    // std::vector<InstanceRenderer<const LineObject*>*> lineInstanceRenderers;
+  
     // Methods to add objects to instance renderers
-    void addModelToInstanceRenderer(ModelObject const* modelObject_in,
+    void addModelToInstanceRenderer(ModelObject* modelObject_in,
                                     const std::string& modelPath_in,
                                     const ShaderPath* shader_in);
     void addSpriteToInstanceRenderer(SpriteObject const* SpriteObject_in,
@@ -132,6 +132,7 @@ private:
                             glm::vec3 point_b,
                             const ShaderPath* shader_in = nullptr);
 public:
+
     // Only batch renderer for roads
     BatchRenderer* roadBatchRenderer;
 
@@ -172,7 +173,7 @@ public:
     DirectionalLightObject* addDirectionalLight();
     PointLightObject* addPointLight();
 
-
+    void ForceReloadInstanceRendererData(void) const;
 
     void CreateSkyBox(std::vector<std::string>* images);
     void DrawSkyBox(void);
@@ -197,6 +198,7 @@ public:
     void removeAllPointLights(void);
     void removeAllDirectionalLights(void);
     void removeAllRoads(void);
+    void removeAllInstanceRenderers(void);
 
     // Get scene objects
     std::vector<ModelObject*> const& GetModelObjects()
