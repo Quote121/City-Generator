@@ -2,6 +2,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include <vector>
+#include <array>
 
 #include <stopwatch.hpp>
 
@@ -47,6 +48,42 @@ extern const char* building_defaultInstancedVertShaderPath;
 
 // Sun Icon for lights
 extern const char* light_icon_texture;
+
+constexpr std::array<std::string_view, 6> blueSkyBox = {
+    "../assets/textures/skybox/cloudy/bluecloud_ft.jpg",
+    "../assets/textures/skybox/cloudy/bluecloud_bk.jpg",
+    "../assets/textures/skybox/cloudy/bluecloud_up.jpg",
+    "../assets/textures/skybox/cloudy/bluecloud_dn.jpg",
+    "../assets/textures/skybox/cloudy/bluecloud_rt.jpg",
+    "../assets/textures/skybox/cloudy/bluecloud_lf.jpg"
+};
+
+constexpr std::array<std::string_view, 6> graySkyBox = {
+    "../assets/textures/skybox/cloudy/graycloud_ft.jpg",
+    "../assets/textures/skybox/cloudy/graycloud_bk.jpg",
+    "../assets/textures/skybox/cloudy/graycloud_up.jpg",
+    "../assets/textures/skybox/cloudy/graycloud_dn.jpg",
+    "../assets/textures/skybox/cloudy/graycloud_rt.jpg",
+    "../assets/textures/skybox/cloudy/graycloud_lf.jpg"
+};
+
+constexpr std::array<std::string_view, 6> brownSkyBox = {
+    "../assets/textures/skybox/cloudy/browncloud_ft.jpg",
+    "../assets/textures/skybox/cloudy/browncloud_bk.jpg",
+    "../assets/textures/skybox/cloudy/browncloud_up.jpg",
+    "../assets/textures/skybox/cloudy/browncloud_dn.jpg",
+    "../assets/textures/skybox/cloudy/browncloud_rt.jpg",
+    "../assets/textures/skybox/cloudy/browncloud_lf.jpg"
+};
+
+constexpr std::array<std::string_view, 6> yellowSkyBox = {
+    "../assets/textures/skybox/cloudy/yellowcloud_ft.jpg",
+    "../assets/textures/skybox/cloudy/yellowcloud_bk.jpg",
+    "../assets/textures/skybox/cloudy/yellowcloud_up.jpg",
+    "../assets/textures/skybox/cloudy/yellowcloud_dn.jpg",
+    "../assets/textures/skybox/cloudy/yellowcloud_rt.jpg",
+    "../assets/textures/skybox/cloudy/yellowcloud_lf.jpg" 
+};
 
 }
 

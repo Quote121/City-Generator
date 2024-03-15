@@ -107,7 +107,10 @@ private:
     bool removeIntersectingZones = false; // TODO REDUNDANT? 
     // If a road zone has been labled as cannot be used (intersect then dont render it)
 
-    SkyBox* skybox;       // The skybox object
+    // All possible skyboxes 
+    std::vector<SkyBox*> skyboxes;
+
+    SkyBox* selectedSkybox = nullptr;       // The skybox object
     ModelObject* terrain; // Terrain object
 
     Scene();
@@ -188,8 +191,11 @@ public:
     // @brief sometimes we need to reload all the matrix data of all objects
     void ForceReloadInstanceRendererData(void) const;
 
-    void CreateSkyBox(std::vector<std::string>* images);
-    void DrawSkyBox(void);
+    void SetSkybox(const int index)
+    {
+        selectedSkybox = skyboxes[index];
+    }
+    void LoadSkyboxes(void);
 
     // @brief Called after a shader is bound to setup all lights for a shader
     // @param shader being used, should be bound before call
@@ -214,6 +220,11 @@ public:
     void removeAllDirectionalLights(void);
     void removeAllRoads(void);
     void removeAllInstanceRenderers(void);
+
+    std::vector<SkyBox*> const& GetSkyBoxes()
+    {
+        return skyboxes;
+    }
 
     // Get scene objects
     std::vector<ModelObject*> const& GetModelObjects()
@@ -282,5 +293,5 @@ public:
 
 
     // Draws all of the objects form each of the object vectors
-    void DrawSceneObjects(void);
+    void DrawScene(void);
 };

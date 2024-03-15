@@ -136,17 +136,36 @@ int main() {
     Scene* scene = Scene::getInstance();
 
 
-    // Skybox creation ////
-    std::vector<std::string> skyBoxImages;
-    
-    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_ft.jpg");
-    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_bk.jpg");
+    // // Skybox creation ////
+    // std::vector<std::string> skyBoxImages;
+    // // 
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_ft.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_bk.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_up.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_dn.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_rt.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_lf.jpg");
 
-    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_up.jpg");
-    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_dn.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_ft.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_bk.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_up.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_dn.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_rt.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_lf.jpg");
 
-    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_rt.jpg");
-    skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_lf.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_ft.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_bk.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_up.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_dn.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_rt.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_lf.jpg");
+    //
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_ft.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_bk.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_up.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_dn.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_rt.jpg");
+    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_lf.jpg");
 
     // Doesn't work, havent investigated
     // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
@@ -158,7 +177,7 @@ int main() {
 
 
 
-    scene->CreateSkyBox(&skyBoxImages);
+    // scene->CreateSkyBox(&skyBoxImages);
     ////////////////////////
     Renderer::GetInstance()->SetClearScreenColour(BLACK);
 
@@ -433,8 +452,7 @@ int main() {
 
         Menues::display(deltaTime);
         
-        scene->DrawSkyBox();
-        scene->DrawSceneObjects();
+        scene->DrawScene();
 
         // =============== POST-PROCESSING ===================
         // glBindFramebuffer(GL_FRAMEBUFFER, 0);

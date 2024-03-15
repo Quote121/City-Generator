@@ -31,12 +31,19 @@ Scene::Scene()
 
     roadBatchRenderer = new BatchRenderer();
     sceneSelectedObject = new SelectedObject();
+    this->LoadSkyboxes();
 }
 
 
 // Deallocate all created objects
 Scene::~Scene()
 {
+    // Free each skybox
+    for (auto& a : skyboxes)
+    {
+        delete(a);
+    }
+
     delete(roadBatchRenderer);
     delete(sceneSelectedObject);
 
@@ -421,10 +428,18 @@ bool Scene::SortByDistanceInv(BaseObject<T>* a, BaseObject<U>* b)
     return a->GetDistanceFromCamera() > b->GetDistanceFromCamera();
 }
 
-void Scene::DrawSceneObjects()
+void Scene::DrawScene()
 {
     glm::mat4 view = Camera::getInstance()->GetViewMatrix();
     glm::mat4 projection = Camera::getInstance()->GetProjectionMatrix();
+    
+    // Draw skybox
+    if (showSkybox)
+    {
+        // Case to mat3 then mat4 to remove translation
+        glm::mat4 skyBoxView = glm::mat4(glm::mat3(view));
+        selectedSkybox->Draw(skyBoxView, projection);
+    }
 
     // Draw terrain
     if (showTerrain)
@@ -489,27 +504,16 @@ void Scene::DrawSceneObjects()
 }
 
 
-void Scene::CreateSkyBox(std::vector<std::string>* images)
+void Scene::LoadSkyboxes(void)
 {
-    // In here we create the skybox object and allocate it memory.
-    // This will make a call to skybox.cpp and skybox.hpp which keeps the opengl 
-    // code in renderer
-    //
-    // Scene will have a renderer which can then be used
-    skybox = new SkyBox(*images);
-}
-
-void Scene::DrawSkyBox()
-{
-    glm::mat4 projection = Camera::getInstance()->GetProjectionMatrix();
-    // Remove translation from matrix by casting to mat3 then mat4
-    glm::mat4 view = glm::mat4(glm::mat3(Camera::getInstance()->GetViewMatrix()));
-
-    // We call the skybox draw call from the skybox object we created.
-    if (showSkybox)
-    {
-        skybox->Draw(view, projection);
-    }
+    skyboxes.insert(skyboxes.end(), {
+        new SkyBox(paths::blueSkyBox, "Clear"),
+        new SkyBox(paths::graySkyBox, "Cloudy"),
+        new SkyBox(paths::brownSkyBox, "Stormy"),
+        new SkyBox(paths::yellowSkyBox, "Evening")
+    });
+    // Set default as the clear sky
+    selectedSkybox = skyboxes[0];
 }
 
 

@@ -164,7 +164,18 @@ void Menues::display(float deltaTime)
     ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui());
     ImGui::Checkbox("Show Skybox", &scene->GetShowSkyBoxImGui());    
     ImGui::Checkbox("Show terrain", &scene->GetShowTerrainImGui());
-    
+
+    // For selection
+    static int selectedSkyboxIndex = 0;
+    std::vector<const char*> skyboxItems;
+    for (auto& a : Scene::getInstance()->GetSkyBoxes())
+    {
+        skyboxItems.push_back(a->GetAlias().c_str());
+    }
+    ImGui::Text("Skybox:");
+    ImGui::ListBox("## skyBoxList", &selectedSkyboxIndex, skyboxItems.data(), skyboxItems.size(), 4);
+    scene->SetSkybox(selectedSkyboxIndex);
+
     ImGui::PushItemWidth(100);
     ImGui::Text("Camera Position:");
     ImGui::SliderFloat("X##POS", &cam->GetPositionHandle().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();

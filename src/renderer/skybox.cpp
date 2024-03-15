@@ -3,8 +3,9 @@
 #include <config.hpp>
 #include <shader.hpp>
 
-SkyBox::SkyBox(std::vector<std::string> textureFaces_in)
+SkyBox::SkyBox(std::array<std::string_view, 6> const& textureFaces_in, std::string const& alias)
 {
+    this->alias = alias;
     textureFaces = textureFaces_in;
     cubemapTextureid = loadCubeMap();
     SetupVertices();
@@ -42,7 +43,7 @@ unsigned int SkyBox::loadCubeMap()
     for (unsigned int i = 0; i < textureFaces.size(); i++)
     {
         stbi_set_flip_vertically_on_load(false);
-        unsigned char *data = stbi_load(textureFaces[i].c_str(), &width, &height, &nrChannels, 0);
+        unsigned char *data = stbi_load(textureFaces[i].data(), &width, &height, &nrChannels, 0);
         if (data)
         {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 
@@ -118,13 +119,11 @@ void SkyBox::SetupVertices()
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, 108 * sizeof(GL_FLOAT), skyboxVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 108 * sizeof(float), skyboxVertices, GL_STATIC_DRAW);
 
     // Apos
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GL_FLOAT), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-
-    glBindVertexArray(0); // Unbind
 }
 
 void SkyBox::Draw(glm::mat4 view, glm::mat4 projection)
@@ -143,7 +142,5 @@ void SkyBox::Draw(glm::mat4 view, glm::mat4 projection)
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glDepthMask(GL_TRUE);
 
-    // Unbinds
-    glBindVertexArray(0); // Once drawn we unbind the vertex object
     glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
 }

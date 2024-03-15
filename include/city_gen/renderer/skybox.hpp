@@ -4,18 +4,19 @@
 #include <stb_image/stb_image.h>
 #include <glm/glm.hpp>
 
-#include <vector>
 #include <string>
+#include <array>
 
 // Forward declaration
 class Shader;
 
 class SkyBox{
 private:
-    std::vector<std::string> textureFaces;
+    std::array<std::string_view, 6> textureFaces; 
     unsigned int cubemapTextureid;
     unsigned int VAO, VBO;
 
+    std::string alias;
     Shader* skyBoxShader;
 
     // Load all 6 cubemap texture into one texture
@@ -23,7 +24,12 @@ private:
     void SetupVertices();
 
 public:
-    SkyBox(std::vector<std::string> textureFaces_in);
+    SkyBox(std::array<std::string_view, 6> const& textureFaces_in, std::string const& alias);
     ~SkyBox();
     void Draw(glm::mat4 view, glm::mat4 projection);
+
+    std::string const& GetAlias(void) const
+    {
+        return this->alias;
+    }
 };
