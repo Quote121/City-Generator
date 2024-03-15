@@ -29,10 +29,6 @@
 #include <generator.hpp>
 #include <road.hpp>
 
-// Perlin noise generator
-#include <Reputeless/PerlinNoise.hpp>
-
-
 // Prototypes
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);

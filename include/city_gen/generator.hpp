@@ -3,8 +3,6 @@
 #include <scene.hpp>
 #include <config.hpp>
 
-// Perlin noise generator
-#include <Reputeless/PerlinNoise.hpp>
 #include <string>
 
 #include <limits> // For float inf
