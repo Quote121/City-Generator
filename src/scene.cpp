@@ -91,7 +91,6 @@ void Scene::addModelToInstanceRenderer(ModelObject* modelObject_in,
 }
 
 
-
 void Scene::ForceReloadInstanceRendererData(void) const
 {
     for (auto& a : modelInstanceRenderers)
@@ -198,8 +197,7 @@ SpriteObject* Scene::addSprite(std::string& spriteTexture_in,
 
 LineObject* Scene::addLine(glm::vec3 point_a,
                            glm::vec3 point_b,
-                           const ShaderPath* shader_in,
-                           const bool instanced)
+                           const ShaderPath* shader_in)
 {
     // If we have passed nullptr load default shader
     Shader* shader = nullptr;
@@ -432,6 +430,12 @@ void Scene::DrawSceneObjects()
     if (showTerrain)
     {
         this->terrain->Draw(view, projection);
+    }
+
+    // Draw selected item bounding box
+    if (this->sceneSelectedObject->HasObjectSelected())
+    {
+        this->sceneSelectedObject->Draw();
     }
 
     // Draw lines
@@ -697,9 +701,6 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
 
     // Check sprites
     
-
-    // Check point lights
-
 
     // If we get a hit, apply which object is selected
     if (hit)

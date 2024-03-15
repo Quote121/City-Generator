@@ -67,6 +67,22 @@ public:
     {
         return type;
     }
+
+    void Draw()
+    {
+        if (type == SceneType::MODEL)
+        {
+            static_cast<ModelObject*>(object)->DrawBoundingBox(WHITE);
+        }
+        else if (type == SceneType::ROAD)
+        {
+            static_cast<RoadObject*>(object)->DrawBoundingBox(WHITE);
+        }
+        else if (type == SceneType::SPRITE)
+        {
+            // static_cast<SpriteObject*>(object);
+        }
+    }
 };
 
 
@@ -111,8 +127,8 @@ private:
     // Instance renderers
     std::vector<InstanceRenderer<ModelObject*>*> modelInstanceRenderers;
     // std::vector<InstanceRenderer<const SpriteObject*>*> spriteInstanceRenderers;
-    // std::vector<InstanceRenderer<const LineObject*>*> lineInstanceRenderers;
-  
+ 
+
     // Methods to add objects to instance renderers
     void addModelToInstanceRenderer(ModelObject* modelObject_in,
                                     const std::string& modelPath_in,
@@ -120,9 +136,6 @@ private:
     void addSpriteToInstanceRenderer(SpriteObject const* SpriteObject_in,
                                      const std::string& spriteTexture_in,
                                      const ShaderPath* shader_in);
-    void addLineToInstanceRenderer(LineObject const* LineObject_in,
-                                   const ShaderPath* shader_in);
-
 
     template<class T, class U>
     static bool SortByDistanceInv(BaseObject<T>* a, BaseObject<U>* b);
@@ -161,8 +174,7 @@ public:
     // Line
     LineObject* addLine(glm::vec3 point_a,
                         glm::vec3 point_b,
-                        const ShaderPath* shader_in = nullptr,
-                        const bool instanced = false);
+                        const ShaderPath* shader_in = nullptr);
 
     // Roads
     RoadObject* addRoad(glm::vec3 point_a,
@@ -173,6 +185,7 @@ public:
     DirectionalLightObject* addDirectionalLight();
     PointLightObject* addPointLight();
 
+    // @brief sometimes we need to reload all the matrix data of all objects
     void ForceReloadInstanceRendererData(void) const;
 
     void CreateSkyBox(std::vector<std::string>* images);
@@ -184,7 +197,6 @@ public:
 
     // Check for intersection
     bool CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection);
-
 
     // Remove individual objects
     void removeModel(ModelObject& obj);

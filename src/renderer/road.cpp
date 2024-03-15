@@ -3,6 +3,7 @@
 #include <shader.hpp>
 #include <resourceManager.hpp>
 #include <renderer.hpp>
+#include <bounding_box.hpp>
 
 #include <vector>
 
@@ -13,10 +14,13 @@ Road::Road(Shader* shader)
     VAO = new VertexArray();
     VBO = new VertexBuffer();
     EBO = new IndexBuffer();
+
+    road_bb = new BoundingBox();
 }
 
 Road::~Road()
 {
+    delete(road_bb);
     delete(VAO);
     delete(VBO);
     delete(EBO);
@@ -30,6 +34,9 @@ glm::vec3 inline getCross(glm::vec3 origin, glm::vec3 a, glm::vec3 b)
 
 void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 {
+    // We are resetting and updating the bounding box
+    road_bb->Reset();
+
     const int numberOfSides = roadCurveSides;
 
     const float radius = width/2;
@@ -153,19 +160,24 @@ void Road::UpdateVertices(glm::vec3 point_a, glm::vec3 point_b, float width)
 
     this->road_OBB = {topRightPoint, bottomRightPoint, bottomLeftPoint, topLeftPoint};
     
-    this->road_obb_min = {INFINITY, INFINITY, INFINITY};
-    this->road_obb_max = {-INFINITY, -INFINITY, -INFINITY};
-    // Get road OBB min and max for bounding box testing
-    for (int i = 0; i < 4; i++)
-    {
-        if (road_OBB[i].x < road_obb_min.x) road_obb_min.x = road_OBB[i].x; 
-        if (road_OBB[i].y < road_obb_min.y) road_obb_min.y = road_OBB[i].y; 
-        if (road_OBB[i].z < road_obb_min.z) road_obb_min.z = road_OBB[i].z;
+    // this->road_obb_min = {INFINITY, INFINITY, INFINITY};
+    // this->road_obb_max = {-INFINITY, -INFINITY, -INFINITY};
+    // // Get road OBB min and max for bounding box testing
+    // for (int i = 0; i < 4; i++)
+    // {
+    //     if (road_OBB[i].x < road_obb_min.x) road_obb_min.x = road_OBB[i].x; 
+    //     if (road_OBB[i].y < road_obb_min.y) road_obb_min.y = road_OBB[i].y; 
+    //     if (road_OBB[i].z < road_obb_min.z) road_obb_min.z = road_OBB[i].z;
+    //
+    //     if (road_OBB[i].x > road_obb_max.x) road_obb_max.x = road_OBB[i].x;
+    //     if (road_OBB[i].y > road_obb_max.y) road_obb_max.y = road_OBB[i].y;
+    //     if (road_OBB[i].z > road_obb_max.z) road_obb_max.z = road_OBB[i].z;
+    // }
 
-        if (road_OBB[i].x > road_obb_max.x) road_obb_max.x = road_OBB[i].x;
-        if (road_OBB[i].y > road_obb_max.y) road_obb_max.y = road_OBB[i].y;
-        if (road_OBB[i].z > road_obb_max.z) road_obb_max.z = road_OBB[i].z;
-    }
+    this->road_bb->Update(this->road_OBB[0]);
+    this->road_bb->Update(this->road_OBB[1]);
+    this->road_bb->Update(this->road_OBB[2]);
+    this->road_bb->Update(this->road_OBB[3]);
     
     // 
     // We need the 8 vertices that will define out left and right zone for the zoning algorithm

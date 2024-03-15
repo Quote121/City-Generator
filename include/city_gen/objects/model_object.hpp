@@ -32,7 +32,8 @@ public:
 
     void Draw(glm::mat4 view, glm::mat4 projection) override;
     void DrawInstances(glm::mat4 view, glm::mat4 projection, std::vector<float>* matrices);
-    
+    void DrawBoundingBox(glm::vec3 colour = WHITE);
+
     glm::mat4 GetModelMatrix(void);
 
     // For builder, these are object specific as we want to return

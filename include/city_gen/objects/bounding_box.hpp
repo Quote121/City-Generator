@@ -44,6 +44,12 @@ public:
     // When we update the bounding box after creation we use this method
     void Update(glm::vec3& point);
 
+    void Reset(void)
+    {
+        min = glm::vec3(std::numeric_limits<float>::max());
+        max = glm::vec3(-std::numeric_limits<float>::max());
+    }
+
     // Getters
     inline glm::vec3 getMin()
     {

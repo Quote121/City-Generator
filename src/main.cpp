@@ -266,7 +266,7 @@ int main() {
         ->SetIsVisible(true)
         ->IsSelectable(false)
         ->SetPosition({0,-0.4, 0})
-        ->SetScale(1.5)
+        ->SetScale(2)
         ->SetTextureScale({10.0f, 10.0f});
 
 

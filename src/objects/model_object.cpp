@@ -100,6 +100,22 @@ void ModelObject::DrawInstances(glm::mat4 view, glm::mat4 projection, std::vecto
 }
 
 
+void ModelObject::DrawBoundingBox(glm::vec3 colour)
+{
+    glm::mat4 view = Camera::getInstance()->GetViewMatrix();
+    glm::mat4 projection = Camera::getInstance()->GetProjectionMatrix();
+    BoundingBox* bb = this->model->GetBoundingBox();
+    Shader* bbShader = bb->getShader();
+    bbShader->use();
+    bbShader->setMat4("view", view);
+    bbShader->setMat4("projection", projection);
+    bbShader->setMat4("model", this->GetModelMatrix());
+    bbShader->setVec3("colour", colour);
+
+    bb->Draw();
+}
+
+
 glm::mat4 ModelObject::GetModelMatrix(void)
 {
     return glm::mat4(1.0f) * 

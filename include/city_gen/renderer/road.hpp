@@ -24,11 +24,12 @@ private:
     unsigned int roadCurveSides = 40; 
 
     Shader* roadShader;
+    BoundingBox* road_bb;
 
     // Array of the 4 points of the road, all 2d in the xz plane
     std::array<glm::vec3, 4> road_OBB;
-    glm::vec3 road_obb_min; // For collision detection
-    glm::vec3 road_obb_max;
+    // glm::vec3 road_obb_min; // For collision detection
+    // glm::vec3 road_obb_max;
 
     // Array for left and right zone
     std::array<glm::vec3, 4> road_left_zone_vertices;
@@ -52,6 +53,11 @@ public:
 
     Road(Shader* shader);
     ~Road();
+
+    BoundingBox* GetBoundingBox(void)
+    {
+        return road_bb;
+    }
 
     inline std::vector<float> const* GetVertices(void) const
     {
@@ -113,12 +119,12 @@ public:
 
     inline glm::vec3 GetOBBMin(void) const
     {
-        return road_obb_min;
+        return road_bb->getMin();
     }
 
     inline glm::vec3 GetOBBMax(void) const
     {
-        return road_obb_max;
+        return road_bb->getMax();
     }
 };
 

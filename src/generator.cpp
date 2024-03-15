@@ -216,7 +216,6 @@ int generator::GenerateCity(unsigned int seed_in)
     }
     
     // First we need to determine how many smaller cities we are going to have
-    // 1-4
     int numberOfCities = Random::GetIntBetweenInclusive(1, 6);
 
     std::vector<CityGenerationParameters> cityParameterVector;
@@ -257,15 +256,6 @@ int generator::GenerateCity(unsigned int seed_in)
 
     
     // TODO another random value passed to the grammar calculator to use several different grammars
-
-
-    // Valid areas is -200,-200 to 200, 200
-    // Thinking out loud:
-    //
-    // We generate a city netork, it deletes all of its dupes and intersections
-    // We then generate a new city network, we delete all dupes and intersection considering all roads in the scene
-    // We then create highways from seperate end nodes
-
 
     for (size_t i = 0; i < cityParameterVector.size(); i++)
     {

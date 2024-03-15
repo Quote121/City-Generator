@@ -48,6 +48,8 @@ public:
 
     void Draw(glm::mat4 view, glm::mat4 projection);
 
+    void DrawBoundingBox(glm::vec3);
+
     glm::mat4 GetModelMatrix(void) const
     {
         return glm::mat4{1.0f};

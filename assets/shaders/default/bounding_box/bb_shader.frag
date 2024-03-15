@@ -2,11 +2,10 @@
 
 out vec4 FragColor;
 
-uniform vec3 colour;
+// Default white
+uniform vec3 colour = vec3(1, 1, 1);
 
 void main()
 {
-    // FragColor = vec4(colour, 1.0);
-    FragColor = vec4(vec3(1, 1, 1), 1.0); // White
-
+    FragColor = vec4(colour, 1.0);
 }
