@@ -30,7 +30,7 @@ struct InstanceObject
     unsigned long renderID;
 };
 
-template<typename T>
+template<class T>
 class InstanceRenderer
 {
 private:
@@ -40,7 +40,7 @@ private:
 public:
     // @brief Add another object
     // @param object pointer to add
-    void Append(const T object);
+    void Append(T object);
 
     // @brief Remove an object
     // @param object pointer to remove

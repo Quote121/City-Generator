@@ -58,6 +58,7 @@ public:
     // Updates road zones and underlying road renderer
     void UpdateRoad(const glm::vec3 a, const glm::vec3 b);
     void UpdateRoadAndBatch(const glm::vec3 a, const glm::vec3 b);
+    void UpdateRoadAndBatch(void);
 
     // Builders for width and road curve vertices
     RoadObject* SetWidth(float width);               // Calls a vertice update
@@ -67,7 +68,7 @@ public:
     // ImGui
     float& GetWidthImGui(void);
     unsigned int& GetCurveSidesImGui(void);
-
+    glm::vec3& GetColourImGui(void);
     // Getters
     inline RoadZoneObject* GetZoneA(void) const
     {
@@ -123,6 +124,16 @@ public:
     glm::vec3 GetPointB(void) const
     {
         return roadPointB;
+    }
+
+    glm::vec3 GetColour(void) const
+    {
+        return roadColour;
+    }
+
+    float GetWidth(void) const
+    {
+        return roadWidth;
     }
 
     glm::vec3& GetPointAImGui(void)

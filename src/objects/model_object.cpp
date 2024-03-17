@@ -223,6 +223,10 @@ ModelObject* ModelObject::SetTextureScale(glm::vec2 scale)
 }
 
 // Getters and setters
+glm::vec3 ModelObject::GetScale() const
+{
+    return this->scale;
+}
 
 std::string ModelObject::GetModelName() const
 {

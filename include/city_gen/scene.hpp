@@ -12,10 +12,10 @@
 ////////////////
 #pragma once
 
+#include <renderer.hpp>
 #include <objects/all.hpp>
 #include <skybox.hpp>
 #include <shader.hpp>
-#include <renderer.hpp>
 
 #include <vector>
 
@@ -58,7 +58,7 @@ public:
         isSelected = false;
     }
 
-    void const* GetObject(void)
+    void* GetObject(void)
     {
         return object;
     }
@@ -190,6 +190,10 @@ public:
 
     // @brief sometimes we need to reload all the matrix data of all objects
     void ForceReloadInstanceRendererData(void) const;
+
+    // @brief will update models if its instanced or not
+    void UpdateModelInstanced(ModelObject* const object) const;
+    void UpdateSpriteInstanced(SpriteObject* object) const;
 
     void SetSkybox(const int index)
     {

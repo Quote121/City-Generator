@@ -60,6 +60,7 @@ public:
     ModelObject* SetTextureScale(glm::vec2 scale);
 
     // Getters
+    glm::vec3 GetScale() const;
     std::string GetModelName() const;
     std::string GetModelPath() const;
     bool GetShowBoundingBox() const;

@@ -228,7 +228,7 @@ int generator::GenerateCity(unsigned int seed_in)
         cityParameterVector.push_back({
             glm::vec3{Random::GetIntBetweenInclusive(-200, 200), 0, Random::GetIntBetweenInclusive(-200, 200)},
             Random::GetFloatBetweenInclusive(0, 2*M_PI),    // Start angle in radians 
-            Random::GetIntBetweenInclusive(2, 4),           // Iterations of grammar
+            Random::GetIntBetweenInclusive(4, 5),           // Iterations of grammar
             Random::GetFloatBetweenInclusive(3.0f, 5.0f),   // Road length
             1.0f,                                           // Keep road width the same (1.0f)
             Random::GetFloatBetweenInclusive(88.0f, 92.0f), // Angle between roads in degrees

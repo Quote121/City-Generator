@@ -107,6 +107,21 @@ void Scene::ForceReloadInstanceRendererData(void) const
 }
 
 
+void Scene::UpdateModelInstanced(ModelObject* object) const
+{
+    if (object->GetIsInstanceRendered())
+    {
+        for (auto& ir : modelInstanceRenderers)
+        {
+            // Find which instnce renderer
+            if (ir->GetInstanceType()->GetModelPath() == object->GetModelPath())
+            {
+                ir->Update(object);
+            }
+        }
+    }
+}
+
 ModelObject* Scene::addModel(const std::string& modelPath_in,
                              const ShaderPath* shader_in,
                              const bool instanced)

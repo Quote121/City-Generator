@@ -211,15 +211,15 @@ int main() {
 
 
  //    //
- //    auto testobj1 = scene->addModel(building1, nullptr, true)
- //        ->SetModelOriginCenterBottom()
- //        ->SetPosition(glm::vec3{10, 0, 0})
- //        ->ShowBoundingBox(false);
+    // auto testobj1 = scene->addModel(building1, nullptr, true)
+    //     ->SetModelOriginCenterBottom()
+    //     ->SetPosition(glm::vec3{10, 0, 0})
+    //     ->ShowBoundingBox(false);
  //        
- //    auto testobj21 = scene->addModel(building1, nullptr, true)
- //        ->SetModelOriginCenterBottom()
- //        ->SetPosition(glm::vec3{7, 0, 0})
- //        ->ShowBoundingBox(false);
+    auto testobj21 = scene->addModel(building1, nullptr)
+        ->SetModelOriginCenterBottom()
+        ->SetPosition(glm::vec3{7, 0, 0})
+        ->ShowBoundingBox(false);
  // 
  //
  //    auto testobj2 = scene->addModel(building2, nullptr, false)
@@ -333,8 +333,9 @@ int main() {
     // scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f);
     // scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
    
-    scene->addRoad({5, 0, 5}, {5, 0, 10}, 1.0f);
     scene->addRoad({7, 0, 10}, {7, 0, 5}, 1.0f);
+    scene->addRoad({1, 0, 2}, {4, 0, 2}, 1.0f);
+    scene->addRoad({5, 0, 5}, {5, 0, 10}, 1.0f);
     // //
     // scene->addRoad({-5, 0, 5}, {-10, 0, 5}, 1.0f);
     // scene->addRoad({-10, 0, 7}, {-5, 0, 7}, 1.0f);
@@ -600,11 +601,11 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         if (Scene::getInstance()->CheckForIntersection(outOrigin, outDirection))
         {
 
-            Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(GREEN);
+            // Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(GREEN);
         }
         else {
         
-            Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(RED);
+            // Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(RED);
         }
     }
     

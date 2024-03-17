@@ -27,7 +27,7 @@ template class InstanceRenderer<ModelObject*>;
 // template class InstanceRenderer<LineObject*>;
 
 template<typename T>
-void InstanceRenderer<T>::Append(const T object)
+void InstanceRenderer<T>::Append(T object)
 {
     // Add object to list
     objects.push_back({static_cast<void*>(object), objects.size()});
@@ -242,18 +242,25 @@ void BatchRenderer::UpdateAll(void)
     }
 }
 
-void BatchRenderer::Update(const unsigned int renderID, std::vector<float> const* vertices, std::vector<unsigned int> const* indices)
+void BatchRenderer::Update(const unsigned int renderID, const std::vector<float>* vertices, const std::vector<unsigned int>* indices)
 {
     // Update vertices
     VAO->Bind();
     VBO->Bind();
     VBO->UpdateBuffer(vertices->data(), renderID * ROAD_MAX_VERT_BUFFER_SIZE_BYTES, vertices->size() * sizeof(float));
 
+    VertexBufferLayout VBL;
+    VBL.AddFloat(3); // Apos
+    VBL.AddFloat(3); // Norm
+    
+    VAO->AddBuffer(VBO, &VBL);
+
     // TODO check if the number of indices are different, if so we need to recreate the buffer, else just sub the data
     // this only needs to change if we decide that the sides of the road need to have different LODS (its already fast so probably not)
     // Update indicies
-    EBO->Bind();
-    EBO->UpdateBuffer(indices->data(), renderID*ROAD_MAX_IND_BUFFER_SIZE_BYTES, indices->size() * sizeof(unsigned int));
+    // Dont need to update the EBO if we never change the amount of vertices
+    // EBO->Bind();
+    // EBO->UpdateBuffer(indices->data(), renderID*ROAD_MAX_IND_BUFFER_SIZE_BYTES, indices->size() * sizeof(unsigned int));
 
     GLenum error;
     while ((error = glGetError()) != GL_NO_ERROR)

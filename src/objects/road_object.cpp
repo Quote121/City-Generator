@@ -94,10 +94,12 @@ void RoadObject::UpdateRoad(const glm::vec3 a, const glm::vec3 b)
 
     // Check if either road object is initalized if so then initalize, otherwise update
     if (zoneA == nullptr) zoneA = new RoadZoneObject(road_renderer->road_left_zone_vertices, roadWidth);
-    else zoneA->UpdateVertices(road_renderer->road_left_zone_vertices, roadWidth); 
+    else zoneA->UpdateVertices(road_renderer->road_left_zone_vertices, roadWidth);
+    zoneA->SetZoneUsable(true);
+
     if (zoneB == nullptr) zoneB = new RoadZoneObject(road_renderer->road_right_zone_vertices, roadWidth);
     else zoneB->UpdateVertices(road_renderer->road_right_zone_vertices, roadWidth);
-
+    zoneB->SetZoneUsable(true);
 }
 
 
@@ -106,6 +108,12 @@ void RoadObject::UpdateRoadAndBatch(const glm::vec3 a, const glm::vec3 b)
     this->UpdateRoad(a, b);
 
     // Update our vertices in the BatchRenderer
+    Scene::getInstance()->roadBatchRenderer->Update(road_renderer->GetBatchRenderID(), road_renderer->GetVertices(), road_renderer->GetIndices());
+}
+
+void RoadObject::UpdateRoadAndBatch()
+{
+    this->UpdateRoad(this->roadPointA, this->roadPointB);
     Scene::getInstance()->roadBatchRenderer->Update(road_renderer->GetBatchRenderID(), road_renderer->GetVertices(), road_renderer->GetIndices());
 }
 
@@ -165,4 +173,11 @@ unsigned int& RoadObject::GetCurveSidesImGui(void)
 {
     return road_renderer->roadCurveSides;
 }
+
+glm::vec3& RoadObject::GetColourImGui(void)
+{
+    return roadColour;
+}
+
+
 

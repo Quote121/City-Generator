@@ -29,28 +29,14 @@ void Menues::display(float deltaTime)
     
 
     Scene* scene = Scene::getInstance();
-    
 
+    //###############################
+    //  Generator controls
+    //###############################
     ImGui::Begin("Generator settings");
     // Settings for the road Generator
     ImGui::Text("Road generator settings");
 
-    // generator::generateRoads(int iterations, float roadLength, float roadWidth, float roadAngleDegrees) 
-
-    // iterations
-    static int gen_iterations = 1;
-    ImGui::SliderInt("Iterations", &gen_iterations, 1, 10);
-
-    static float gen_roadLength = 3.0f;
-    ImGui::SliderFloat("Road Length", &gen_roadLength, 1.0f, 20.0f);
-
-    static float gen_roadWidth = 1.0f;
-    ImGui::SliderFloat("Road Width", &gen_roadWidth, 1.0f, 10.0f);
-
-    static float gen_roadAngle = 90.0f;
-    ImGui::SliderFloat("Road Angle", &gen_roadAngle, 0.0f, 180.0f);
-
-    
     static long menu_seed = 0;
     ImGui::Text("Seed: %ld", menu_seed);
     
@@ -60,7 +46,6 @@ void Menues::display(float deltaTime)
         scene->removeAllRoads();
     }
 
-    
     bool generateRoads = ImGui::Button("Clear and Generate.");
 
     if (generateRoads)
@@ -70,6 +55,11 @@ void Menues::display(float deltaTime)
         menu_seed = generator::GenerateCity(0);
     }
 
+    // For the counts
+    ImGui::Text("World count: ");
+    ImGui::Text("Objects [%ld]", scene->GetModelObjects().size());
+    ImGui::Text("Roads [%ld]", scene->GetRoadObjects().size());
+    ImGui::Text("Sprites [%ld]", scene->GetSpriteObjects().size());
 
     static char textBuffer[20] = "";
     bool simulateRandomGen = ImGui::Button("Random generator.");
@@ -108,33 +98,120 @@ void Menues::display(float deltaTime)
         generator::GenerateBuildings(1); // TODO remove and only use the values set by the random generator
     }
 
-
-    ImGui::Checkbox("Show road zones", &scene->GetShowRoadZones());
-    ImGui::Checkbox("Remove intersecting zones", &scene->GetRemoveIntersectingZones());
-
     ImGui::End();
 
+    //##############################
     // Selected object menu
+    //##############################
     if (scene->sceneSelectedObject->HasObjectSelected())
     {
         ImGui::Begin("Selected object");
         // Remove focus from the window so we dont have to double click to deselect
-        ImGui::SetWindowFocus(nullptr);
        
         std::string testText = "";
+        bool needsUpdating = false;
 
         // Model
         switch(scene->sceneSelectedObject->GetType())
         {
             case SceneType::MODEL: {
-                const ModelObject* model = static_cast<const ModelObject*>(scene->sceneSelectedObject->GetObject());
-                testText = model->GetAlias();
+                ModelObject* object = static_cast<ModelObject*>(scene->sceneSelectedObject->GetObject());
+
+                ImGui::Text("Object scene name: %s", object->GetAlias().c_str());
+                ImGui::TextColored(ImVec4{1.0f, 0.2f, 0.2f, 1.0f},"%s is %.3f units away from you.", 
+                        object->GetModelName().c_str(), glm::length(object->GetPosition()-cam->Position));
+
+                static glm::vec3 menuPositionBefore = object->GetPosition();
+                static glm::vec3 menuPosition = object->GetPosition();
+
+                static glm::vec3 menuRotationBefore = object->GetRotation();
+                static glm::vec3 menuRotation = object->GetRotation();
+
+                static glm::vec3 menuScaleBefore = object->GetScale();
+                static glm::vec3 menuScale = object->GetScale();
+                
+                static float menuScalarScaleBefore = object->GetScaleScalar();
+                static float menuScalarScale = object->GetScaleScalar();
+
+                ImGui::PushItemWidth(100);
+                ImGui::Text("Position:");
+                ImGui::SliderFloat("X##POS", &menuPosition.x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                ImGui::SliderFloat("Y##POS", &menuPosition.y, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                ImGui::SliderFloat("Z##POS", &menuPosition.z, POSITION_MIN, POSITION_MAX);
+                                        
+                ImGui::Text("Rotation:");
+                ImGui::SliderFloat("X##ROT", &menuRotation.x, ROTATION_MIN, ROTATION_MAX); ImGui::SameLine();
+                ImGui::SliderFloat("Y##ROT", &menuRotation.y, ROTATION_MIN, ROTATION_MAX); ImGui::SameLine();
+                ImGui::SliderFloat("Z##ROT", &menuRotation.z, ROTATION_MIN, ROTATION_MAX);
+                    
+                ImGui::Text("Scale:");
+                ImGui::SliderFloat("X##SCL", &menuScale.x, SCALE_MIN, SCALE_MAX); ImGui::SameLine();
+                ImGui::SliderFloat("Y##SCL", &menuScale.y, SCALE_MIN, SCALE_MAX); ImGui::SameLine();
+                ImGui::SliderFloat("Z##SCL", &menuScale.z, SCALE_MIN, SCALE_MAX); 
+                ImGui::SliderFloat("Scale", &menuScalarScale, SCALE_MIN, SCALE_MAX); 
+                ImGui::PopItemWidth();
+
+                // We check if the values change, if they do we call an update
+                if (menuPosition != menuPositionBefore)
+                {
+                    needsUpdating = true;
+                    menuPositionBefore = menuPosition;
+                    object->SetPosition(menuPosition);
+                }
+                if (menuRotation != menuRotationBefore)
+                {
+                    needsUpdating = true;
+                    menuRotationBefore = menuRotation;
+                    object->SetRotation(menuRotation);
+                }
+                if (menuScale != menuScaleBefore)
+                {
+                    needsUpdating = true;
+                    menuScaleBefore = menuScale;
+                    object->SetScale(menuScale);
+                }
+                if (menuScalarScale != menuScalarScaleBefore)
+                {
+                    needsUpdating = true;
+                    menuScalarScaleBefore = menuScalarScale;
+                    object->SetScale(menuScalarScale);
+                }
+                // Call the instance renderer update
+                if (needsUpdating && object->GetIsInstanceRendered())
+                {
+                    scene->UpdateModelInstanced(object);
+                }
                 break;
             }
 
             case SceneType::ROAD: {
-                const RoadObject* road = static_cast<const RoadObject*>(scene->sceneSelectedObject->GetObject());
-                testText = road->GetAlias();
+                RoadObject* road = static_cast<RoadObject*>(scene->sceneSelectedObject->GetObject());
+                ImGui::TextColored(ImVec4{1.0f, 0.2f, 0.2f, 1.0f},"Scene name: %s.", 
+                        road->GetAlias().c_str());
+
+                static glm::vec3 pointA_Before = road->GetPointA();
+                static glm::vec3 pointB_Before = road->GetPointB();
+                static float widthBefore = road->GetWidth();
+
+
+                ImGui::PushItemWidth(100);
+                ImGui::SliderFloat("Point a.x", &road->GetPointAImGui().x, -200, 200); ImGui::SameLine();
+                ImGui::SliderFloat("Point a.z", &road->GetPointAImGui().z, -200, 200);
+
+                ImGui::SliderFloat("Point b.x", &road->GetPointBImGui().x, -200, 200); ImGui::SameLine(); 
+                ImGui::SliderFloat("Point b.z", &road->GetPointBImGui().z, -200, 200);
+
+                ImGui::SliderFloat("Width", &road->GetWidthImGui(), 1.0f, 5.0f);
+                ImGui::PopItemWidth();
+
+                if (pointA_Before != road->GetPointA() || pointB_Before != road->GetPointB() || widthBefore != road->GetWidth())
+                {
+                    // Update before variables and call an update
+                    pointA_Before = road->GetPointA();
+                    pointB_Before = road->GetPointB();
+                    widthBefore = road->GetWidth();
+                    road->UpdateRoadAndBatch();
+                }
                 break;
             }
                 
@@ -150,14 +227,14 @@ void Menues::display(float deltaTime)
             default:
                 LOG(WARN, "Switch default hit.");
         }
-
-        ImGui::Text("Name: %s", testText.c_str());
         ImGui::End();
     }
 
 
-    // Later on with the resource manager, the user will be able to select from a list of things to spawn into the world
 
+    //######################################
+    //  World controls
+    //######################################
     ImGui::Begin("World controls");
 
     // Show XYZ lines
@@ -249,7 +326,7 @@ void Menues::display(float deltaTime)
                         ImGui::PopItemWidth();
                         
                         ImGui::PushItemWidth(300);
-                        ImGui::ColorEdit4("Color", &object->GetLightColourImGui().x); ImGui::PopItemWidth();
+                        ImGui::ColorEdit3("Color", &object->GetLightColourImGui().x); ImGui::PopItemWidth();
 
                         ImGui::PushItemWidth(100);
                         
@@ -302,7 +379,7 @@ void Menues::display(float deltaTime)
                         ImGui::PopItemWidth();
 
                         ImGui::PushItemWidth(300);
-                        ImGui::ColorEdit4("Color", &object->GetLightColourImGui().x); ImGui::PopItemWidth();
+                        ImGui::ColorEdit3("Color", &object->GetLightColourImGui().x); ImGui::PopItemWidth();
 
                         ImGui::PushItemWidth(100);
                         ImGui::Text("Ambient:");
