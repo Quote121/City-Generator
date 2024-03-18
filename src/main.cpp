@@ -136,46 +136,6 @@ int main() {
     Scene* scene = Scene::getInstance();
 
 
-    // // Skybox creation ////
-    // std::vector<std::string> skyBoxImages;
-    // // 
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_ft.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_bk.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_up.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_dn.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_rt.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/bluecloud_lf.jpg");
-
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_ft.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_bk.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_up.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_dn.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_rt.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/graycloud_lf.jpg");
-
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_ft.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_bk.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_up.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_dn.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_rt.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/browncloud_lf.jpg");
-    //
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_ft.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_bk.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_up.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_dn.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_rt.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/cloudy/yellowcloud_lf.jpg");
-
-    // Doesn't work, havent investigated
-    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
-    // skyBoxImages.push_back("../assets/textures/skybox/night/starmap_8k.jpg");
-
-
 
     // scene->CreateSkyBox(&skyBoxImages);
     ////////////////////////
@@ -212,7 +172,7 @@ int main() {
 
  //    //
     auto testobj1 = scene->addModel(building1, nullptr, true)
-        ->SetModelOriginCenterBottom()
+        // ->SetModelOriginCenterBottom()
         ->SetPosition(glm::vec3{10, 0, 0})
         ->ShowBoundingBox(true);
  //        
@@ -602,11 +562,11 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         if (Scene::getInstance()->CheckForIntersection(outOrigin, outDirection))
         {
 
-            // Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(GREEN);
+            Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(GREEN);
         }
         else {
         
-            // Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(RED);
+            Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(RED);
         }
     }
     

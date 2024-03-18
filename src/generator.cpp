@@ -38,10 +38,10 @@ struct CityGenerationParameters
     int iterations;         // 2-4
     float roadLength;       //  
     float roadWidth;
+    float lowerConnectionThreshold;
+    float upperConnectionThreshold;
     float roadAngleDegrees;
-    float densityFactor; // Float that determines the density of a city (likelyhood of a city being built)
 };
-
 
 
 // @brief Creates long roads between cities
@@ -150,12 +150,13 @@ void removeDupes(std::vector<road_gen_road>* roadsVector)
 // @args endPoints vector of nodes designated as end nodes and are open for connections
 // @args roadWidth 
 // @args roadLength
-void createNewRoads(std::vector<road_gen_road>* roadsVector, std::vector<road_gen_point>* endPoints, float roadWidth, float roadLength)
-{
-
-    // Connect nodes that are allowed to be connected (if they are close enough and do not intersect anything)
-    float connectionThresholdDistance = 5.0f;
-
+void createNewRoads(std::vector<road_gen_road>* roadsVector, 
+                    std::vector<road_gen_point>* endPoints, 
+                    float roadWidth, 
+                    float roadLength, 
+                    float lowerConnectionThreshold, 
+                    float upperConnectionThreshold
+){
     unsigned int endNodeConnections = 0;
     for(auto i_it = endPoints->begin(); i_it != endPoints->end(); i_it++)
     {
@@ -165,8 +166,7 @@ void createNewRoads(std::vector<road_gen_road>* roadsVector, std::vector<road_ge
             // Not looking at the same nodes and they have not already been used
             if (i_it != j_it && !i_it->endNodeUsed && !j_it->endNodeUsed)
             {
-                
-                if (inRangeXZPlane(*i_it, *j_it, connectionThresholdDistance, 0, roadWidth, roadLength))
+                if (inRangeXZPlane(*i_it, *j_it, upperConnectionThreshold, lowerConnectionThreshold, roadWidth, roadLength))
                 {
                     // Create temporary road
                     road_gen_road tempRoad = {i_it->point, j_it->point, roadWidth};
@@ -217,7 +217,8 @@ int generator::GenerateCity(unsigned int seed_in)
     
     // First we need to determine how many smaller cities we are going to have
     int numberOfCities = Random::GetIntBetweenInclusive(1, 6);
-
+    float densityFactor = Random::GetFloatBetweenInclusive(0.5f, 0.8f);    // The percentage probability of a building being placed
+                                                                           
     std::vector<CityGenerationParameters> cityParameterVector;
     std::vector<std::vector<road_gen_point>> cityEndNodesVector;
     std::vector<road_gen_road> cityRoads;
@@ -228,11 +229,12 @@ int generator::GenerateCity(unsigned int seed_in)
         cityParameterVector.push_back({
             glm::vec3{Random::GetIntBetweenInclusive(-200, 200), 0, Random::GetIntBetweenInclusive(-200, 200)},
             Random::GetFloatBetweenInclusive(0, 2*M_PI),    // Start angle in radians 
-            Random::GetIntBetweenInclusive(4, 5),           // Iterations of grammar
+            Random::GetIntBetweenInclusive(2, 5),           // Iterations of grammar
             Random::GetFloatBetweenInclusive(3.0f, 5.0f),   // Road length
             1.0f,                                           // Keep road width the same (1.0f)
-            Random::GetFloatBetweenInclusive(88.0f, 92.0f), // Angle between roads in degrees
-            Random::GetPercentage()                         // The probability of placing a building at any spot
+            Random::GetFloatBetweenInclusive(5.0f, 7.0f),   // Lower connection threshold for new road connection
+            Random::GetFloatBetweenInclusive(10.0f, 12.0f), // Upper connection threshold 
+            Random::GetFloatBetweenInclusive(87.0f, 93.0f), // Angle between roads in degrees
         });
 
         // Vector initalizatio
@@ -251,7 +253,6 @@ int generator::GenerateCity(unsigned int seed_in)
         LOG(STATUS, "Length: " << city.roadLength);
         LOG(STATUS, "Road width: " << city.roadWidth);
         LOG(STATUS, "Road angle: " << city.roadAngleDegrees);
-        LOG(STATUS, "Percentage density: " << city.densityFactor);
     }
 
     
@@ -272,7 +273,12 @@ int generator::GenerateCity(unsigned int seed_in)
     for (size_t i = 0; i < cityParameterVector.size(); i++)
     {
         // Create the new roads between end nodes 
-        createNewRoads(&cityRoads, &cityEndNodesVector[i], cityParameterVector[i].roadWidth, cityParameterVector[i].roadLength);
+        createNewRoads(&cityRoads, 
+                &cityEndNodesVector[i], 
+                cityParameterVector[i].roadWidth, 
+                cityParameterVector[i].roadLength, 
+                cityParameterVector[i].lowerConnectionThreshold, 
+                cityParameterVector[i].upperConnectionThreshold);
     }
     
     // Get road number
@@ -292,7 +298,7 @@ int generator::GenerateCity(unsigned int seed_in)
     // Update the batch renderer buffers
     Scene::getInstance()->roadBatchRenderer->UpdateAll();
 
-    // LOG(STATUS, "Size of road_gen_road: " << sizeof(road_gen_road)); // 52 bytes last checked
+    GenerateBuildings(densityFactor);
 
     return seed;
 
@@ -329,8 +335,11 @@ std::vector<road_gen_road> generator::GenerateRoads(glm::vec3 startPos,
     LOG(STATUS, "||\tRoadAngle: \t" << roadAngleDegrees << " (degrees)");
     LOG(STATUS, "==== Generation settings ====");
 
+
     // grammar
+    // Pick a random grammar
     std::string treeGrammar = "X"; // Needs to be changed based on what our grammar is
+
     generator::LSystemGen(&treeGrammar, iterations); // Get 2 iterations on the grammar
 
     std::stack<road_gen_point> pointStack;
@@ -357,8 +366,12 @@ std::vector<road_gen_road> generator::GenerateRoads(glm::vec3 startPos,
     // [ Push point to stack
     // ] Pop point to stack
 
-    for (char symbol : treeGrammar)
+    // for (char symbol : treeGrammar)
+    // {
+    for (size_t i = 0; i < treeGrammar.size(); i++)
     {
+        char symbol = treeGrammar.at(i);
+        
         switch (symbol)
         {
         case 'F':
@@ -372,7 +385,21 @@ std::vector<road_gen_road> generator::GenerateRoads(glm::vec3 startPos,
 
             roadsVector.push_back({currentPoint.point, nextPoint, roadWidth}); // Add to our local road vector before adding to the scene
             currentPoint.point = nextPoint; // Update current point, no change to bearing
-
+            
+            // Add to end nodes if the next character is a pop operation
+            // If next character is not out of bounds
+            if (static_cast<size_t>(i+1) < treeGrammar.size() && treeGrammar.at(i+1) == ']')
+            {
+                // auto iter = std::find_if(endNodes->begin(), endNodes->end(), [&](const road_gen_point& point)
+                // {
+                //     return ((point.point == nextPoint) && (point.degreeHeading == currentPoint.degreeHeading));
+                // });
+                // LOG(WARN, "Added new end node F"); 
+                // if (iter == endNodes->end())
+                // {
+                //     endNodes->push_back({nextPoint, currentPoint.degreeHeading});
+                // }
+            }
             break;
         }
         case 'X':
@@ -478,6 +505,15 @@ std::vector<road_gen_road> generator::GenerateRoads(glm::vec3 startPos,
 
 void generator::LSystemGen(std::string *axiom, uint iterations)
 {
+    std::vector<std::map<const std::string, const std::string>> grammars;
+    // Our grammars
+    grammars.push_back({{"X", "F[+X]F[-X]F[-X]F[+X]F"}, {"F", "FF"}}); // GOOD
+    // grammars.push_back({{"X", "X[+X][-X]XX"}}); // DOOM RUNES (COOL)
+
+    // Randomly select a grammar
+    int grammarIndex = Random::GetIntBetweenInclusive(0, grammars.size());
+    LOG(WARN, "GRAMMAR: " << grammarIndex << " chosen");
+
     if (*axiom == "")
     {
         LOG(WARN, "Axiom is empty, nothing will be generated");
@@ -487,18 +523,13 @@ void generator::LSystemGen(std::string *axiom, uint iterations)
     for (size_t j = 0; j < iterations; j++)
     {
         std::stringstream ss;
-        // Current L system grammar
-        std::map<const std::string, const std::string> grammar =
-            {{"X", "F[+X]F[-X]F[-X]F[+X]F"},
-             {"F", "FF"}};
-            // {{"X", "F[+F[+X]F[-X]]"}};
 
         for (size_t i = 0; i < axiom->size(); i++)
         {
             // If we have something from the grammar then we need to replace it with the value from the key
-            auto value = grammar.find(std::string(1, (*axiom)[i])); // Turn 1 char to string 
+            auto value = grammars[grammarIndex].find(std::string(1, (*axiom)[i])); // Turn 1 char to string 
             
-            if (value != grammar.end())
+            if (value != grammars[grammarIndex].end())
             {
                 ss << value->second;
             }
@@ -578,7 +609,7 @@ void generator::ClearZoneCollisions()
     }
 }
 
-#define MAXLOOPS 20
+#define MAXLOOPS 100
 
 std::array<std::string, 9> buildingModelPaths = {
     "../assets/models/Buildings/LowPoly/low_buildingA.obj",
@@ -633,6 +664,7 @@ void generator::GenerateBuildings(float densityFactor)
 
     for (auto& road : roads)
     {
+        // TODO check that this cannot be a whie true loop as we do run out of buildings at times
         for (int i = 0; i < MAXLOOPS; i++)
         {
             auto zone = road->GetZoneB()->GetValidPlacement();
@@ -686,8 +718,8 @@ void generator::GenerateBuildings(float densityFactor)
                 ->SetOriginFrontLeft()
                 ->SetPosition(areas[i].position)
                 ->ShowBoundingBox(false)
-                ->SetRotation(glm::vec3{0, areas[i].angle, 0});
-                // ->SetInstaceRendering(true);
+                ->SetRotation(glm::vec3{0, areas[i].angle, 0})
+                ->SetScale({1, Random::GetFloatBetweenInclusive(0.9f, 1.2f), 1});
         }
         else {
             intersectingBuildings++;

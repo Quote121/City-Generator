@@ -13,6 +13,8 @@
 #include <vertexBuffer.hpp>
 #include <indexBuffer.hpp>
 
+#include <config.hpp>
+
 // Forward declaration
 class Shader;
 
@@ -53,11 +55,13 @@ public:
     // Getters
     inline glm::vec3 getMin()
     {
+        // LOG(WARN, "MIN: " << min);
         return min;
     }
 
     inline glm::vec3 getMax()
     {
+        // LOG(WARN, "MAX: " << max);
         return max;
     }
 

@@ -190,6 +190,10 @@ public:
 
     // @brief sometimes we need to reload all the matrix data of all objects
     void ForceReloadInstanceRendererData(void) const;
+    auto const& GetModelInstanceRenderers(void) const
+    {
+        return modelInstanceRenderers;
+    }
 
     // @brief will update models if its instanced or not
     void UpdateModelInstanced(ModelObject* const object) const;

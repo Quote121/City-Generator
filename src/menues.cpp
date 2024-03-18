@@ -60,6 +60,7 @@ void Menues::display(float deltaTime)
     ImGui::Text("Objects [%ld]", scene->GetModelObjects().size());
     ImGui::Text("Roads [%ld]", scene->GetRoadObjects().size());
     ImGui::Text("Sprites [%ld]", scene->GetSpriteObjects().size());
+    ImGui::Text("Model instance renderers [%ld]", scene->GetModelInstanceRenderers().size());
 
     static char textBuffer[20] = "";
     bool simulateRandomGen = ImGui::Button("Random generator.");
@@ -213,6 +214,12 @@ void Menues::display(float deltaTime)
                 ImGui::SliderFloat("Width", &road->GetWidthImGui(), 1.0f, 5.0f);
                 ImGui::PopItemWidth();
 
+                bool deleteRoad = ImGui::Button("Delete");
+                if (deleteRoad)
+                {
+                    LOG(STATUS, "Functionallity not implemented");
+                } 
+
                 if (pointA_Before != road->GetPointA() || pointB_Before != road->GetPointB() || widthBefore != road->GetWidth())
                 {
                     // Update before variables and call an update
@@ -249,6 +256,8 @@ void Menues::display(float deltaTime)
     ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui());
     ImGui::Checkbox("Show Skybox", &scene->GetShowSkyBoxImGui());    
     ImGui::Checkbox("Show terrain", &scene->GetShowTerrainImGui());
+    
+    ImGui::NewLine();
 
     // For selection
     static int selectedSkyboxIndex = 0;

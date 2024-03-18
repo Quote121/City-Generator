@@ -8,7 +8,7 @@ int Random::GetIntBetweenInclusive(int a, int b)
 
 float Random::GetFloatBetweenInclusive(float a, float b)
 {
-    int low, high;
+    float low, high;
     if (a < b) { low = a; high = b; }
     else { low = b; high = a; }
 
