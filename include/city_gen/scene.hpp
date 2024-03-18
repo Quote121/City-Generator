@@ -193,8 +193,8 @@ public:
 
     // @brief will update models if its instanced or not
     void UpdateModelInstanced(ModelObject* const object) const;
-    void UpdateSpriteInstanced(SpriteObject* object) const;
-
+    InstanceRenderer<ModelObject*>* GetModelInstanceRenderer(ModelObject* object) const;
+    
     void SetSkybox(const int index)
     {
         selectedSkybox = skyboxes[index];

@@ -211,15 +211,17 @@ int main() {
 
 
  //    //
-    // auto testobj1 = scene->addModel(building1, nullptr, true)
-    //     ->SetModelOriginCenterBottom()
-    //     ->SetPosition(glm::vec3{10, 0, 0})
-    //     ->ShowBoundingBox(false);
+    auto testobj1 = scene->addModel(building1, nullptr, true)
+        ->SetModelOriginCenterBottom()
+        ->SetPosition(glm::vec3{10, 0, 0})
+        ->ShowBoundingBox(true);
  //        
-    auto testobj21 = scene->addModel(building1, nullptr)
+    auto testobj21 = scene->addModel(building1, nullptr, true)
         ->SetModelOriginCenterBottom()
         ->SetPosition(glm::vec3{7, 0, 0})
-        ->ShowBoundingBox(false);
+        ->ShowBoundingBox(true);
+ 
+    scene->ForceReloadInstanceRendererData();
  // 
  //
  //    auto testobj2 = scene->addModel(building2, nullptr, false)
@@ -235,11 +237,10 @@ int main() {
  //    
  //    // testing instance renderer
  //    InstanceRenderer<ModelObject*>* IR = new InstanceRenderer<ModelObject*>();
- //    
+ // //    
  //    IR->Append(testobj1);
- //    IR->Append(testobj2);
- //    IR->Append(testObj3);
- //    IR->Remove(testobj2);
+ //    IR->Append(testobj21);
+ //    IR->Remove(testobj1);
  //
  //    testobj1->SetScale(5);
  //

@@ -151,6 +151,15 @@ void Menues::display(float deltaTime)
                 ImGui::SliderFloat("Scale", &menuScalarScale, SCALE_MIN, SCALE_MAX); 
                 ImGui::PopItemWidth();
 
+                bool deleteModel = ImGui::Button("Delete");
+                if (deleteModel)
+                {
+                    // Delete and unfocus so the user cant control the object anymore
+                    scene->removeModel(*object);
+                    scene->sceneSelectedObject->Deselect();
+                    // ImGui::SetWindowFocus(nullptr);
+                }
+
                 // We check if the values change, if they do we call an update
                 if (menuPosition != menuPositionBefore)
                 {
@@ -179,7 +188,7 @@ void Menues::display(float deltaTime)
                 // Call the instance renderer update
                 if (needsUpdating && object->GetIsInstanceRendered())
                 {
-                    scene->UpdateModelInstanced(object);
+                    scene->GetModelInstanceRenderer(object)->Update(object);
                 }
                 break;
             }
@@ -229,7 +238,6 @@ void Menues::display(float deltaTime)
         }
         ImGui::End();
     }
-
 
 
     //######################################

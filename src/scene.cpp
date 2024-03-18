@@ -107,19 +107,16 @@ void Scene::ForceReloadInstanceRendererData(void) const
 }
 
 
-void Scene::UpdateModelInstanced(ModelObject* object) const
+InstanceRenderer<ModelObject*>* Scene::GetModelInstanceRenderer(ModelObject* object) const
 {
-    if (object->GetIsInstanceRendered())
+    for (auto& ir : modelInstanceRenderers)
     {
-        for (auto& ir : modelInstanceRenderers)
+        if (ir->GetInstanceType()->GetModelPath() == object->GetModelPath())
         {
-            // Find which instnce renderer
-            if (ir->GetInstanceType()->GetModelPath() == object->GetModelPath())
-            {
-                ir->Update(object);
-            }
+            return ir;
         }
     }
+    return nullptr;
 }
 
 ModelObject* Scene::addModel(const std::string& modelPath_in,
@@ -296,9 +293,28 @@ PointLightObject* Scene::addPointLight()
 // Remove objects
 void Scene::removeModel(ModelObject& obj)
 {
-    auto it = std::find(scene_model_objects.begin(), scene_model_objects.end(), &obj);
+    std::vector<ModelObject*>::iterator it = std::find(scene_model_objects.begin(), scene_model_objects.end(), &obj);
     if (it != scene_model_objects.end())
     {
+        ModelObject* mobj = *it;
+        if (mobj->GetIsInstanceRendered())
+        {
+            LOG(STATUS,"Removed from instance renderer");
+
+            InstanceRenderer<ModelObject*>* ir = this->GetModelInstanceRenderer(mobj);
+            ir->Remove(mobj);
+
+            // If we just removed the last element they we should delete the instance renderer
+            if (ir->size() == 0)
+            {
+                // Find and remove the instance renderer
+                for (size_t i = 0; i < modelInstanceRenderers.size(); i++)
+                {
+                    if (modelInstanceRenderers[i] == ir)
+                        modelInstanceRenderers.erase(modelInstanceRenderers.begin() + i);
+                }
+            }
+        }
         scene_model_objects.erase(it);
     }
 }

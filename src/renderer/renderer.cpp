@@ -61,7 +61,7 @@ void InstanceRenderer<T>::Remove(T object)
 
         // Remove the 16 floats of the matrix
         size_t index = std::distance(objects.begin(), iter);
-        matrices.erase(matrices.begin() + (index*4), matrices.begin() + (index*4)+16);
+        matrices.erase(matrices.begin() + (index*16), matrices.begin() + (index+1)*16);
 
         // TODO REMOVE once we know it passes
         assert(matrices.size() % 16 == 0);
