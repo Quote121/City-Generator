@@ -45,6 +45,7 @@ struct road_gen_road
     glm::vec3 colour = DEFAULT_ROAD_COLOUR;
     LineProperties lp;
     bool allowBuildingZones = true;
+    bool createTrees = false;
 
     // This gets the stats about the line in the xz plane
     void UpdateLineProps(void)

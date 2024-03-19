@@ -280,6 +280,18 @@ int main() {
     Shader lineShader("../assets/shaders/default/line/line_shader.frag",
                      "../assets/shaders/default/line/line_shader.frag");
 
+    // for (int i = 0; i < 100; i++)
+    // {
+    //     for (int j = 0; j < 100; j++)
+    //     {
+    //         scene->addSprite(tree)
+    //             ->SetModelOriginCenterBottom()
+    //             ->SetIsVisible(true)
+    //             ->SetIsBillboard(true)
+    //             ->SetPosition({i*10, 0, j*10})
+    //             ->SetScale(2.0f);
+    //     }
+    // }
     
     // std::string buildingTest = "../assets/models/Buildings/buildingTest.obj";
     // ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath}; 

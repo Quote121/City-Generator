@@ -170,7 +170,7 @@ public:
                           const bool instanced = false);
 
     // 2D sprites
-    SpriteObject* addSprite(std::string& spriteTexture_in,
+    SpriteObject* addSprite(const std::string& spriteTexture_in,
                             const ShaderPath* shader_in = nullptr,
                             const bool instanced = false);
 

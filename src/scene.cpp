@@ -188,7 +188,7 @@ RoadObject* Scene::addRoad(glm::vec3 point_a,
 
 
 
-SpriteObject* Scene::addSprite(std::string& spriteTexture_in,
+SpriteObject* Scene::addSprite(const std::string& spriteTexture_in,
                                const ShaderPath* shader_in,
                                const bool instanced)
 {

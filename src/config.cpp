@@ -34,3 +34,5 @@ const char* paths::building_defaultInstancedVertShaderPath = "../assets/shaders/
 const char* paths::light_icon_texture = "../assets/textures/sun-icon-1.png";
 
 
+
+

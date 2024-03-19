@@ -64,7 +64,6 @@ public:
     RoadObject* SetWidth(float width);               // Calls a vertice update
     RoadObject* SetCurveSides(unsigned int sides);   
     RoadObject* SetColour(glm::vec3 colour);
-
     // ImGui
     float& GetWidthImGui(void);
     unsigned int& GetCurveSidesImGui(void);

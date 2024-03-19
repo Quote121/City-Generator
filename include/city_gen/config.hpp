@@ -85,6 +85,7 @@ constexpr std::array<std::string_view, 6> yellowSkyBox = {
     "../assets/textures/skybox/cloudy/yellowcloud_lf.jpg" 
 };
 
+const std::string treeSpritePath = "../assets/textures/tree_2_cropped.png";
 }
 #define SKYBOX_BLUESKY 0
 #define SKYBOX_GREYSKY 1

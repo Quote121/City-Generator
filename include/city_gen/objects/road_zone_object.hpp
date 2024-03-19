@@ -108,6 +108,10 @@ public:
     // return a valid placement area, the method will set the use as true and then return position information
     // @return a const* PlacementArea. If no valid areas returns nullptr
     PlacementArea const* GetValidPlacement(void);
+    const std::vector<PlacementArea>* GetPlacementAreas(void) const
+    {
+        return &areasForPlacement;
+    }
 
     // Get the angle of the zoneShade
     float GetZoneAngle(void);

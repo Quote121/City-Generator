@@ -13,7 +13,6 @@ private:
     
     bool isBillboard = false;                   // Billboard sprite always looking at player
     glm::vec2 scale = {1.0f, 1.0f};             // only scaled in X-axis and Y-axis 
-    float scaleScalar = 1.0f;                   // for proportional scaling in x and y
     Sprite* sprite;
 
     std::string spriteName;

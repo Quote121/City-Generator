@@ -51,9 +51,10 @@ struct CityGenerationParameters
 // @args furthest - the furthest amount of distance between two end nodes to conisder creating a highway
 void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<road_gen_point>>* endNodes, float closest, float furthest, float roadWidth)
 {
+    std::vector<road_gen_road> highways;
     // Set our quota of highways to 8, at 8 we stop
     int quota = 1;
-    unsigned int newHighways = 0;
+    int highwayCount = 0;
 
     // We cannot create highways between less than 2 cites.
     if (endNodes->size() < 2)
@@ -86,6 +87,7 @@ void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<r
                         // Create temporary road
                         road_gen_road tempRoad = {pointA.point, pointB.point, roadWidth*1.5f};
                         tempRoad.allowBuildingZones = false;
+                        tempRoad.createTrees = true;
                         bool endNodeRoadIntersection = false; // used to exit deeply nested loops
                         for (unsigned int m = 0; m < roads->size(); m++)
                         {
@@ -101,7 +103,7 @@ void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<r
                         {
                             // Add to vector
                             roads->push_back(tempRoad);
-                            newHighways++; interCityHighways++;
+                            interCityHighways++; highwayCount++;
 
                             pointA.hasHighway = true; pointB.hasHighway = true;
                             break;
@@ -111,7 +113,8 @@ void createHighways(std::vector<road_gen_road>* roads, std::vector<std::vector<r
             }
         }
     }
-    LOG(STATUS, "[" << newHighways << "] : New highways created.");
+
+    LOG(STATUS, "[" << highwayCount << "] : New highways created.");
 }
 
 
@@ -294,10 +297,40 @@ int generator::GenerateCity(unsigned int seed_in)
             sceneRoad->GetZoneA()->SetZoneUsable(false);
             sceneRoad->GetZoneB()->SetZoneUsable(false);
         }
+        // Add trees
+        if (road.createTrees)
+        {
+            // Get the areas for tree placement
+            for (auto& area : *sceneRoad->GetZoneA()->GetPlacementAreas())
+            {
+                if (Random::GetPercentage()+0.2 < densityFactor)
+                {
+                    Scene::getInstance()->addSprite(paths::treeSpritePath)
+                        ->SetModelOriginCenterBottom()
+                        ->SetIsVisible(true)
+                        ->SetIsBillboard(true)
+                        ->SetScale(0.4f)
+                        ->SetPosition(area.position);
+                }
+            }
+            for (auto& area : *sceneRoad->GetZoneB()->GetPlacementAreas())
+            {     
+                if (Random::GetPercentage()+0.2 < densityFactor){    
+                    Scene::getInstance()->addSprite(paths::treeSpritePath)
+                        ->SetModelOriginCenterBottom()
+                        ->SetIsVisible(true)
+                        ->SetIsBillboard(true)
+                        ->SetScale(0.4f)
+                        ->SetPosition(area.position);
+                }
+            }
+        }
     }
     // Update the batch renderer buffers
     Scene::getInstance()->roadBatchRenderer->UpdateAll();
 
+    // Needed to avoid overlapping
+    CalculateValidZones(); // costly but needed
     GenerateBuildings(densityFactor);
 
     return seed;
