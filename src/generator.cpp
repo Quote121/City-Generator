@@ -668,7 +668,7 @@ void generator::GenerateBuildings(float densityFactor)
         for (int i = 0; i < MAXLOOPS; i++)
         {
             auto zone = road->GetZoneB()->GetValidPlacement();
-
+            
             // Check we still have zones left
             if (zone != nullptr && road->GetZoneB()->IsUsable())
             {
@@ -719,7 +719,7 @@ void generator::GenerateBuildings(float densityFactor)
                 ->SetPosition(areas[i].position)
                 ->ShowBoundingBox(false)
                 ->SetRotation(glm::vec3{0, areas[i].angle, 0})
-                ->SetScale({1, Random::GetFloatBetweenInclusive(0.9f, 1.2f), 1});
+                ->SetScale({1, 0.5 + (static_cast<float>(areas[i].deepness)/10.0f)*1.2, 1});
         }
         else {
             intersectingBuildings++;

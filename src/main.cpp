@@ -274,7 +274,7 @@ int main() {
 
 
     scene->addDirectionalLight()
-        ->SetDirection(glm::vec3(0, -3.14, -0.5));
+        ->SetDirection(glm::vec3(0, -6, -5));
 
     
     Shader lineShader("../assets/shaders/default/line/line_shader.frag",
@@ -294,7 +294,7 @@ int main() {
     // scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f);
     // scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
    
-    scene->addRoad({7, 0, 10}, {7, 0, 5}, 1.0f);
+    scene->addRoad({7, 0, 40}, {7, 0, 5}, 1.0f);
     scene->addRoad({1, 0, 2}, {4, 0, 2}, 1.0f);
     scene->addRoad({5, 0, 5}, {5, 0, 10}, 1.0f);
     // //

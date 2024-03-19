@@ -56,8 +56,31 @@ void RoadZoneObject::UpdateVertices(const std::array<glm::vec3, 4>& vertices_in,
         glm::vec3 three = placementVector-invUnitVector;
         glm::vec3 four = placementVector-unitVector-invUnitVector;
 
-        areasForPlacement.push_back({placementVector, false, 
-                                     this->GetZoneAngle()+flip, {one, two, four, three}});
+        // This does this as an example
+        // 0 1 2 3 4 5 6 7 8 9 10 11 12 13 // Position
+        // 0 1 2 3 4 5 5 5 5 4 3  2  1  0  // Deepness
+        int deepness = 0;
+        constexpr int maxDeepness = 8;
+        // If first half
+        if (i < sectionCount/2)
+        {
+            if (i < maxDeepness) {deepness = i;}
+            else {deepness = maxDeepness;}
+        }
+        // Second half
+        else {
+            if ((sectionCount - i) > maxDeepness) {deepness = maxDeepness;}
+            else {deepness = sectionCount - (i+1);}
+        }
+
+        areasForPlacement.push_back({placementVector, 
+                                     false, 
+                                     this->GetZoneAngle()+flip,
+                                     {one, two, four, three},
+                                     deepness});
+        // Scene::getInstance()->addLine(placementVector, {placementVector.x, placementVector.y+deepness+2, placementVector.z})
+        //      ->SetColour(BLUE);
+
     }
 }
 

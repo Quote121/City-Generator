@@ -86,7 +86,15 @@ constexpr std::array<std::string_view, 6> yellowSkyBox = {
 };
 
 }
+#define SKYBOX_BLUESKY 0
+#define SKYBOX_GREYSKY 1
+#define SKYBOX_BROWNSKY 2
+#define SKYBOX_YELLOWSKY 3
 
+#define BLUESKY_LIGHT_COLOUR glm::vec3{1.0, 1.0, 1.0}
+#define GREYSKY_LIGHT_COLOUR glm::vec3{0.631, 0.631 ,0.631}
+#define BROWNSKY_LIGHT_COLOUR glm::vec3{0.631, 0.553, 0.396}
+#define YELLOWSKY_LIGHT_COLOUR glm::vec3{1.0, 0.725, 0.149}
 
 
 // Glm::vec3 output definition

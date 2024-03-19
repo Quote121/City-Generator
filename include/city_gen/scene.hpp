@@ -201,6 +201,23 @@ public:
     
     void SetSkybox(const int index)
     {
+        // Change lighting based on skybox
+        if (index == SKYBOX_BLUESKY)
+        {
+            scene_directionalLight_objects[0]->SetColour({BLUESKY_LIGHT_COLOUR});
+        }
+        else if (index == SKYBOX_GREYSKY)
+        {
+            scene_directionalLight_objects[0]->SetColour({GREYSKY_LIGHT_COLOUR});
+        }
+        else if (index == SKYBOX_BROWNSKY)
+        {
+            scene_directionalLight_objects[0]->SetColour({BROWNSKY_LIGHT_COLOUR});
+        }
+        else if (index == SKYBOX_YELLOWSKY)
+        {
+            scene_directionalLight_objects[0]->SetColour({YELLOWSKY_LIGHT_COLOUR});
+        }
         selectedSkybox = skyboxes[index];
     }
     void LoadSkyboxes(void);
