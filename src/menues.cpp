@@ -50,6 +50,7 @@ void Menues::display(float deltaTime)
     {
         scene->removeAllModels();
         scene->removeAllRoads();
+        scene->removeAllSprites();
         menu_seed = generator::GenerateCity(0);
     }
     

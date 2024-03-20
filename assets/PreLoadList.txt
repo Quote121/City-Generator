@@ -4,7 +4,7 @@
 #Models
 models/Backpack/backpack.obj
 models/Box/cubeWithTextures.obj
-
+models/de_dust2/de_dust2.obj
   
 #Sprites  
 textures/gordon_gosling.png

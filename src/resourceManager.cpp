@@ -143,7 +143,6 @@ void ResourceManager::PreLoadAssets(std::string& filePath)
     std::string directory = "../assets/";
 
     Shader* modelShader = this->LoadModelShader(nullptr);
-    Shader* spriteShader = this->LoadSpriteShader(nullptr);
 
     // Load up everything
     for (auto& path : modelPaths)

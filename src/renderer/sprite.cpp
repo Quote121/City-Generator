@@ -65,8 +65,6 @@ Sprite::Sprite(Shader* spriteShader_in, const std::string& filename) : texturePa
 
 Sprite::~Sprite()
 {
-    // Sprite shader is allocated memory in sprite_object.hpp, needs to be freed
-    delete(spriteShader);
     delete(spriteBoundingBox);
 
     delete(VAO);
