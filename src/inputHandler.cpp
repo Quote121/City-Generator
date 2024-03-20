@@ -1,5 +1,6 @@
 #include <inputHandler.hpp>
 #include <iostream>
+#include <scene.hpp>
 
 bool InputHandler::showMouse = false;
 
@@ -84,6 +85,7 @@ void InputHandler::scroll_callback_process(GLFWwindow *window, double xoffset, d
 void InputHandler::process(GLFWwindow *window, double deltaTime)
 {
     Camera* camera = Camera::getInstance();
+    Scene* scene = Scene::getInstance();
 
     // Update mouse each time
     if (showMouse)
@@ -167,6 +169,36 @@ void InputHandler::process(GLFWwindow *window, double deltaTime)
         std::cout << "\nGLFW_KEY_ESCAPE was pressed. Closing..." << std::endl;
         glfwSetWindowShouldClose(window, true);
     }
+
+    // Delete selected object
+    if (glfwGetKey(window, GLFW_KEY_DELETE) == GLFW_PRESS)
+    {
+        if (scene->sceneSelectedObject->HasObjectSelected())
+        {
+            switch(scene->sceneSelectedObject->GetType())
+            {
+                case(SceneType::MODEL):
+                {
+                    // Remove the model from the scene
+                    scene->removeModel(*static_cast<ModelObject*>(scene->sceneSelectedObject->GetObject()));
+                    scene->sceneSelectedObject->Deselect();
+                    break;
+                }
+                case(SceneType::ROAD):
+                {
+                    LOG(WARN, "Delete key not functional for roads");
+                    break;
+                }
+                case(SceneType::SPRITE):
+                {
+                    LOG(WARN, "Delete key not functional for sprites");
+                    break;
+                }
+                default:{break;}
+            }
+        }
+    }
+
 
     // Movement
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

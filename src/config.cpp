@@ -1,6 +1,5 @@
 #include <config.hpp>
 
-
 // Sprite default shader
 const char* paths::sprite_defaultVertShaderPath = "../assets/shaders/default/sprite/sprite_shader.vert";
 const char* paths::sprite_defaultFragShaderPath = "../assets/shaders/default/sprite/sprite_shader.frag";

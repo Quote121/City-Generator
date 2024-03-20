@@ -136,103 +136,20 @@ int main() {
     Scene* scene = Scene::getInstance();
 
 
+    std::string preLoadAssetFilePath = "../assets/PreLoadList.txt";
+    ResourceManager::getInstance()->PreLoadAssets(preLoadAssetFilePath);
 
     // scene->CreateSkyBox(&skyBoxImages);
     ////////////////////////
     Renderer::GetInstance()->SetClearScreenColour(BLACK);
 
-
     ShaderPath backpackShader{"../assets/shaders/backpack/vertexShader.vs", "../assets/shaders/backpack/fragmentShader.fs"};
 
     Shader missing("../assets/shaders/default/missing.vert", "../assets/shaders/default/missing.frag");
-
-    std::string modelPath = "../assets/models/Box/cube.obj";
-    std::string backPackPath = "../assets/models/Backpack/backpack.obj";
-    std::string spritePath = "../assets/textures/missing.jpg";
-    std::string gordon = "../assets/textures/gordon_gosling.png";
-    std::string nighthawks = "../assets/textures/nighthawks.png";
-    std::string grass = "../assets/textures/grass.png";
-    std::string grass2 = "../assets/textures/grass2.png";
-    std::string grassTexture = "../assets/textures/grassTexture.png";
-    std::string cube = "../assets/models/Cube/cube.obj";
-    std::string dust2 = "../assets/models/de_dust2/de_dust2.obj";
-
     std::string terrain = "../assets/models/Terrain/Terrain_first.obj";
 
-    // std::string terrain = "../assets/models/Terrain/Terrain_repeat.obj";
-    std::string tree = "../assets/textures/tree_2_cropped.png";
-    std::string sunIcon = "../assets/textures/sun_icon.png";
-
-    std::string roadMdl = "../assets/models/demo_01/road/road_asphalt.obj";
-
-    std::string building1 = "../assets/models/Buildings/NoTextureStarter/CellPhoneBuilding_01.obj";
-    std::string building2 = "../assets/models/Buildings/NoTextureStarter/LargeRectangle.obj";
-    std::string building3 = "../assets/models/Buildings/NoTextureStarter/AngledRoofHouse.obj";
-
-
- //    //
-    auto testobj1 = scene->addModel(building1, nullptr, true)
-        // ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{10, 0, 0})
-        ->ShowBoundingBox(true);
- //        
-    auto testobj21 = scene->addModel(building1, nullptr, true)
-        ->SetModelOriginCenterBottom()
-        ->SetPosition(glm::vec3{7, 0, 0})
-        ->ShowBoundingBox(true);
- 
-    scene->ForceReloadInstanceRendererData();
- // 
- //
- //    auto testobj2 = scene->addModel(building2, nullptr, false)
- //        ->SetModelOriginCenterBottom()
- //        ->SetPosition(glm::vec3{10, 0, 10})
- //        ->ShowBoundingBox(false);
- //    auto testObj3 = scene->addModel(building3, nullptr, false)
- //        // ->SetModelOriginCenterBottom()
- //        ->SetOriginFrontLeft()
- //        ->SetPosition(glm::vec3{0, 0, 0})
- //        ->ShowBoundingBox(true);
- //
- //    
- //    // testing instance renderer
- //    InstanceRenderer<ModelObject*>* IR = new InstanceRenderer<ModelObject*>();
- // //    
- //    IR->Append(testobj1);
- //    IR->Append(testobj21);
- //    IR->Remove(testobj1);
- //
- //    testobj1->SetScale(5);
- //
- //    // IR->Update(testobj1);
- //    
- //    testobj1->SetScale(2);
- //
- //    // IR->UpdateAll();
-
-
-    // scene->ForceReloadInstanceRendererData();
-
-    // IR->Draw();
-
-    // for (int i = 0; i < 30; i++)
-    // {
-    //     scene->addModel(building1)
-    //         ->SetPosition({i+3, 0, i+10});
-    // }
-
-    //
     std::string backPathVertShader = "../assets/shaders/backpack/vertexShader.vs";
     std::string backPathFragShader = "../assets/shaders/backpack/fragmentShader.fs";
-    //
-    //
-    // scene->addModel(roadMdl)
-    //     ->SetModelOriginCenter()
-    //     ->SetPosition(glm::vec3{0,0.01,0})
-    //     ->ShowBoundingBox(false);
-    //     
-    //
-    //
 
     // // GOOD POSITION TERRAIN, USE AGAIN
     scene->addTerrain(terrain, &backpackShader)
@@ -246,96 +163,8 @@ int main() {
         ->SetTextureScale({10.0f, 10.0f});
 
 
-    // Tree asset generation
-    // generator::generateRoads(3, 10.0f, 3.0f, 90.0f);
-
-
-    // Tree asset generation
-   //  std::random_device rd; // obtain a random number from hardware
-   // 
-   //  std::mt19937 gen(rd()); // seed the generator
-   //  std::uniform_int_distribution<> distr(-160, 160); // define the range
-   //
-    // for (int i = 0; i < 100; i++)
-    // {
-    //     scene->addSprite(tree)
-    //         ->SetModelOriginCenterBottom()
-    //         ->SetIsVisible(true)
-    //         ->SetIsBillboard(true)
-    //         ->SetPosition(glm::vec3{static_cast<float>(distr(gen)), 0, static_cast<float>(distr(gen))})
-    //         ->SetScale(2.0f);
-    // }
-        scene->addSprite(tree)
-            ->SetModelOriginCenterBottom()
-            ->SetIsVisible(false)
-            ->SetIsBillboard(true)
-            ->SetPosition({0, 0, 0})
-            ->SetScale(2.0f);
-
-
     scene->addDirectionalLight()
         ->SetDirection(glm::vec3(0, -6, -5));
-
-    
-    Shader lineShader("../assets/shaders/default/line/line_shader.frag",
-                     "../assets/shaders/default/line/line_shader.frag");
-
-    // for (int i = 0; i < 100; i++)
-    // {
-    //     for (int j = 0; j < 100; j++)
-    //     {
-    //         scene->addSprite(tree)
-    //             ->SetModelOriginCenterBottom()
-    //             ->SetIsVisible(true)
-    //             ->SetIsBillboard(true)
-    //             ->SetPosition({i*10, 0, j*10})
-    //             ->SetScale(2.0f);
-    //     }
-    // }
-    
-    // std::string buildingTest = "../assets/models/Buildings/buildingTest.obj";
-    // ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath}; 
-    // scene->addModel(buildingTest, &buildingShader)
-    //     ->SetLightingEnabled(true)
-    //     ->SetOriginFrontLeft()
-    //     ->SetPosition({1, 0, 1});
-    //     // ->SetSpawnOffset();
-
-    // Using builder rather than constructor will have larger overhead as object will be created then modified
-    // Builder WILL DO a second UpdateVertices() call as it will need to recalculate based on new width
-    // scene->addRoad(glm::vec3{1, 7.01, 6}, glm::vec3{12, 0.5, 6})->SetWidth(3.0f);
-    // scene->addRoad(glm::vec3{1, 7.01, 12}, glm::vec3{12, 0.5, 12}, 1.0f);
-   
-    scene->addRoad({7, 0, 40}, {7, 0, 5}, 1.0f);
-    scene->addRoad({1, 0, 2}, {4, 0, 2}, 1.0f);
-    scene->addRoad({5, 0, 5}, {5, 0, 10}, 1.0f);
-    // //
-    // scene->addRoad({-5, 0, 5}, {-10, 0, 5}, 1.0f);
-    // scene->addRoad({-10, 0, 7}, {-5, 0, 7}, 1.0f);
-    // //
-    // scene->addRoad({-1, 0, -1}, {-6, 0, -6});
-    // scene->addRoad({-10, 0, -12}, {-5, 0, -7});
-    //
-
-
-    // scene->addRoad({4, 0, 0}, {-4, 0, 0}, 1.0f); 
-    // scene->addRoad({10,0, 8}, {-10,0,8}, 1.0f);
-
-    // Wireframe for debugging
-    // glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-
-
-    // Road* j = new Road(&lineShader);
-    // j->UpdateVertices(glm::vec3(1, 0    , 6), glm::vec3(-20, 0, 30));
-
-    // // BUG passing line shader reference here will result in a failure
-    // LineObject* LO = new LineObject(&lineShader, glm::vec3(4, 0, 6), glm::vec3(8, 0, 13));
-    // LO->SetColour(glm::vec3{0.0f, 0.0f, 1.0f});  
-    
-    // scene->addSprite(sunIcon, nullptr) 
-    //     ->SetPosition(glm::vec3(0,0,0))
-    //     ->SetModelOriginCenter()
-    //     ->SetIsBillboard(true);
 
     // IMGUI test
     IMGUI_CHECKVERSION();

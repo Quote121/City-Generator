@@ -10,25 +10,10 @@ SpriteObject::SpriteObject(const std::string& spriteTexture_in,
             Shader *shader_in) : 
             BaseObject()
 {
-    Shader* shader;
-    ResourceManager* RM = ResourceManager::getInstance();
-
     // Get spriteName
     spriteName = spriteTexture_in.substr(spriteTexture_in.find_last_of('/')+1, spriteTexture_in.size()-1);
 
-    // Create the default shader unless passed one
-    if (shader_in == nullptr)
-    {
-        // Create heap object shader
-        shader = RM->LoadShader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
-    }
-    else
-    {
-        // Already created shader that has been passed in
-        shader = shader_in;
-    }
-
-    sprite = new Sprite(shader, spriteTexture_in);
+    sprite = new Sprite(shader_in, spriteTexture_in);
 }
 
 

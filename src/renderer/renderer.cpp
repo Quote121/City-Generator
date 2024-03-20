@@ -200,11 +200,10 @@ void BatchRenderer::UpdateAll(void)
     vbl.AddFloat(3); // aPos
     vbl.AddFloat(3); // normal
 
+    VAO->Bind();
     // Buffer for all roads
     VBO->CreateBuffer(ROAD_MAX_VERT_BUFFER_SIZE_BYTES * roads.size());
 
-    // count, _, offset, _, _
-    // DrawElementsIndirectCommand edic = {8, 0, 1, 0, 0};
 
     std::vector<unsigned int> updatedIndices;
     

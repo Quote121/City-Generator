@@ -3,6 +3,7 @@
 #include <shader.hpp>
 #include <config.hpp>
 #include <resourceManager.hpp>
+#include <glad/glad.h>
 
 void CheckGLError(const std::string& functionName) {
     GLenum error;

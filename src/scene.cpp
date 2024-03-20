@@ -62,10 +62,8 @@ Scene::~Scene()
 ModelObject* Scene::addTerrain(const std::string& modelPath_in,
                                const ShaderPath* shader_in)
 {
-    Shader* shader = nullptr;
-    if (shader_in != nullptr)
-        shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
-
+    Shader* shader = ResourceManager::getInstance()->LoadModelShader(shader_in);
+    
     ModelObject* model = new ModelObject(
             modelPath_in, shader
     );
@@ -124,15 +122,7 @@ ModelObject* Scene::addModel(const std::string& modelPath_in,
                              const bool instanced)
 {
     // If we have passed nullptr load default shader
-    Shader* shader = nullptr;
-    if (shader_in != nullptr)
-    {
-        shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
-    }
-    else {
-        shader = ResourceManager::getInstance()->
-            LoadShader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
-    }
+    Shader* shader = ResourceManager::getInstance()->LoadModelShader(shader_in);
 
     ModelObject* model = new ModelObject(
         modelPath_in, shader
@@ -161,11 +151,7 @@ RoadObject* Scene::addRoad(glm::vec3 point_a,
                            float road_width,
                            const ShaderPath* shader_in)
 {
-    Shader* shader = nullptr;
-    if (shader_in != nullptr)
-    {
-        shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
-    }
+    Shader* shader = ResourceManager::getInstance()->LoadRoadShader(shader_in);
 
     // Make sure we cant have a negative or too small road width
     if (road_width < 0.1)
@@ -193,11 +179,7 @@ SpriteObject* Scene::addSprite(const std::string& spriteTexture_in,
                                const bool instanced)
 {
     // If we have passed nullptr load default shader
-    Shader* shader = nullptr;
-    if (shader_in != nullptr)
-    {
-        shader = ResourceManager::getInstance()->LoadShader(shader_in->vertex, shader_in->fragment);
-    }
+    Shader* shader = ResourceManager::getInstance()->LoadSpriteShader(shader_in);
 
     // Create sprite, allocate memory and put in list
     SpriteObject* sprite = new SpriteObject(
@@ -427,7 +409,8 @@ void Scene::removeAllRoads(void)
     {
         delete(obj);
     }
-    scene_road_objects.clear();
+    this->scene_road_objects.clear();
+    this->roadBatchRenderer->UpdateAll();
 }
 
 void Scene::removeAllInstanceRenderers(void)

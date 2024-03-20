@@ -4,6 +4,8 @@
 #include <generator.hpp>
 #include <string>
 
+#include <camera.hpp>
+
 #define POSITION_MAX 100.0f
 #define POSITION_MIN -100.0f
 
@@ -40,21 +42,17 @@ void Menues::display(float deltaTime)
     static long menu_seed = 0;
     ImGui::Text("Seed: %ld", menu_seed);
     
-    bool removeRoads = ImGui::Button("Clear roads.");
-    if (removeRoads)
-    {
-        scene->removeAllRoads();
-    }
+    bool removeRoads = ImGui::Button("Remove all roads.");
+    if (removeRoads) { scene->removeAllRoads(); }
 
     bool generateRoads = ImGui::Button("Clear and Generate.");
-
     if (generateRoads)
     {
         scene->removeAllModels();
         scene->removeAllRoads();
         menu_seed = generator::GenerateCity(0);
     }
-
+    
     // For the counts
     ImGui::Text("World count: ");
     ImGui::Text("Objects [%ld]", scene->GetModelObjects().size());
@@ -75,29 +73,26 @@ void Menues::display(float deltaTime)
             menu_seed = generator::GenerateCity(0);
         }
     }
-    
-    ImGui::InputText("Seed: ", textBuffer, 20);
+    ImGui::Text("Seed:");
+    ImGui::InputText("##seedInput", textBuffer, 20);
+
+
 
     ImGui::Text("Building generator settings");
 
     bool removeZoneCollisions = ImGui::Button("Clear zone collisions");
-    if (removeZoneCollisions)
-    {
-        generator::ClearZoneCollisions(); 
-    }
+    if (removeZoneCollisions) { generator::ClearZoneCollisions(); }
 
     bool removeModels = ImGui::Button("Remove all models");
     if (removeModels)
-    {
-        scene->removeAllModels();
-    }
+    { scene->removeAllModels(); }
 
-    bool generateBuildings = ImGui::Button("Generate buildings");
-    if (generateBuildings)
-    {
-        generator::CalculateValidZones();
-        generator::GenerateBuildings(1); // TODO remove and only use the values set by the random generator
-    }
+    // bool generateBuildings = ImGui::Button("Generate buildings");
+    // if (generateBuildings)
+    // {
+    //     generator::CalculateValidZones();
+    //     generator::GenerateBuildings(1); // TODO remove and only use the values set by the random generator
+    // }
 
     ImGui::End();
 
@@ -261,6 +256,7 @@ void Menues::display(float deltaTime)
 
     // For selection
     static int selectedSkyboxIndex = 0;
+    static int selectedSkyBoxIndexBefore = 0; // Needed to detect change
     std::vector<const char*> skyboxItems;
     for (auto& a : Scene::getInstance()->GetSkyBoxes())
     {
@@ -268,7 +264,13 @@ void Menues::display(float deltaTime)
     }
     ImGui::Text("Skybox:");
     ImGui::ListBox("## skyBoxList", &selectedSkyboxIndex, skyboxItems.data(), skyboxItems.size(), 4);
-    scene->SetSkybox(selectedSkyboxIndex);
+
+    if (selectedSkyboxIndex != selectedSkyBoxIndexBefore)
+    {
+        scene->SetSkybox(selectedSkyboxIndex);
+        selectedSkyBoxIndexBefore = selectedSkyboxIndex;
+    }
+
 
     ImGui::PushItemWidth(100);
     ImGui::Text("Camera Position:");

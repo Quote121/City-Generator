@@ -1,5 +1,4 @@
 #include "road_object.hpp"
-#include "resourceManager.hpp"
 #include "camera.hpp"
 #include "scene.hpp"
 #include <road_zone_object.hpp>
@@ -9,17 +8,7 @@ RoadObject::RoadObject(const glm::vec3 point_a,
                        const float roadWidth_in,
                        Shader* shader_in) : roadPointA(point_a), roadPointB(point_b), roadWidth(roadWidth_in) 
 {
-    Shader* shader;
-
-    if (shader_in == nullptr)
-    {
-        shader = ResourceManager::getInstance()->LoadShader(paths::road_defaultVertShaderPath, paths::road_defaultFragShaderPath);
-    }
-    else
-    {
-        shader = shader_in;
-    }
-    road_renderer = new Road(shader);
+    road_renderer = new Road(shader_in);
    
     // Call master updater
     UpdateRoad(roadPointA, roadPointB); 

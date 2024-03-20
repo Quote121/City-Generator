@@ -110,11 +110,19 @@ template<typename T>
 inline std::ostream& operator<<(std::ostream& stream, const std::vector<T> vector)
 {
     stream << "[";
-    for (auto a : vector)
+
+    // Edge case
+    if (vector.size() == 0)
     {
-        stream << " " << a;
+        stream << "]";
+        return stream;
     }
-    stream << "]";
+
+    for (int i = 0; i < vector.size()-1; i++)
+    {
+        stream << "," << vector[i];
+    }
+    stream << vector[vector.size()-1] << "]";
     return stream;
 } 
 
@@ -160,5 +168,5 @@ inline std::ostream& operator<<(std::ostream& stream, const std::vector<T> vecto
 
 #define ENABLE_CULL_FACE_MODEL 1                // Back face cull on 3D assets
 
-
 ////////////////////////////////////////////////////////
+

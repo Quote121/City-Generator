@@ -5,6 +5,7 @@
 #include <resourceManager.hpp>
 #include <config.hpp>
 #include <renderer.hpp>
+#include <glad/glad.h>
 
 Sprite::Sprite(Shader* spriteShader_in, const std::string& filename) : texturePath{filename}
 {

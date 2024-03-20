@@ -2,6 +2,7 @@
 
 #include <config.hpp>
 #include <shader.hpp>
+#include <glad/glad.h>
 
 SkyBox::SkyBox(std::array<std::string_view, 6> const& textureFaces_in, std::string const& alias)
 {
