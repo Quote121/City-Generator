@@ -148,6 +148,11 @@ void Menues::display(float deltaTime)
                 ImGui::SliderFloat("Scale", &menuScalarScale, SCALE_MIN, SCALE_MAX); 
                 ImGui::PopItemWidth();
 
+                if (!object->GetIsInstanceRendered())
+                {
+                    ImGui::Checkbox("Show OBB", &object->GetShowBoundingBoxImGui());
+                }
+
                 bool deleteModel = ImGui::Button("Delete");
                 if (deleteModel)
                 {
@@ -300,7 +305,7 @@ void Menues::display(float deltaTime)
         static unsigned int item_current_idx = 0; // Here we store our selection data as an index.
         const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
         
-        if (ImGui::BeginCombo("combo 1", combo_preview_value))
+        if (ImGui::BeginCombo("## combo 1", combo_preview_value))
         {
             for (unsigned int n = 0; n < models.size(); n++)
             {

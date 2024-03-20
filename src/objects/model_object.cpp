@@ -51,17 +51,10 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
             }
             model->Model::Draw();
         }
-
         // Draw bounding box if asked
         if (showBoundingBox)
         {
-            BoundingBox* bb = model->GetBoundingBox();
-            Shader* bbShader = bb->getShader();
-            bbShader->use();
-            bbShader->setMat4("view", view);
-            bbShader->setMat4("projection", projection);
-            bbShader->setMat4("model", result);
-            bb->Draw();
+            this->DrawBoundingBox(WHITE);
         }
     }
 }
