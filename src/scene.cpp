@@ -574,6 +574,7 @@ bool TestRayOBBIntersection(
     glm::vec3 boundingBoxMin,
     glm::vec3 boundingBoxMax,
     glm::mat4 modelMatrix,
+    glm::vec3 scale, // bodge fix
     float &distanceToHit
 ){
     float tMin = 0.0f;
@@ -582,11 +583,16 @@ bool TestRayOBBIntersection(
     glm::vec3 OBBposition_worldspace(modelMatrix[3].x, modelMatrix[3].y, modelMatrix[3].z);
     glm::vec3 delta = OBBposition_worldspace - rayOrigin;
 
+    // Have no idea why this works but that is not an issue right now
+    boundingBoxMin *= (scale*scale);
+    boundingBoxMax *= (scale*scale);
+
     // Using scope to make sure e,f,t1,t2 can be the same for each plane test
     {
         // We test each axis:
         // X - axis
         glm::vec3 xaxis(modelMatrix[0].x, modelMatrix[0].y, modelMatrix[0].z);
+
         float e = glm::dot(xaxis, delta);
         float f = glm::dot(rayDirection, xaxis);
 
@@ -601,8 +607,8 @@ bool TestRayOBBIntersection(
             if (t2<tMax) tMax = t2;
 
             // No intersection
-            if (tMin > tMax) return false;
-            if (tMax < 0) return false;
+            if (tMin > tMax) return false;  // Miss the box
+            if (tMax < 0) return false;     // Behind the ray
         }
         else {
             if (-e+boundingBoxMin.x > 0.0f || -e+boundingBoxMax.x < 0.0f)
@@ -689,7 +695,7 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
     {
         float distanceToHit = 0;
         // Note here, models can be unselectable if set
-        if (model->GetIsSelectable() && TestRayOBBIntersection(rayOrigin, rayDirection, model->GetBoundingBox()->getMin(), model->GetBoundingBox()->getMax(), model->GetModelMatrix(), distanceToHit))
+        if (model->GetIsSelectable() && TestRayOBBIntersection(rayOrigin, rayDirection, model->GetBoundingBox()->getMin(), model->GetBoundingBox()->getMax(), model->GetModelMatrix(), model->GetScale(), distanceToHit))
         {
             if (distanceToHit < closest)
             {
@@ -705,7 +711,7 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
     for (auto& road : this->GetRoadObjects())
     {
         float distanceToHit = 0;
-        if (TestRayOBBIntersection(rayOrigin, rayDirection, road->GetRoadRenderer()->GetOBBMin(), road->GetRoadRenderer()->GetOBBMax(), road->GetModelMatrix(), distanceToHit))
+        if (TestRayOBBIntersection(rayOrigin, rayDirection, road->GetRoadRenderer()->GetOBBMin(), road->GetRoadRenderer()->GetOBBMax(), road->GetModelMatrix(), glm::vec3(1.0f), distanceToHit))
         {
             if (distanceToHit < closest)
             {
@@ -722,7 +728,7 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
     {
         float distanceToHit = 0;
         sprite->GetBoundingBox();
-        if (TestRayOBBIntersection(rayOrigin, rayDirection, sprite->GetBoundingBox()->getMin(), sprite->GetBoundingBox()->getMax(), sprite->GetModelMatrix(), distanceToHit))
+        if (TestRayOBBIntersection(rayOrigin, rayDirection, sprite->GetBoundingBox()->getMin(), sprite->GetBoundingBox()->getMax(), sprite->GetModelMatrix(), glm::vec3{sprite->GetScale(), 1.0f}, distanceToHit))
         {
             if (distanceToHit < closest)
             {

@@ -64,10 +64,10 @@ void ModelObject::DrawInstances(glm::mat4 view, glm::mat4 projection, std::vecto
 {
     if (isVisible)
     {
-        // Shader* objectShader = model->GetShader();
+        Shader* objectShader = model->GetShader();
 
         // We will want to instance draw other things
-        Shader* objectShader = ResourceManager::getInstance()->LoadShader(paths::building_defaultInstancedVertShaderPath, paths::building_defaultFragShaderPath);
+        // Shader* objectShader = ResourceManager::getInstance()->LoadShader(paths::building_defaultInstancedVertShaderPath, paths::building_defaultFragShaderPath);
         if (objectShader == nullptr)
         {
             LOG(ERROR, "NO SHADER LOADED TO OBJECT CLASS");
