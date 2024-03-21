@@ -96,7 +96,7 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // Framerate cap disable
-    glfwSwapInterval(0);
+    // glfwSwapInterval(0);
 
     // Hide cursor and capture its input
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

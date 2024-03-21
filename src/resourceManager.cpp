@@ -319,5 +319,16 @@ std::vector<Model*> ResourceManager::GetLoadedModels()
     return models;
 }
 
+std::vector<TextureInfo*> ResourceManager::GetLoadedTextures()
+{
+    std::vector<TextureInfo*> textures;
+    for (auto& a : texture_map)
+    {
+        textures.push_back(a.second);
+    }
+    return textures;
+}
+
+
 
 

@@ -288,43 +288,91 @@ void Menues::display(float deltaTime)
 
     if(ImGui::TreeNode("Spawning"))
     {
-        // Get loaded models from asset loader
-        std::vector<Model*> models = ResourceManager::getInstance()->GetLoadedModels();
-        
-        std::vector<std::string> modelNames; // Needed for a local pointer to a string
-
-        for (const auto& model : models) {
-            modelNames.push_back(model->GetModelName());
-        }
-
-        const char* items[modelNames.size()];
-        for (size_t i = 0; i < modelNames.size(); ++i) {
-            items[i] = modelNames[i].c_str();
-        }
-
-        static unsigned int item_current_idx = 0; // Here we store our selection data as an index.
-        const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
-        
-        if (ImGui::BeginCombo("## combo 1", combo_preview_value))
         {
-            for (unsigned int n = 0; n < models.size(); n++)
-            {
-                const bool is_selected = (item_current_idx == n);
-                if (ImGui::Selectable(items[n], is_selected))
-                    item_current_idx = n;
+            // Get loaded models from asset loader
+            std::vector<Model*> models = ResourceManager::getInstance()->GetLoadedModels();
+            
+            std::vector<std::string> modelNames; // Needed for a local pointer to a string
 
-                // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
+            for (const auto& model : models) {
+                modelNames.push_back(model->GetModelName());
             }
-            ImGui::EndCombo();
+
+            const char* items[modelNames.size()];
+            for (size_t i = 0; i < modelNames.size(); ++i) {
+                items[i] = modelNames[i].c_str();
+            }
+
+            static unsigned int item_current_idx = 0; // Here we store our selection data as an index.
+            const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
+
+            ImGui::Text("Spawn models: ");
+            if (ImGui::BeginCombo("## combo 1", combo_preview_value))
+            {
+                for (unsigned int n = 0; n < models.size(); n++)
+                {
+                    const bool is_selected = (item_current_idx == n);
+                    if (ImGui::Selectable(items[n], is_selected))
+                        item_current_idx = n;
+
+                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+            // If button pressed then we check the item_current_idx and act accordingly
+            bool spawn = ImGui::Button("Spawn##model");
+            if (spawn)
+            {
+                scene->addModel(models.at(item_current_idx)->GetModelPath());
+            }
         }
-        // If button pressed then we check the item_current_idx and act accordingly
-        bool spawn = ImGui::Button("Spawn");
-        if (spawn)
+
         {
-            scene->addModel(models.at(item_current_idx)->GetModelPath());
+            // Get loaded models from asset loader
+            std::vector<TextureInfo*> textures = ResourceManager::getInstance()->GetLoadedTextures();
+            std::vector<std::string> textureNames; // Needed for a local pointer to a string
+
+            for (const auto& texture : textures) {
+                textureNames.push_back(texture->fileName);
+            }
+
+            const char* items[textures.size()];
+            for (size_t i = 0; i < textureNames.size(); ++i) {
+                items[i] = textureNames[i].c_str();
+            }
+
+            static unsigned int item_current_idx = 0; // Here we store our selection data as an index.
+            const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
+
+            ImGui::Text("Spawn sprites: ");
+            if (ImGui::BeginCombo("## combo 2", combo_preview_value))
+            {
+                for (unsigned int n = 0; n < textures.size(); n++)
+                {
+                    const bool is_selected = (item_current_idx == n);
+                    if (ImGui::Selectable(items[n], is_selected))
+                        item_current_idx = n;
+
+                    // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                    if (is_selected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::EndCombo();
+            }
+            // If button pressed then we check the item_current_idx and act accordingly
+            bool spawnSprite = ImGui::Button("Spawn##sprite");
+            if (spawnSprite)
+            {
+                LOG(STATUS, "Spawn sprite")
+                scene->addSprite(textures.at(item_current_idx)->fileName, nullptr);
+                
+                // Add other builders here
+
+            }
         }
+
 
         ImGui::TreePop();
     }

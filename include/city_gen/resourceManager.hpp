@@ -79,6 +79,6 @@ public:
 
 
     std::vector<Model*> GetLoadedModels();
-   
+    std::vector<TextureInfo*> GetLoadedTextures(); 
 };
 
