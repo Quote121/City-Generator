@@ -718,7 +718,21 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
     }
 
     // Check sprites
-    
+    for (auto& sprite : this->GetSpriteObjects())
+    {
+        float distanceToHit = 0;
+        sprite->GetBoundingBox();
+        if (TestRayOBBIntersection(rayOrigin, rayDirection, sprite->GetBoundingBox()->getMin(), sprite->GetBoundingBox()->getMax(), sprite->GetModelMatrix(), distanceToHit))
+        {
+            if (distanceToHit < closest)
+            {
+                closest = distanceToHit;
+                object = static_cast<void*>(sprite);
+                type = SceneType::SPRITE;
+                hit = true;
+            }
+        }
+    }
 
     // If we get a hit, apply which object is selected
     if (hit)

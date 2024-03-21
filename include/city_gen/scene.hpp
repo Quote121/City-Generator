@@ -80,7 +80,7 @@ public:
         }
         else if (type == SceneType::SPRITE)
         {
-            // static_cast<SpriteObject*>(object);
+            static_cast<SpriteObject*>(object)->DrawBoundingBox(WHITE);
         }
     }
 };

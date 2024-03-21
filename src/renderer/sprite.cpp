@@ -7,7 +7,7 @@
 #include <renderer.hpp>
 #include <glad/glad.h>
 
-Sprite::Sprite(Shader* spriteShader_in, const std::string& filename) : texturePath{filename}
+SpriteRenderer::SpriteRenderer(Shader* spriteShader_in, const std::string& filename) : texturePath{filename}
 {
     spriteBoundingBox = new BoundingBox();
     TextureInfo* textureInfo = ResourceManager::getInstance()->LoadTexture(filename, true);
@@ -53,6 +53,9 @@ Sprite::Sprite(Shader* spriteShader_in, const std::string& filename) : texturePa
     spriteBoundingBox->StreamVertexUpdate(x, -y, 0);
     spriteBoundingBox->StreamVertexUpdate(-x, -y, 0);
     spriteBoundingBox->StreamVertexUpdate(-x, y, 0);
+    spriteBoundingBox->SetupBuffers(); // Update the opengl buffers
+
+    LOG(WARN, "MAX: " << spriteBoundingBox->getMax() << " | MIN: " << spriteBoundingBox->getMin());
 
     // textureID to be stored
     spriteTextureID = textureInfo->textureID;
@@ -63,7 +66,7 @@ Sprite::Sprite(Shader* spriteShader_in, const std::string& filename) : texturePa
 }
 
 
-Sprite::~Sprite()
+SpriteRenderer::~SpriteRenderer()
 {
     delete(spriteBoundingBox);
 
@@ -74,7 +77,7 @@ Sprite::~Sprite()
 
 
 // Setup vertex and buffer arrays
-void Sprite::SetupSprite(float vertices[], unsigned int indices[])
+void SpriteRenderer::SetupSprite(float vertices[], unsigned int indices[])
 {
     VAO = new VertexArray();
     VBO = new VertexBuffer();
@@ -91,7 +94,7 @@ void Sprite::SetupSprite(float vertices[], unsigned int indices[])
 }
 
 // Make the OpenGL draw call
-void Sprite::Draw()
+void SpriteRenderer::Draw()
 {
     glActiveTexture(GL_TEXTURE0); // Associate the texture to GL_TEXTURE0 texture unit
     glBindTexture(GL_TEXTURE_2D, spriteTextureID);

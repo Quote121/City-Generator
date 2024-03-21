@@ -233,6 +233,32 @@ void Menues::display(float deltaTime)
             }
                 
             case SceneType::SPRITE: {
+
+                SpriteObject* sprite = static_cast<SpriteObject*>(scene->sceneSelectedObject->GetObject());
+                ImGui::TextColored(ImVec4{1.0f, 0.2f, 0.2f, 1.0f}, "Scene name: %s", sprite->GetAlias().c_str());
+
+                static glm::vec3 position_before = sprite->GetPosition();
+                static glm::vec3 rotation_before = sprite->GetRotation();
+                static glm::vec2 scale_before = sprite->GetScale();
+
+                ImGui::SliderFloat3("Position", &sprite->GetPositionImGui().x, -200, 200);
+                ImGui::SliderFloat3("Rotation", &sprite->GetRotationImGui().x, -M_PI, M_PI);
+                ImGui::SliderFloat2("Scale", &sprite->GetScaleImGui().x, 0.1, 10.0);
+                ImGui::Checkbox("Billboard", &sprite->GetIsBillboardImGui());
+
+                bool deleteSprite = ImGui::Button("Delete");
+                if (deleteSprite)
+                {
+                    LOG(STATUS, "Functionallity not implemented for delete sprite");
+                }
+
+                if (position_before != sprite->GetPosition() || rotation_before != sprite->GetRotation() || scale_before != sprite->GetScale())
+                {
+                    position_before = sprite->GetPosition();
+                    rotation_before = sprite->GetRotation();
+                    scale_before = sprite->GetScale();
+                }
+
                 break;
             }
             case SceneType::P_LIGHT: {
@@ -323,9 +349,17 @@ void Menues::display(float deltaTime)
             }
             // If button pressed then we check the item_current_idx and act accordingly
             bool spawn = ImGui::Button("Spawn##model");
+
+            static bool spawnOnMe = false; static bool instanceRender = false;
+            ImGui::Checkbox("Spawn at my position", &spawnOnMe);
+            ImGui::Checkbox("Instance renderer", &instanceRender); 
             if (spawn)
             {
-                scene->addModel(models.at(item_current_idx)->GetModelPath());
+                ModelObject* addedModel = scene->addModel(models.at(item_current_idx)->GetModelPath(), nullptr, instanceRender);
+                if (spawnOnMe)
+                {
+                    addedModel->SetPosition(Camera::getInstance()->Position);
+                }
             }
         }
 

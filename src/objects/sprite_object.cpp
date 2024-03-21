@@ -13,13 +13,13 @@ SpriteObject::SpriteObject(const std::string& spriteTexture_in,
     // Get spriteName
     spriteName = spriteTexture_in.substr(spriteTexture_in.find_last_of('/')+1, spriteTexture_in.size()-1);
 
-    sprite = new Sprite(shader_in, spriteTexture_in);
+    this->spriteRenderer = new SpriteRenderer(shader_in, spriteTexture_in);
 }
 
 
 SpriteObject::~SpriteObject()
 {
-    delete(sprite);
+    delete(spriteRenderer);
 }
 
 
@@ -28,27 +28,8 @@ void SpriteObject::Draw(glm::mat4 view, glm::mat4 projection)
     // Only draw if the object is visible
     if (isVisible)
     {
-        glm::mat4 result;
-        Shader* objectShader = sprite->GetSpriteShader();
-
-        // if billbord texture
-        if (isBillboard)
-        {
-            Camera* cam = Camera::getInstance();
-            
-            glm::vec3 objectToCamera = -glm::normalize(cam->Position - position);
-
-            glm::vec3 right = glm::normalize(glm::cross(objectToCamera, cam->Up));
-            glm::vec3 up = glm::normalize(glm::cross(right, objectToCamera));
-            glm::mat4 rotation_new = glm::mat4(glm::vec4(right, 0.0f), glm::vec4(up, 0.0f), glm::vec4(-objectToCamera, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
-
-            // Ignore rotation matrix and apply the other matrix to look at player
-            result = glm::mat4(1.0f) * getPositionMat4(position) * rotation_new * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
-        }
-        else
-        {
-            result = glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
-        }
+        glm::mat4 result = this->GetModelMatrix();
+        Shader* objectShader = spriteRenderer->GetSpriteShader();
 
         if (objectShader == nullptr)
         {
@@ -64,10 +45,58 @@ void SpriteObject::Draw(glm::mat4 view, glm::mat4 projection)
             objectShader->setMat4("model", result);
             objectShader->setVec3("localCenterPos", objectOriginPosition);
 
-            sprite->Sprite::Draw();
+            spriteRenderer->SpriteRenderer::Draw();
         }
     }
 }
+
+void SpriteObject::DrawBoundingBox(glm::vec3 colour)
+{
+    glm::mat4 view = Camera::getInstance()->GetViewMatrix();
+    glm::mat4 projection = Camera::getInstance()->GetProjectionMatrix();
+    BoundingBox* bb = this->spriteRenderer->GetBoundingBox();
+    Shader* bbShader = bb->getShader();
+    bbShader->use();
+    bbShader->setMat4("view", view);
+    bbShader->setMat4("projection", projection);
+    bbShader->setMat4("model", this->GetModelMatrix());
+    bbShader->setVec3("colour", colour);
+
+    bb->Draw();
+}
+
+
+glm::mat4 SpriteObject::GetModelMatrix(void)
+{
+    if (isBillboard)
+    {
+        Camera* cam = Camera::getInstance();
+        
+        glm::vec3 objectToCamera = -glm::normalize(cam->Position - position);
+
+        glm::vec3 right = glm::normalize(glm::cross(objectToCamera, cam->Up));
+        glm::vec3 up = glm::normalize(glm::cross(right, objectToCamera));
+        glm::mat4 rotation_new = glm::mat4(glm::vec4(right, 0.0f), glm::vec4(up, 0.0f), glm::vec4(-objectToCamera, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
+
+        // Ignore rotation matrix and apply the other matrix to look at player
+        return glm::mat4(1.0f) * getPositionMat4(position) * rotation_new * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
+    }
+    else
+    {
+        return glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
+    }
+}
+const SpriteRenderer* SpriteObject::GetSpriteRenderer(void) const
+{
+    return spriteRenderer;
+}
+
+const BoundingBox* SpriteObject::GetBoundingBox(void) const
+{
+    return spriteRenderer->GetBoundingBox();
+}
+
+
 
 
 SpriteObject* SpriteObject::SetVec2Scale(glm::vec2 scale_in)
@@ -90,15 +119,15 @@ SpriteObject* SpriteObject::SetSpawnOffset(glm::vec3 vec3)
 
 SpriteObject* SpriteObject::SetModelOriginCenterBottom()
 {
-    glm::vec3 center = sprite->GetBoundingBox()->getCenter();
-    center.y = sprite->GetBoundingBox()->getMin().y;
+    glm::vec3 center = spriteRenderer->GetBoundingBox()->getCenter();
+    center.y = spriteRenderer->GetBoundingBox()->getMin().y;
     objectOriginPosition = center;
     return this;
 }
 
 SpriteObject* SpriteObject::SetModelOriginCenter()
 {
-    objectOriginPosition = sprite->GetBoundingBox()->getCenter();
+    objectOriginPosition = spriteRenderer->GetBoundingBox()->getCenter();
     return this;
 }
 

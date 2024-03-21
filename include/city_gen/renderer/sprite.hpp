@@ -19,7 +19,7 @@ class Shader;
 class BoundingBox;
 class ResourceManager;
 
-class Sprite
+class SpriteRenderer
 {
 private:
     VertexArray* VAO;
@@ -38,8 +38,8 @@ private:
 public:
 
     // constructor for texture
-    Sprite(Shader* spriteShader_in, const std::string& spriteTexturePath_in);
-    ~Sprite();
+    SpriteRenderer(Shader* spriteShader_in, const std::string& spriteTexturePath_in);
+    ~SpriteRenderer();
 
     // For shader hotswapping
     void SetSpriteShader(Shader* spriteShader_in)

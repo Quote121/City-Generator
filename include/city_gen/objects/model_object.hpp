@@ -16,7 +16,7 @@ private:
     Model* model;
 
     // Will draw the outline of the bounding box on the model
-    bool showBoundingBox = true;
+    bool showBoundingBox = false;
 
     bool lightingEnable = true;
 

@@ -53,13 +53,13 @@ public:
     }
 
     // Getters
-    inline glm::vec3 getMin()
+    inline const glm::vec3 getMin() const
     {
         // LOG(WARN, "MIN: " << min);
         return min;
     }
 
-    inline glm::vec3 getMax()
+    inline const glm::vec3 getMax() const
     {
         // LOG(WARN, "MAX: " << max);
         return max;
