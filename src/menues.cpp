@@ -218,6 +218,9 @@ void Menues::display(float deltaTime)
                 bool deleteRoad = ImGui::Button("Delete");
                 if (deleteRoad)
                 {
+                    LOG(STATUS, "Point A: " << road->GetPointA());
+                    LOG(STATUS, "Point B: " << road->GetPointB());
+
                     LOG(STATUS, "DELETE ROAD");
                     scene->roadBatchRenderer->Delete(road);
                     scene->sceneSelectedObject->Deselect();

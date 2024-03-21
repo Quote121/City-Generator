@@ -283,7 +283,11 @@ int generator::GenerateCity(unsigned int seed_in)
                 cityParameterVector[i].lowerConnectionThreshold, 
                 cityParameterVector[i].upperConnectionThreshold);
     }
+   
+    // Pass of removeDupes
+    removeDupes(&cityRoads);
     
+
     // Get road number
     size_t numberOfRoads = Scene::getInstance()->GetRoadObjects().size();
     LOG(STATUS, "Number of roads generated: " << numberOfRoads)
@@ -496,7 +500,7 @@ std::vector<road_gen_road> generator::GenerateRoads(glm::vec3 startPos,
     }
 
     // Pass vector as pointer
-    removeDupes(&roadsVector);
+    // removeDupes(&roadsVector);
 
     // For all the remaining roads we now have to calculate their line properties to determine if they intersect
     for (auto& road : roadsVector)
