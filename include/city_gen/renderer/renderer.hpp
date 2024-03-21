@@ -5,6 +5,7 @@
 #include "vertexBuffer.hpp"
 #include <glm/glm.hpp>
 #include <config.hpp>
+#include <road_object.hpp>
 
 // Defined outside of Glad as we cant include several times
 #define GL_POINTS 0x0000
@@ -94,6 +95,8 @@ public:
     void Update(const unsigned int renderID, std::vector<float> const* vertices, std::vector<unsigned int> const* indices);
 
     void DrawBatch(glm::mat4 view, glm::mat4 projection) const; 
+
+    void Delete(const RoadObject* road);
 
 };
 

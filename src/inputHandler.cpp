@@ -186,7 +186,8 @@ void InputHandler::process(GLFWwindow *window, double deltaTime)
                 }
                 case(SceneType::ROAD):
                 {
-                    LOG(WARN, "Delete key not functional for roads");
+                    scene->roadBatchRenderer->Delete(static_cast<const RoadObject*>(scene->sceneSelectedObject->GetObject()));
+                    scene->sceneSelectedObject->Deselect();
                     break;
                 }
                 case(SceneType::SPRITE):

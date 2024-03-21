@@ -218,7 +218,10 @@ void Menues::display(float deltaTime)
                 bool deleteRoad = ImGui::Button("Delete");
                 if (deleteRoad)
                 {
-                    LOG(STATUS, "Functionallity not implemented");
+                    LOG(STATUS, "DELETE ROAD");
+                    scene->roadBatchRenderer->Delete(road);
+                    scene->sceneSelectedObject->Deselect();
+                    // LOG(STATUS, "Functionallity not implemented");
                 } 
 
                 if (pointA_Before != road->GetPointA() || pointB_Before != road->GetPointB() || widthBefore != road->GetWidth())

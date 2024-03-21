@@ -281,8 +281,6 @@ void Scene::removeModel(ModelObject& obj)
         ModelObject* mobj = *it;
         if (mobj->GetIsInstanceRendered())
         {
-            LOG(STATUS,"Removed from instance renderer");
-
             InstanceRenderer<ModelObject*>* ir = this->GetModelInstanceRenderer(mobj);
             ir->Remove(mobj);
 
@@ -337,7 +335,7 @@ void Scene::removeDirectionalLight(DirectionalLightObject& obj)
     }
 }
 
-void Scene::removeRoad(RoadObject& obj)
+void Scene::removeRoad(const RoadObject& obj)
 {
     auto it = std::find(scene_road_objects.begin(), scene_road_objects.end(), &obj);
     if (it != scene_road_objects.end())

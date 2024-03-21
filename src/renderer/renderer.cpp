@@ -299,6 +299,13 @@ void BatchRenderer::DrawBatch(glm::mat4 view, glm::mat4 projection) const
     }
 }
 
+
+void BatchRenderer::Delete(const RoadObject* road)
+{
+    Scene::getInstance()->removeRoad(*road);
+    this->UpdateAll();
+}
+
 //######################
 //
 // Renderer

@@ -235,7 +235,7 @@ public:
     void removeLine(LineObject& obj);
     void removePointLight(PointLightObject& obj);
     void removeDirectionalLight(DirectionalLightObject& obj);
-    void removeRoad(RoadObject& obj);
+    void removeRoad(const RoadObject& obj);
 
     // Clear types of objects (delete them all)
     void removeAllModels(void);
