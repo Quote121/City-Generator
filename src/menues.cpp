@@ -9,8 +9,8 @@
 #define POSITION_MAX 100.0f
 #define POSITION_MIN -100.0f
 
-#define ROTATION_MAX 6.28318f // 2PI
-#define ROTATION_MIN -6.28318f // -2PI
+#define ROTATION_MAX M_PI // 2PI
+#define ROTATION_MIN -M_PI // -2PI
 
 #define SCALE_MAX 10.0f
 #define SCALE_MIN 0.01f
@@ -237,13 +237,9 @@ void Menues::display(float deltaTime)
         ImGui::End();
     }
 
-
-
-
     //###############################
     //  Generator controls
     //###############################
-    
     ImGui::Begin("City generator menu");
 
     ImGui::SeparatorText("Stats");
