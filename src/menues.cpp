@@ -19,83 +19,17 @@
 void Menues::display(float deltaTime)
 {
     Camera* cam = Camera::getInstance();
-
+    Scene* scene = Scene::getInstance();
     //
     // Window that gives fps, position, camera view
     //
-    ImGui::Begin("Stats");
-    ImGui::Text("FPS %.2f || Delta time: %.1f ms", 1/deltaTime, deltaTime*1000);
-    ImGui::Text("Pitch | Yaw: %.3f %.3f", cam->Pitch, cam->Yaw);
-    ImGui::Text("[x,y,z] : %.3f, %.3f, %.3f",cam->Position.x, cam->Position.y, cam->Position.z);
-    ImGui::End();
+    // ImGui::Begin("Stats");
+    // ImGui::Text("FPS %.2f || Delta time: %.1f ms", 1/deltaTime, deltaTime*1000);
+    // ImGui::Text("Pitch | Yaw: %.3f %.3f", cam->Pitch, cam->Yaw);
+    // ImGui::Text("[x,y,z] : %.3f, %.3f, %.3f",cam->Position.x, cam->Position.y, cam->Position.z);
+    // ImGui::End();
     
 
-    Scene* scene = Scene::getInstance();
-
-    //###############################
-    //  Generator controls
-    //###############################
-    ImGui::Begin("Generator settings");
-    // Settings for the road Generator
-    ImGui::Text("Road generator settings");
-
-    static long menu_seed = 0;
-    ImGui::Text("Seed: %ld", menu_seed);
-    
-    bool removeRoads = ImGui::Button("Remove all roads.");
-    if (removeRoads) { scene->removeAllRoads(); }
-
-    bool generateRoads = ImGui::Button("Clear and Generate.");
-    if (generateRoads)
-    {
-        scene->removeAllModels();
-        scene->removeAllRoads();
-        scene->removeAllSprites();
-        menu_seed = generator::GenerateCity(0);
-    }
-    
-    // For the counts
-    ImGui::Text("World count: ");
-    ImGui::Text("Objects [%ld]", scene->GetModelObjects().size());
-    ImGui::Text("Roads [%ld]", scene->GetRoadObjects().size());
-    ImGui::Text("Sprites [%ld]", scene->GetSpriteObjects().size());
-    ImGui::Text("Model instance renderers [%ld]", scene->GetModelInstanceRenderers().size());
-
-    static char textBuffer[20] = "";
-    bool simulateRandomGen = ImGui::Button("Random generator.");
-    if (simulateRandomGen)
-    {
-        if (std::strcmp(textBuffer, ""))
-        {
-            LOG(STATUS, "TEXTBUFFER: " << std::stoi(textBuffer));
-            menu_seed = generator::GenerateCity(std::stoi(textBuffer));
-        }
-        else{
-            menu_seed = generator::GenerateCity(0);
-        }
-    }
-    ImGui::Text("Seed:");
-    ImGui::InputText("##seedInput", textBuffer, 20);
-
-
-
-    ImGui::Text("Building generator settings");
-
-    bool removeZoneCollisions = ImGui::Button("Clear zone collisions");
-    if (removeZoneCollisions) { generator::ClearZoneCollisions(); }
-
-    bool removeModels = ImGui::Button("Remove all models");
-    if (removeModels)
-    { scene->removeAllModels(); }
-
-    // bool generateBuildings = ImGui::Button("Generate buildings");
-    // if (generateBuildings)
-    // {
-    //     generator::CalculateValidZones();
-    //     generator::GenerateBuildings(1); // TODO remove and only use the values set by the random generator
-    // }
-
-    ImGui::End();
 
     //##############################
     // Selected object menu
@@ -129,6 +63,8 @@ void Menues::display(float deltaTime)
                 
                 static float menuScalarScaleBefore = object->GetScaleScalar();
                 static float menuScalarScale = object->GetScaleScalar();
+                static bool centerBottom_before = false;
+                static bool centerBottom = false;
 
                 ImGui::PushItemWidth(100);
                 ImGui::Text("Position:");
@@ -152,7 +88,8 @@ void Menues::display(float deltaTime)
                 {
                     ImGui::Checkbox("Show OBB", &object->GetShowBoundingBoxImGui());
                 }
-
+                ImGui::Checkbox("Set origin center bottom: ", &centerBottom);
+                
                 bool deleteModel = ImGui::Button("Delete");
                 if (deleteModel)
                 {
@@ -187,11 +124,26 @@ void Menues::display(float deltaTime)
                     menuScalarScaleBefore = menuScalarScale;
                     object->SetScale(menuScalarScale);
                 }
+                if (centerBottom_before != centerBottom)
+                {
+                    needsUpdating = true;
+                    centerBottom_before = centerBottom;
+                    if (centerBottom)
+                    {
+                        object->SetModelOriginCenterBottom();
+                        LOG(STATUS, "BOTTOM");
+                    }
+                    else {
+                        object->SetModelOriginCenter();
+                    }
+                }
+
                 // Call the instance renderer update
                 if (needsUpdating && object->GetIsInstanceRendered())
                 {
                     scene->GetModelInstanceRenderer(object)->Update(object);
                 }
+
                 break;
             }
 
@@ -246,11 +198,14 @@ void Menues::display(float deltaTime)
                 static glm::vec3 position_before = sprite->GetPosition();
                 static glm::vec3 rotation_before = sprite->GetRotation();
                 static glm::vec2 scale_before = sprite->GetScale();
+                static bool centerBottom_before = false;
+                static bool centerBottom = false;
 
                 ImGui::SliderFloat3("Position", &sprite->GetPositionImGui().x, -200, 200);
                 ImGui::SliderFloat3("Rotation", &sprite->GetRotationImGui().x, -M_PI, M_PI);
                 ImGui::SliderFloat2("Scale", &sprite->GetScaleImGui().x, 0.1, 10.0);
                 ImGui::Checkbox("Billboard", &sprite->GetIsBillboardImGui());
+                ImGui::Checkbox("Set origin center bottom: ", &centerBottom);
 
                 bool deleteSprite = ImGui::Button("Delete");
                 if (deleteSprite)
@@ -259,21 +214,23 @@ void Menues::display(float deltaTime)
                     scene->sceneSelectedObject->Deselect();
                 }
 
-                if (position_before != sprite->GetPosition() || rotation_before != sprite->GetRotation() || scale_before != sprite->GetScale())
+                if (position_before != sprite->GetPosition() || rotation_before != sprite->GetRotation() || scale_before != sprite->GetScale() || centerBottom_before != centerBottom)
                 {
                     position_before = sprite->GetPosition();
                     rotation_before = sprite->GetRotation();
                     scale_before = sprite->GetScale();
+                    centerBottom_before = centerBottom; 
+                    if (centerBottom)
+                    {
+                        sprite->SetModelOriginCenterBottom();
+                    }
+                    else {
+                        sprite->SetModelOriginCenter();
+                    }
                 }
 
                 break;
             }
-            case SceneType::P_LIGHT: {
-                break;
-            }
-
-            case SceneType::LINE:
-            case SceneType::D_LIGHT:
             default:
                 LOG(WARN, "Switch default hit.");
         }
@@ -281,42 +238,118 @@ void Menues::display(float deltaTime)
     }
 
 
+
+
+    //###############################
+    //  Generator controls
+    //###############################
+    
+    ImGui::Begin("City generator menu");
+
+    ImGui::SeparatorText("Stats");
+    ImGui::Text("FPS %.2f || Delta time: %.1f ms", 1/deltaTime, deltaTime*1000);
+    ImGui::Text("Pitch | Yaw: %.3f %.3f", cam->Pitch, cam->Yaw);
+    ImGui::Text("[x,y,z] : %.3f, %.3f, %.3f",cam->Position.x, cam->Position.y, cam->Position.z);
+    ImGui::NewLine();
+    
+    ImGui::SeparatorText("City Generator menu");
+    if(ImGui::TreeNode("Generator settings"))
+    {
+        // Settings for the road Generator
+        ImGui::Text("Road generator settings");
+
+        static long menu_seed = 0;
+        ImGui::Text("Seed: %ld", menu_seed);
+        
+        bool removeRoads = ImGui::Button("Remove all roads.");
+        if (removeRoads) { scene->removeAllRoads(); }
+
+        bool generateRoads = ImGui::Button("Clear and Generate.");
+        if (generateRoads)
+        {
+            scene->removeAllModels();
+            scene->removeAllRoads();
+            scene->removeAllSprites();
+            menu_seed = generator::GenerateCity(0);
+        }
+        
+        // For the counts
+        ImGui::Text("World count: ");
+        ImGui::Text("Objects [%ld]", scene->GetModelObjects().size());
+        ImGui::Text("Roads [%ld]", scene->GetRoadObjects().size());
+        ImGui::Text("Sprites [%ld]", scene->GetSpriteObjects().size());
+        ImGui::Text("Model instance renderers [%ld]", scene->GetModelInstanceRenderers().size());
+
+        static char textBuffer[20] = "";
+        bool simulateRandomGen = ImGui::Button("Random generator.");
+        if (simulateRandomGen)
+        {
+            if (std::strcmp(textBuffer, ""))
+            {
+                LOG(STATUS, "TEXTBUFFER: " << std::stoi(textBuffer));
+                menu_seed = generator::GenerateCity(std::stoi(textBuffer));
+            }
+            else{
+                menu_seed = generator::GenerateCity(0);
+            }
+        }
+        ImGui::Text("Seed:");
+        ImGui::InputText("##seedInput", textBuffer, 20);
+
+
+
+        ImGui::Text("Building generator settings");
+
+        bool removeZoneCollisions = ImGui::Button("Clear zone collisions");
+        if (removeZoneCollisions) { generator::ClearZoneCollisions(); }
+
+        bool removeModels = ImGui::Button("Remove all models");
+        if (removeModels)
+        { scene->removeAllModels(); }
+
+        ImGui::TreePop();
+    }
+    
     //######################################
     //  World controls
     //######################################
-    ImGui::Begin("World controls");
 
-    // Show XYZ lines
-    ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui());
-    ImGui::Checkbox("Show Skybox", &scene->GetShowSkyBoxImGui());    
-    ImGui::Checkbox("Show terrain", &scene->GetShowTerrainImGui());
-    
-    ImGui::NewLine();
-
-    // For selection
-    static int selectedSkyboxIndex = 0;
-    static int selectedSkyBoxIndexBefore = 0; // Needed to detect change
-    std::vector<const char*> skyboxItems;
-    for (auto& a : Scene::getInstance()->GetSkyBoxes())
+    if (ImGui::TreeNode("World controls"))
     {
-        skyboxItems.push_back(a->GetAlias().c_str());
+        // Show XYZ lines
+        ImGui::Checkbox("Show axis", &scene->GetShowSceneAxisImGui());
+        ImGui::Checkbox("Show Skybox", &scene->GetShowSkyBoxImGui());    
+        ImGui::Checkbox("Show terrain", &scene->GetShowTerrainImGui());
+        
+        ImGui::NewLine();
+
+        // For selection
+        static int selectedSkyboxIndex = 0;
+        static int selectedSkyBoxIndexBefore = 0; // Needed to detect change
+        std::vector<const char*> skyboxItems;
+        for (auto& a : Scene::getInstance()->GetSkyBoxes())
+        {
+            skyboxItems.push_back(a->GetAlias().c_str());
+        }
+        ImGui::Text("Skybox:");
+        ImGui::ListBox("## skyBoxList", &selectedSkyboxIndex, skyboxItems.data(), skyboxItems.size(), 4);
+
+        if (selectedSkyboxIndex != selectedSkyBoxIndexBefore)
+        {
+            scene->SetSkybox(selectedSkyboxIndex);
+            selectedSkyBoxIndexBefore = selectedSkyboxIndex;
+        }
+
+
+        ImGui::PushItemWidth(100);
+        ImGui::Text("Camera Position:");
+        ImGui::SliderFloat("X##POS", &cam->GetPositionHandle().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+        ImGui::SliderFloat("Y##POS", &cam->GetPositionHandle().y, POSITION_MIN, POSITION_MAX+600); ImGui::SameLine();
+        ImGui::SliderFloat("Z##POS", &cam->GetPositionHandle().z, POSITION_MIN, POSITION_MAX);
+        ImGui::PopItemWidth();
+
+        ImGui::TreePop();
     }
-    ImGui::Text("Skybox:");
-    ImGui::ListBox("## skyBoxList", &selectedSkyboxIndex, skyboxItems.data(), skyboxItems.size(), 4);
-
-    if (selectedSkyboxIndex != selectedSkyBoxIndexBefore)
-    {
-        scene->SetSkybox(selectedSkyboxIndex);
-        selectedSkyBoxIndexBefore = selectedSkyboxIndex;
-    }
-
-
-    ImGui::PushItemWidth(100);
-    ImGui::Text("Camera Position:");
-    ImGui::SliderFloat("X##POS", &cam->GetPositionHandle().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
-    ImGui::SliderFloat("Y##POS", &cam->GetPositionHandle().y, POSITION_MIN, POSITION_MAX+600); ImGui::SameLine();
-    ImGui::SliderFloat("Z##POS", &cam->GetPositionHandle().z, POSITION_MIN, POSITION_MAX);
-    ImGui::PopItemWidth();
 
 
     if(ImGui::TreeNode("Spawning"))

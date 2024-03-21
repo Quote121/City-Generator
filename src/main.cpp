@@ -158,9 +158,9 @@ int main() {
         ->SetLightingEnabled(true)
         ->SetIsVisible(true)
         ->IsSelectable(false)
-        ->SetPosition({0,-0.4, 0})
-        ->SetScale(2)
-        ->SetTextureScale({10.0f, 10.0f});
+        ->SetPosition({0,-0.5, 0})
+        ->SetScale(2.5)
+        ->SetTextureScale({20.0f, 20.0f});
 
 
     scene->addDirectionalLight()
@@ -399,15 +399,13 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
                             camera->GetViewMatrix(), camera->GetProjectionMatrix(), outOrigin, outDirection);
        
         // Test by adding a line
-        glm::vec3 finalPos = outDirection * 10.0f;
+        // glm::vec3 finalPos = outDirection * 10.0f;
         if (Scene::getInstance()->CheckForIntersection(outOrigin, outDirection))
         {
-
-            Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(GREEN);
+            // Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(GREEN);
         }
         else {
-        
-            Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(RED);
+            // Scene::getInstance()->addLine(outOrigin, outOrigin+finalPos)->SetColour(RED);
         }
     }
     
