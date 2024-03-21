@@ -79,11 +79,11 @@ glm::mat4 SpriteObject::GetModelMatrix(void)
         glm::mat4 rotation_new = glm::mat4(glm::vec4(right, 0.0f), glm::vec4(up, 0.0f), glm::vec4(-objectToCamera, 0.0f), glm::vec4(0.0f, 0.0f, 0.0f, 1.0f));
 
         // Ignore rotation matrix and apply the other matrix to look at player
-        return glm::mat4(1.0f) * getPositionMat4(position) * rotation_new * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
+        return glm::mat4(1.0f) * getPositionMat4(position) * rotation_new * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale) / getPositionMat4(objectOriginPosition);
     }
     else
     {
-        return glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale);
+        return glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * BaseObject::getScaleMat4(scaleScalar) * BaseObject::getScaleMat4(scale) / getPositionMat4(objectOriginPosition);
     }
 }
 const SpriteRenderer* SpriteObject::GetSpriteRenderer(void) const

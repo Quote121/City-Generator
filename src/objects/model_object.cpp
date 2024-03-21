@@ -25,7 +25,7 @@ void ModelObject::Draw(glm::mat4 view, glm::mat4 projection)
 {
     if (isVisible)
     {
-        glm::mat4 result = glm::mat4(1.0f) * getPositionMat4(position) * getRotateMat4(rotation) * getScaleMat4(scaleScalar) * getScaleMat4(scale) / getPositionMat4(objectOriginPosition);
+        glm::mat4 result = this->GetModelMatrix(); 
         Shader* objectShader = model->GetShader();
 
         if (objectShader == nullptr)

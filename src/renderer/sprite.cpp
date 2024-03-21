@@ -55,8 +55,6 @@ SpriteRenderer::SpriteRenderer(Shader* spriteShader_in, const std::string& filen
     spriteBoundingBox->StreamVertexUpdate(-x, y, 0);
     spriteBoundingBox->SetupBuffers(); // Update the opengl buffers
 
-    LOG(WARN, "MAX: " << spriteBoundingBox->getMax() << " | MIN: " << spriteBoundingBox->getMin());
-
     // textureID to be stored
     spriteTextureID = textureInfo->textureID;
     // shader to be stored

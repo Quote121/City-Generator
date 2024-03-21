@@ -695,7 +695,13 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
     {
         float distanceToHit = 0;
         // Note here, models can be unselectable if set
-        if (model->GetIsSelectable() && TestRayOBBIntersection(rayOrigin, rayDirection, model->GetBoundingBox()->getMin(), model->GetBoundingBox()->getMax(), model->GetModelMatrix(), model->GetScale(), distanceToHit))
+        if (model->GetIsSelectable() && TestRayOBBIntersection(rayOrigin, 
+                                            rayDirection, 
+                                            model->GetBoundingBox()->getMin(), 
+                                            model->GetBoundingBox()->getMax(), 
+                                            model->GetModelMatrix(), 
+                                            model->GetScale() * model->GetScaleScalar(), 
+                                            distanceToHit))
         {
             if (distanceToHit < closest)
             {
@@ -711,7 +717,13 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
     for (auto& road : this->GetRoadObjects())
     {
         float distanceToHit = 0;
-        if (TestRayOBBIntersection(rayOrigin, rayDirection, road->GetRoadRenderer()->GetOBBMin(), road->GetRoadRenderer()->GetOBBMax(), road->GetModelMatrix(), glm::vec3(1.0f), distanceToHit))
+        if (TestRayOBBIntersection(rayOrigin, 
+                rayDirection, 
+                road->GetRoadRenderer()->GetOBBMin(), 
+                road->GetRoadRenderer()->GetOBBMax(), 
+                road->GetModelMatrix(), 
+                glm::vec3(1.0f), 
+                distanceToHit))
         {
             if (distanceToHit < closest)
             {
@@ -728,7 +740,13 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
     {
         float distanceToHit = 0;
         sprite->GetBoundingBox();
-        if (TestRayOBBIntersection(rayOrigin, rayDirection, sprite->GetBoundingBox()->getMin(), sprite->GetBoundingBox()->getMax(), sprite->GetModelMatrix(), glm::vec3{sprite->GetScale(), 1.0f}, distanceToHit))
+        if (TestRayOBBIntersection(rayOrigin, 
+                rayDirection, 
+                sprite->GetBoundingBox()->getMin(), 
+                sprite->GetBoundingBox()->getMax(), 
+                sprite->GetModelMatrix(), 
+                glm::vec3{sprite->GetScale(), 1.0f} * sprite->GetScaleScalar(), 
+                distanceToHit))
         {
             if (distanceToHit < closest)
             {
