@@ -249,7 +249,8 @@ void Menues::display(float deltaTime)
                 bool deleteSprite = ImGui::Button("Delete");
                 if (deleteSprite)
                 {
-                    LOG(STATUS, "Functionallity not implemented for delete sprite");
+                    scene->removeSprite(*sprite);
+                    scene->sceneSelectedObject->Deselect();
                 }
 
                 if (position_before != sprite->GetPosition() || rotation_before != sprite->GetRotation() || scale_before != sprite->GetScale())

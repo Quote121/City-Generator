@@ -191,7 +191,8 @@ void InputHandler::process(GLFWwindow *window, double deltaTime)
                 }
                 case(SceneType::SPRITE):
                 {
-                    LOG(WARN, "Delete key not functional for sprites");
+                    scene->removeSprite(*static_cast<SpriteObject*>(scene->sceneSelectedObject->GetObject()));
+                    scene->sceneSelectedObject->Deselect();
                     break;
                 }
                 default:{break;}
