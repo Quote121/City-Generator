@@ -609,7 +609,7 @@ bool TestRayOBBIntersection(
             if (tMax < 0) return false;     // Behind the ray
         }
         else {
-            if (-e+boundingBoxMin.x > 0.0f || -e+boundingBoxMax.x < 0.0f)
+            if (-e+boundingBoxMax.x > 0.0f || -e+boundingBoxMin.x < 0.0f)
             {
                 return false;
             }
@@ -638,7 +638,7 @@ bool TestRayOBBIntersection(
             if (tMax < 0) return false;
         }
         else {
-            if (-e+boundingBoxMin.y > 0.0f || -e+boundingBoxMax.y < 0.0f)
+            if (-e+boundingBoxMax.y > 0.0f || -e+boundingBoxMin.y < 0.0f)
             {
                 return false;
             }
@@ -667,7 +667,7 @@ bool TestRayOBBIntersection(
             if (tMax < 0) return false;
         }
         else {
-            if (-e+boundingBoxMin.z > 0.0f || -e+boundingBoxMax.z < 0.0f)
+            if (-e+boundingBoxMax.z > 0.0f || -e+boundingBoxMin.z < 0.0f)
             {
                 return false;
             }
