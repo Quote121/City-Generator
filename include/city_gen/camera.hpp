@@ -4,7 +4,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-
 // Enum class declared instead of enum as other enum types can be seen as equivilent
 enum class Camera_Movement {
 	FORWARD,
@@ -15,7 +14,6 @@ enum class Camera_Movement {
 	DOWN
 };
 
-
 // Default camera values
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
@@ -24,13 +22,9 @@ const float SENSITIVITY = 0.5f;
 const float ZOOM = 45.0f;
 
 /*
-
 Camera is a singleton class
 this means that we cannot create another instance of it
-
 */
-
-
 
 class Camera {
 
@@ -55,144 +49,94 @@ public:
 	float Zoom;
 
 	// Singleton constructors
-	static Camera* getInstance(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
-	static Camera* getInstance(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
+    // @brief Singleton constructor
+    // @args position - position of camera
+    // @args up - up vector of camera
+    // @args yaw - up and down angle
+    // @args pitch - left and right angle
+    // @returns Camera* - returns this class
+    static Camera* getInstance(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), 
+                               glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), 
+                               float yaw = YAW, 
+                               float pitch = PITCH);
 
+	static Camera* getInstance(float posX, 
+                               float posY, 
+                               float posZ, 
+                               float upX, 
+                               float upY, 
+                               float upZ, 
+                               float yaw, 
+                               float pitch);
 
-    // inline bool GetFreeModeMode(void) const
-    // {
-    //     return freeMouseMode;
-    // }
-    //
-    // inline void SetFreeMouseMode(bool mode)
-    // {
-    //     this->freeMouseMode = mode;
-    // }
-    //
-    // inline void ToggleFreeMouseMode(void)
-    // {
-    //     this->freeMouseMode = !this->freeMouseMode;
-    //     InputHandler::SetShowMouse(freeMouseMode);
-    // }
+    // @brief gets the view matrix of the camera using euler angles and lookat matrix
+	inline glm::mat4 GetViewMatrix(void) const;
 
-	// returns the view matrix calculated using Euler Angles and the LookAt Matrix
-	inline glm::mat4 GetViewMatrix()
-	{
-		return glm::lookAt(Position, Position + Front, Up);
-	}
+    // @brief returns the projection matrix of the camera
+    inline glm::mat4 GetProjectionMatrix(void) const;
 
-    inline glm::mat4 GetProjectionMatrix()
-    {
-        return glm::perspective(glm::radians(this->Zoom), (float)windowWidth / (float)windowHeight, 0.1f, 10000.0f);
-    }
+    // @brief get the glfw window width
+    inline int GetWindowWidth(void) const;
 
-    // Get window width and height
-    inline int GetWindowWidth(void) const
-    {
-        return windowWidth;
-    }
+    // @brief get the glfw window height
+    inline int GetWindowHeight(void) const;
 
-    inline int GetWindowHeight(void) const
-    {
-        return windowHeight;
-    }
+    // @brief update the width and height parameters
+    // @args width - width in px
+    // @args height - height in px
+    void UpdateWindowDimentions(const int width, const int height);
 
-    void UpdateWindowDimentions(const int width, const int height)
-    {
-        windowWidth = width;
-        windowHeight = height;
-    }
+    // @brief Process keyboard input
+    // @args direction facing
+    // @args deltaTime - to stop movement being framerate dependant
+    // @args speedMultiplier - pressing shift key will multiply speed by x amount
+	void processKeyboard(Camera_Movement direction, float deltaTime, float speedMultiplier = 1);
 
-	// Process keyboard input // Speed multiplier for movemnt speed increase with shift key
-	void processKeyboard(Camera_Movement direction, float deltaTime, float speedMultiplier = 1) {
+    // @brief Process mouse input recived from GLFW
+    // @args xoffset - change of mouse in x axis
+    // @args yoffset - change of mouse in y axis
+    // @args constrainPitch - stops from looking directly up or down 
+	void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true);
 
-		// Camera will move at 2.5 units per second
-		float velocity = MovementSpeed * deltaTime;
+    // @brief process input from mouse scroll wheel event
+    // @args the change from glfw
+	void ProcessMouseScroll(float yoffset);
 
-		if (direction == Camera_Movement::FORWARD)
-			Position += Front * velocity * speedMultiplier;
-		if (direction == Camera_Movement::BACKWARD)
-			Position -= Front * velocity * speedMultiplier;
-		if (direction == Camera_Movement::LEFT)
-			Position -= Right * velocity * speedMultiplier;
-		if (direction == Camera_Movement::RIGHT)
-			Position += Right * velocity * speedMultiplier;
-
-		// Space and ctrl for up and down
-		if (direction == Camera_Movement::UP)
-			Position += Up * velocity;
-		if (direction == Camera_Movement::DOWN)
-			Position -= Up * velocity;
-	}
-
-	// processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-	void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)
-	{
-		xoffset *= MouseSensitivity;
-		yoffset *= MouseSensitivity;
-
-		Yaw += xoffset;
-		Pitch += yoffset;
-
-		// make sure that when pitch is out of bounds, screen doesn't get flipped
-		if (constrainPitch)
-		{
-			if (Pitch > 89.0f)
-				Pitch = 89.0f;
-			if (Pitch < -89.0f)
-				Pitch = -89.0f;
-		}
-
-		// update Front, Right and Up Vectors using the updated Euler angles
-		updateCameraVectors();
-	}
-
-	// processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-	void ProcessMouseScroll(float yoffset)
-	{
-		Zoom -= yoffset;
-		if (Zoom < 1.0f)
-			Zoom = 1.0f;
-		if (Zoom > 45.0f)
-			Zoom = 45.0f;
-	}
-
-    glm::vec3& GetPositionHandle(void)
-    {
-        return Position;
-    }
-
+    // @brief Get Position handle for direct change of camera position via imgui
+    // @returns reference to the camera vec3 position
+    glm::vec3& GetPositionHandle(void);
 private:
-	// Private the default constructor
-	Camera() = default;
-	// Constructor with vectors
-	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
-	{
-		Position = position;
-		WorldUp = up;
-		Yaw = yaw;
-		Pitch = pitch;
-		updateCameraVectors();
-	}
-	// constructor with scalar values
-	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM)
-	{
-		Position = glm::vec3(posX, posY, posZ);
-		WorldUp = glm::vec3(upX, upY, upZ);
-		Yaw = yaw;
-		Pitch = pitch;
-		updateCameraVectors();
-	}
-
-	~Camera() { }
+    // Private constructors 
+	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
+	Camera(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw, float pitch);
 
 	// Singleton
 	static Camera *pinstance_;
-
 	Camera(const Camera&) = delete;
 	Camera& operator=(const Camera&) = delete;
 
 	// calculates the front vector from the Camera's (updated) Euler Angles
 	void updateCameraVectors();
 };
+
+// Inline definitions
+inline glm::mat4 Camera::GetViewMatrix(void) const
+{
+    return glm::lookAt(Position, Position + Front, Up);
+}
+
+inline glm::mat4 Camera::GetProjectionMatrix(void) const
+{
+    return glm::perspective(glm::radians(this->Zoom), (float)windowWidth / (float)windowHeight, 0.1f, 10000.0f);
+}
+
+inline int Camera::GetWindowWidth(void) const
+{
+    return windowWidth;
+}
+
+inline int Camera::GetWindowHeight(void) const
+{
+    return windowHeight;
+}
 
