@@ -175,7 +175,6 @@ BatchRenderer::BatchRenderer()
     VAO = new VertexArray();
     VBO = new VertexBuffer();
     EBO = new IndexBuffer();
-    glGenBuffers(1, &IBO);
 }
 
 BatchRenderer::~BatchRenderer()
@@ -183,7 +182,6 @@ BatchRenderer::~BatchRenderer()
     delete(VAO);
     delete(VBO);
     delete(EBO);
-    glDeleteBuffers(1, &IBO);
 }
 
 void BatchRenderer::UpdateAll(void)

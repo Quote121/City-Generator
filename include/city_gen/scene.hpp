@@ -7,8 +7,6 @@
 // This class is temporary until the scope of the engine is more defined and will be a singlton
 // as currently there is no need for multiple scene classes.
 //
-//
-//
 ////////////////
 #pragma once
 
@@ -155,12 +153,12 @@ public:
     // Currently selected object 
     SelectedObject* sceneSelectedObject;
 
-    // Singleton setup //  
+    // Singleton 
     Scene(Scene &other) = delete;
     void operator=(const Scene &) = delete;
     static Scene* getInstance();
-    /////////////////////
 
+    // Only terrain object
     ModelObject* addTerrain(const std::string& modelPath_in,
                             const ShaderPath* shader_in = nullptr);
 
@@ -190,37 +188,16 @@ public:
 
     // @brief sometimes we need to reload all the matrix data of all objects
     void ForceReloadInstanceRendererData(void) const;
-    auto const& GetModelInstanceRenderers(void) const
-    {
-        return modelInstanceRenderers;
-    }
+    inline auto const& GetModelInstanceRenderers(void) const;
 
     // @brief will update models if its instanced or not
     void UpdateModelInstanced(ModelObject* const object) const;
     InstanceRenderer<ModelObject*>* GetModelInstanceRenderer(ModelObject* object) const;
     
-    void SetSkybox(const int index)
-    {
-        // Change lighting based on skybox
-        if (index == SKYBOX_BLUESKY)
-        {
-            scene_directionalLight_objects[0]->SetColour({BLUESKY_LIGHT_COLOUR});
-        }
-        else if (index == SKYBOX_GREYSKY)
-        {
-            scene_directionalLight_objects[0]->SetColour({GREYSKY_LIGHT_COLOUR});
-        }
-        else if (index == SKYBOX_BROWNSKY)
-        {
-            scene_directionalLight_objects[0]->SetColour({BROWNSKY_LIGHT_COLOUR});
-        }
-        else if (index == SKYBOX_YELLOWSKY)
-        {
-            scene_directionalLight_objects[0]->SetColour({YELLOWSKY_LIGHT_COLOUR});
-        }
-        selectedSkybox = skyboxes[index];
-    }
+    // Skybox methods
+    void SetSkybox(const int index);
     void LoadSkyboxes(void);
+    inline std::vector<SkyBox*> const& GetSkyBoxes();
 
     // @brief Called after a shader is bound to setup all lights for a shader
     // @param shader being used, should be bound before call
@@ -246,77 +223,103 @@ public:
     void removeAllRoads(void);
     void removeAllInstanceRenderers(void);
 
-    std::vector<SkyBox*> const& GetSkyBoxes()
-    {
-        return skyboxes;
-    }
-
     // Get scene objects
-    std::vector<ModelObject*> const& GetModelObjects()
-    {
-        return scene_model_objects;
-    }
-
-    std::vector<RoadObject*> const& GetRoadObjects()
-    {
-        return scene_road_objects;
-    }
-
-    std::vector<SpriteObject*> const& GetSpriteObjects()
-    {
-        // Sort by distance and return the sprites
-        return scene_sprite_objects;
-    }
-
-    std::vector<LineObject*> const& GetLineObjects()
-    {
-        return scene_line_objects;
-    }
-
-    std::vector<PointLightObject*> const& GetPointLightObjects()
-    {
-        return scene_pointLight_objects;
-    }
-
-    std::vector<DirectionalLightObject*> const& GetDirectionalLightObjects()
-    {
-        return scene_directionalLight_objects;
-    }
+    inline std::vector<ModelObject*> const& GetModelObjects();
+    inline std::vector<RoadObject*> const& GetRoadObjects();
+    inline std::vector<SpriteObject*> const& GetSpriteObjects();
+    inline std::vector<LineObject*> const& GetLineObjects();
+    inline std::vector<PointLightObject*> const& GetPointLightObjects();
+    inline std::vector<DirectionalLightObject*> const& GetDirectionalLightObjects();
 
     // Builders
-    Scene* ShowSceneAxis(bool visible)
-    {
-        showSceneAxis = visible;
-        return this;
-    }
+    inline Scene* ShowSceneAxis(bool visible);
 
     // ImGui handle
-    bool& GetShowSceneAxisImGui()
-    {
-        return showSceneAxis;
-    }
-
-    bool& GetShowSkyBoxImGui()
-    {
-        return showSkybox;
-    }
-
-    bool& GetShowTerrainImGui()
-    {
-        return showTerrain;
-    }
-
-    bool& GetShowRoadZones()
-    {
-        return showRoadZones;
-    }
-
-    bool& GetRemoveIntersectingZones()
-    {
-        return removeIntersectingZones;
-    }
-
+    inline bool& GetShowSceneAxisImGui();
+    inline bool& GetShowSkyBoxImGui();
+    inline bool& GetShowTerrainImGui();
+    inline bool& GetShowRoadZones();
+    inline bool& GetRemoveIntersectingZones();
 
     // Draws all of the objects form each of the object vectors
     void DrawScene(void);
 };
+
+
+
+// Inline methods
+auto const& Scene::GetModelInstanceRenderers(void) const
+{
+    return modelInstanceRenderers;
+}
+
+std::vector<SkyBox*> const& Scene::GetSkyBoxes()
+{
+    return skyboxes;
+}
+
+// Get scene objects
+std::vector<ModelObject*> const& Scene::GetModelObjects()
+{
+    return scene_model_objects;
+}
+
+std::vector<RoadObject*> const& Scene::GetRoadObjects()
+{
+    return scene_road_objects;
+}
+
+std::vector<SpriteObject*> const& Scene::GetSpriteObjects()
+{
+    // Sort by distance and return the sprites
+    return scene_sprite_objects;
+}
+
+std::vector<LineObject*> const& Scene::GetLineObjects()
+{
+    return scene_line_objects;
+}
+
+std::vector<PointLightObject*> const& Scene::GetPointLightObjects()
+{
+    return scene_pointLight_objects;
+}
+
+std::vector<DirectionalLightObject*> const& Scene::GetDirectionalLightObjects()
+{
+    return scene_directionalLight_objects;
+}
+
+// Builders
+Scene* Scene::ShowSceneAxis(bool visible)
+{
+    this->showSceneAxis = visible;
+    return this;
+}
+
+bool& Scene::GetShowSceneAxisImGui()
+{
+    return showSceneAxis;
+}
+
+bool& Scene::GetShowSkyBoxImGui()
+{
+    return showSkybox;
+}
+
+bool& Scene::GetShowTerrainImGui()
+{
+    return showTerrain;
+}
+
+bool& Scene::GetShowRoadZones()
+{
+    return showRoadZones;
+}
+
+bool& Scene::GetRemoveIntersectingZones()
+{
+    return removeIntersectingZones;
+}
+
+

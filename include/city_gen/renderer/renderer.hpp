@@ -35,6 +35,7 @@ template<class T>
 class InstanceRenderer
 {
 private:
+    // Dynamic arrays of the objects and matrices of each object
     std::vector<InstanceObject> objects;
     std::vector<float> matrices;
 
@@ -65,73 +66,81 @@ public:
     const T GetInstanceType(void) const;
 
     // @brief Get number of objects in renderer
+    // @returns size_t number of objects in instance renderer
     const size_t size(void) const;
-
 };
 
-// Batch renderer, for now will only batch render roads as we have no other objects that need this. (Others needs instancing, sprites and buildings)
+// Batch renderer is only setup to draw simple geometry such as roads
 class BatchRenderer
 {
 private:
-
     VertexBuffer* VBO;
     VertexArray* VAO;
     IndexBuffer* EBO;
-    unsigned int IBO; // Indirect buffer
-
-    // indirectCommands are put into
-    // GL_DRAW_INDIRECT_BUFFER
-    
-    // Update method for updating a specific set of vertices and indices 
 public:
     BatchRenderer();
     ~BatchRenderer();
 
-    // Update all roads vertices and indices
+    // @brief Update all roads vertices and indices
     void UpdateAll(void);
 
-    // Update one set of road vertices and indices
-    // Roads call an update and pass their renderID which is used to find them in the List
+    // @brief Update one road's vertices and indices
+    // @args renderID - the renderID owned by the road
+    // @args vertices - pointer to a dynamic array of the vertices of the road
+    // @args indices - pointer to a dynamic array of the indices of the road
     void Update(const unsigned int renderID, std::vector<float> const* vertices, std::vector<unsigned int> const* indices);
 
+    // @brief Draws the current batch
+    // @args view - view matrix of the camera
+    // @args projection - projection matrix of the camera
     void DrawBatch(glm::mat4 view, glm::mat4 projection) const; 
 
+    // @brief Deletes a roads vertices and indices from the batch renderer
+    // @args road - a pointer to the road object
     void Delete(const RoadObject* road);
-
 };
 
 
 class Renderer
 {
 private:
-
     // Batches for rendering
     // Each batch contains a VAO, VBO, EBO and shader, they all share the same shader
     // Each object in the batch should know which batch they are in. And where in the buffers they are
     // An object can directly access and update the batch
     // std::vector<Batch> Batches;
 
-    static Renderer* pInstance;  
-
     glm::vec3 backgroundColour = DEFAULT_BACKGROUND_COLOUR; 
 
+    // Singleton
+    static Renderer* pInstance;  
     Renderer() = default;
     ~Renderer();
-
 public:
     // Singleton
     Renderer(Renderer &other) = delete;
     void operator=(const Renderer &) = delete;
     static Renderer* GetInstance();
 
+    // @brief Set the glfw clear screen colour upon each new frame
+    // @args glm::vec3 colour - rgb colour
     void SetClearScreenColour(glm::vec3 colour);
 
+    // @brief Clear the screen for rendering the next frame
     void ClearScreen(void) const;
-    // Make sure shaders are bound before calls to draw, mode is the primative to draw, default gl_triangle
-    void DrawIndices(const VertexArray* vao, const IndexBuffer* ebo, unsigned int mode = GL_TRIANGLES);
-    // @params count - number of arrays to draw with primative from vao
-    void DrawArrays(const VertexArray* vao, unsigned int count, unsigned int mode = GL_TRIANGLES);
 
-    void DrawBatches();
+    // @brief draw the indices bound by the VAO and EBO
+    // @args vao - vertex array data
+    // @args ebo - index array data
+    // @args mode - the draw mode, default triangles
+    // @note Make sure shaders are bound before this call is made
+    void DrawIndices(const VertexArray* vao, const IndexBuffer* ebo, unsigned int mode = GL_TRIANGLES);
+
+    // @brief draw the vertices specificed in the vao
+    // @args vao - vertex array with the vertex data
+    // @args count - number of primatives to draw
+    // @args mode - the draw mode, default triangles
+    // @notes Make sure shaders are setup and bound before calling 
+    void DrawArrays(const VertexArray* vao, unsigned int count, unsigned int mode = GL_TRIANGLES);
 };
 

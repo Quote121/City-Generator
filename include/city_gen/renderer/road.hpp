@@ -28,8 +28,6 @@ private:
 
     // Array of the 4 points of the road, all 2d in the xz plane
     std::array<glm::vec3, 4> road_OBB;
-    // glm::vec3 road_obb_min; // For collision detection
-    // glm::vec3 road_obb_max;
 
     // Array for left and right zone
     std::array<glm::vec3, 4> road_left_zone_vertices;
