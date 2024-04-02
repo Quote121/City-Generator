@@ -142,7 +142,7 @@ void ResourceManager::PreLoadAssets(std::string& filePath)
 
     std::string directory = "../assets/";
 
-    Shader* modelShader = this->LoadModelShader(nullptr);
+    Shader* modelShader = this->LoadModelShader(nullptr, 0);
 
     // Load up everything
     for (auto& path : modelPaths)
@@ -259,9 +259,14 @@ TextureInfo* ResourceManager::LoadTexture(const std::string& textureName, bool f
 Model* ResourceManager::LoadModel(const std::string& modelPath_in, Shader* modelShader_in)
 {
     // Hit
-    if (model_map.find(modelPath_in) != model_map.end())
+    if (model_map.find(modelPath_in) != model_map.end() )
     {
-        return model_map.find(modelPath_in)->second;
+        Model* model = model_map.find(modelPath_in)->second;
+        
+        // Have to set the shader as we are only getting the model
+        model->SetShader(modelShader_in);
+
+        return model;
     }
     // Miss
     else
@@ -274,25 +279,42 @@ Model* ResourceManager::LoadModel(const std::string& modelPath_in, Shader* model
 }
 
 
-Shader* ResourceManager::LoadModelShader(const ShaderPath* shader_in)
+Shader* ResourceManager::LoadModelShader(const ShaderPath* shader_in, const bool instanced)
 {
-    if (shader_in != nullptr)
+    
+    // Default instance shader
+    if (shader_in == nullptr && instanced)
+    {
+        return this->LoadShader(paths::object_defaultInstancedVertShaderPath, paths::object_defaultFragShaderPath);
+    }
+    // Default shader (not instanced)
+    else if (shader_in == nullptr)
+    {
+        return this->LoadShader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
+    }
+    // Specified shader
+    else 
     {
         return this->LoadShader(shader_in->vertex, shader_in->fragment);
-    }
-    else {
-        return this->LoadShader(paths::object_defaultVertShaderPath, paths::object_defaultFragShaderPath);
     }
 }
 
-Shader* ResourceManager::LoadSpriteShader(const ShaderPath* shader_in)
+Shader* ResourceManager::LoadSpriteShader(const ShaderPath* shader_in, const bool instanced)
 {
-    if (shader_in != nullptr)
+    // Default instance shader
+    if (shader_in == nullptr && instanced)
+    {
+        return this->LoadShader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
+    }
+    // Default shader
+    else if (shader_in == nullptr) 
+    {
+        return this->LoadShader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
+    }
+    // Specified shader
+    else 
     {
         return this->LoadShader(shader_in->vertex, shader_in->fragment);
-    }
-    else {
-        return this->LoadShader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
     }
 }
 

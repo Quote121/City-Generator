@@ -45,6 +45,11 @@ public:
         return modelShader;
     }
 
+    inline void SetShader(Shader* shader)
+    {
+        this->modelShader = shader;
+    }
+
     inline BoundingBox* GetBoundingBox()
     {
         return modelBoundingBox;

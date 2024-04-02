@@ -23,6 +23,7 @@ extern const char* sprite_defaultFragShaderPath;
 // Object default shaders
 extern const char* object_defaultVertShaderPath;
 extern const char* object_defaultFragShaderPath;
+extern const char* object_defaultInstancedVertShaderPath;
 
 // Line object shaders
 extern const char* line_defaultVertShaderPath;

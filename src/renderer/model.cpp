@@ -197,7 +197,7 @@ void Model::DrawInstanced(std::vector<float>* matrices)
     for (unsigned int i = 0; i < meshes.size(); i++)
     {
         assert(matrices->size()%16 == 0); // Make sure we have an n amount of mat4's
-        meshes[i].DrawInstanced(*modelShader, matrices->size()/16, matrices);
+        meshes[i].DrawInstanced(*this->modelShader, matrices->size()/16, matrices);
     }
 
 }

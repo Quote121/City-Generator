@@ -395,6 +395,9 @@ void Menues::display(float deltaTime)
                 if (spawnOnMe)
                 {
                     addedModel->SetPosition(Camera::getInstance()->Position);
+                    // Will need an update for this if instanced
+                    if (instanceRender)
+                        scene->GetModelInstanceRenderer(addedModel)->Update(addedModel);
                 }
             }
         }

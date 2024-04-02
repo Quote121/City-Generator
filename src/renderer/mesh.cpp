@@ -65,10 +65,6 @@ void Mesh::setupMesh()
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoord));
 
 
-
-
-
-
     glBindVertexArray(0);
 }
 
@@ -130,29 +126,29 @@ void Mesh::Draw(Shader &shader)
     }
 }
 
-void Mesh::DrawInstanced(Shader &shader_unused, unsigned int instanceCount, std::vector<float>* matrices)
+void Mesh::DrawInstanced(Shader &shader, unsigned int instanceCount, std::vector<float>* matrices)
 {
-    Shader shader = *ResourceManager::getInstance()->LoadShader(paths::building_defaultInstancedVertShaderPath, paths::building_defaultFragShaderPath);
+    // Shader shader = *ResourceManager::getInstance()->LoadShader(paths::building_defaultInstancedVertShaderPath, paths::building_defaultFragShaderPath);
 
-    // unsigned int diffuseNr = 1;
-    // unsigned int specularNr = 1;
-    //
-    // // If we have textures, draw them
-    // for (unsigned int i = 0; i < textures.size(); i++)
-    // {
-    //     glActiveTexture(GL_TEXTURE0 + i); // activate texture unit, with an offset
-    //     // get textures number
-    //     std::string number = "";
-    //     std::string name = textures[i].type;
-    //     if(name == "diffuse")
-    //         number = std::to_string(diffuseNr++);
-    //     else if(name == "specular")
-    //         number = std::to_string(specularNr++);
-    //
-    //     shader.setFloat(("material." + name + number).c_str(), i);
-    //     glBindTexture(GL_TEXTURE_2D, textures[i].id);
-    // }
-    // glActiveTexture(GL_TEXTURE0); // unbind
+    unsigned int diffuseNr = 1;
+    unsigned int specularNr = 1;
+
+    // If we have textures, draw them
+    for (unsigned int i = 0; i < textures.size(); i++)
+    {
+        glActiveTexture(GL_TEXTURE0 + i); // activate texture unit, with an offset
+        // get textures number
+        std::string number = "";
+        std::string name = textures[i].type;
+        if(name == "diffuse")
+            number = std::to_string(diffuseNr++);
+        else if(name == "specular")
+            number = std::to_string(specularNr++);
+
+        shader.setFloat(("material." + name + number).c_str(), i);
+        glBindTexture(GL_TEXTURE_2D, textures[i].id);
+    }
+    glActiveTexture(GL_TEXTURE0); // unbind
     //
 
     // If we do not have textures then use the material

@@ -132,8 +132,7 @@ private:
 
     // Methods to add objects to instance renderers
     void addModelToInstanceRenderer(ModelObject* modelObject_in,
-                                    const std::string& modelPath_in,
-                                    const ShaderPath* shader_in);
+                                    const std::string& modelPath_in);
     void addSpriteToInstanceRenderer(SpriteObject const* SpriteObject_in,
                                      const std::string& spriteTexture_in,
                                      const ShaderPath* shader_in);

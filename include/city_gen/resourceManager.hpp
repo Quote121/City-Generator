@@ -73,10 +73,22 @@ public:
     // Load model
     Model* LoadModel(const std::string& modelPath_in, Shader* modelShader_in);
 
-    Shader* LoadModelShader(const ShaderPath* shader_in);
-    Shader* LoadSpriteShader(const ShaderPath* shader_in); 
-    Shader* LoadRoadShader(const ShaderPath* shader_in); 
+    // @brief Load the model shader and return the shader resource
+    // @args shader_in - A pointer to the ShaderPath struct, can be nullptr to load default
+    // @args instanced - boolean to load the default instanced shader when shader_in is nullptr
+    // @returns A pointer to the shader resourse
+    Shader* LoadModelShader(const ShaderPath* shader_in, const bool instanced);
 
+    // @brief Load the sprite shader and return the shader resource
+    // @args shader_in - A pointer to the ShaderPath struct, can be nullptr to load default
+    // @args instanced - boolean to load the default instanced shader when shader_in is nullptr
+    // @returns A pointer to the shader resourse
+    Shader* LoadSpriteShader(const ShaderPath* shader_in, const bool instanced); 
+
+    // @brief Load the road shader and return the shader resource
+    // @args shader_in - A pointer to the ShaderPath struct, can be nullptr to load default
+    // @returns A pointer to the shader resourse
+    Shader* LoadRoadShader(const ShaderPath* shader_in); 
 
     std::vector<Model*> GetLoadedModels();
     std::vector<TextureInfo*> GetLoadedTextures(); 

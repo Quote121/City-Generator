@@ -62,7 +62,7 @@ Scene::~Scene()
 ModelObject* Scene::addTerrain(const std::string& modelPath_in,
                                const ShaderPath* shader_in)
 {
-    Shader* shader = ResourceManager::getInstance()->LoadModelShader(shader_in);
+    Shader* shader = ResourceManager::getInstance()->LoadModelShader(shader_in, 0);
     
     ModelObject* model = new ModelObject(
             modelPath_in, shader
@@ -73,8 +73,7 @@ ModelObject* Scene::addTerrain(const std::string& modelPath_in,
 
 
 void Scene::addModelToInstanceRenderer(ModelObject* modelObject_in,
-                                       const std::string& modelPath_in,
-                                       const ShaderPath* shader_in)
+                                       const std::string& modelPath_in)
 {
     bool added = false;
     // We check all of the instance renderers for a same object
@@ -122,7 +121,7 @@ ModelObject* Scene::addModel(const std::string& modelPath_in,
                              const bool instanced)
 {
     // If we have passed nullptr load default shader
-    Shader* shader = ResourceManager::getInstance()->LoadModelShader(shader_in);
+    Shader* shader = ResourceManager::getInstance()->LoadModelShader(shader_in, instanced);
 
     ModelObject* model = new ModelObject(
         modelPath_in, shader
@@ -132,7 +131,7 @@ ModelObject* Scene::addModel(const std::string& modelPath_in,
     model->SetInstaceRendering(instanced);
     if (instanced)
     {
-        addModelToInstanceRenderer(model, modelPath_in, shader_in);
+        addModelToInstanceRenderer(model, modelPath_in);
     }
 
     scene_model_objects.push_back(model);
@@ -179,7 +178,7 @@ SpriteObject* Scene::addSprite(const std::string& spriteTexture_in,
                                const bool instanced)
 {
     // If we have passed nullptr load default shader
-    Shader* shader = ResourceManager::getInstance()->LoadSpriteShader(shader_in);
+    Shader* shader = ResourceManager::getInstance()->LoadSpriteShader(shader_in, instanced);
 
     // Create sprite, allocate memory and put in list
     SpriteObject* sprite = new SpriteObject(
