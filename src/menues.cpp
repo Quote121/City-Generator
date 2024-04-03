@@ -231,6 +231,55 @@ void Menues::display(float deltaTime)
 
                 break;
             }
+            case SceneType::P_LIGHT : {
+                PointLightObject* object = static_cast<PointLightObject*>(scene->sceneSelectedObject->GetObject());
+                ImGui::TextColored(ImVec4{1.0f, 0.2f, 0.2f, 1.0f}, "Scene name: %s", object->GetAlias().c_str());
+
+                ImGui::Checkbox("Show light icon sprite", &object->GetIsVisibleImGui());
+
+                ImGui::PushItemWidth(100);
+                ImGui::Text("Position:");
+                ImGui::SliderFloat("X##POS", &object->GetPositionImGui().x, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                ImGui::SliderFloat("Y##POS", &object->GetPositionImGui().y, POSITION_MIN, POSITION_MAX); ImGui::SameLine();
+                ImGui::SliderFloat("Z##POS", &object->GetPositionImGui().z, POSITION_MIN, POSITION_MAX);
+                ImGui::PopItemWidth();
+                
+                ImGui::PushItemWidth(300);
+                ImGui::ColorEdit3("Color", &object->GetLightColourImGui().x); ImGui::PopItemWidth();
+
+                ImGui::PushItemWidth(100);
+                
+                ImGui::Text("Ambient:");
+                ImGui::SliderFloat("X##AMB", &object->GetAmbientImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                ImGui::SliderFloat("Y##AMB", &object->GetAmbientImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                ImGui::SliderFloat("Z##AMB", &object->GetAmbientImGui().z, 0.0f, 1.0f);
+                
+                ImGui::Text("Diffuse:");
+                ImGui::SliderFloat("X##DIF", &object->GetDiffuseImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                ImGui::SliderFloat("Y##DIF", &object->GetDiffuseImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                ImGui::SliderFloat("Z##DIF", &object->GetDiffuseImGui().z, 0.0f, 1.0f);
+                
+                ImGui::Text("Specular:");
+                ImGui::SliderFloat("X##SPC", &object->GetSpecularImGui().x, 0.0f, 1.0f); ImGui::SameLine();
+                ImGui::SliderFloat("Y##SPC", &object->GetSpecularImGui().y, 0.0f, 1.0f); ImGui::SameLine();
+                ImGui::SliderFloat("Z##SPC", &object->GetSpecularImGui().z, 0.0f, 1.0f);
+                ImGui::PopItemWidth();
+
+                ImGui::SliderFloat("Constant:", &object->GetConstantImGui(), 0.0f, 1.0f); ImGui::SameLine(); ImGui::NewLine();
+
+                ImGui::SliderFloat("Linear:", &object->GetLinearImGui(), 0.0f, 1.0f); ImGui::SameLine(); ImGui::NewLine();
+
+                ImGui::SliderFloat("Quadratic:", &object->GetQuadraticImGui(), 0.0f, 1.0f); ImGui::SameLine(); ImGui::NewLine();
+            
+                bool deleteBtn = ImGui::Button("Delete");
+                if (deleteBtn)
+                {
+                    scene->removePointLight(*object);
+                    scene->sceneSelectedObject->Deselect();
+                }
+
+                break;
+            }
             default:
                 LOG(WARN, "Switch default hit.");
         }
@@ -387,7 +436,7 @@ void Menues::display(float deltaTime)
             bool spawn = ImGui::Button("Spawn##model");
 
             static bool spawnOnMe = false; static bool instanceRender = false;
-            ImGui::Checkbox("Spawn at my position", &spawnOnMe);
+            ImGui::Checkbox("Spawn at my position##Model", &spawnOnMe);
             ImGui::Checkbox("Instance renderer", &instanceRender); 
             if (spawn)
             {
@@ -399,6 +448,26 @@ void Menues::display(float deltaTime)
                     if (instanceRender)
                         scene->GetModelInstanceRenderer(addedModel)->Update(addedModel);
                 }
+            }
+
+            ImGui::Text("Point light spawning.");
+            // Lighting spawn
+            bool spawnLight = ImGui::Button("Spawn point light##light");
+            
+            static bool spawnLightOnMe = false; 
+            static bool lightShowsSprite = true;
+
+            ImGui::Checkbox("Spawn at my position##Light", &spawnLightOnMe);
+            ImGui::Checkbox("Show light icon sprite", &lightShowsSprite);
+
+            if (spawnLight)
+            {
+                PointLightObject* addedLight = scene->addPointLight();
+                addedLight->GetIsVisibleImGui() = lightShowsSprite;
+                
+                if (spawnLightOnMe)
+                    addedLight->SetPosition(Camera::getInstance()->Position);
+
             }
         }
 

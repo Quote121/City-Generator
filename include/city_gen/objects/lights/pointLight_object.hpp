@@ -3,6 +3,7 @@
 // #include <base_object.hpp>
 #include <sprite_object.hpp>
 #include <config.hpp>
+#include <resourceManager.hpp>
 
 // Inherit sprite object so that we can show sprite where light would be
 class PointLightObject : public SpriteObject
@@ -29,7 +30,7 @@ private:
 
 public:
     // Pass light texture to where the light is
-    PointLightObject() : SpriteObject(paths::light_icon_texture, nullptr)
+    PointLightObject() : SpriteObject(paths::light_icon_texture, ResourceManager::getInstance()->LoadSpriteShader(nullptr, 0))
     {
         // SetModelOriginCenter();
         SetIsBillboard(true);

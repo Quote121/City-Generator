@@ -778,6 +778,29 @@ bool Scene::CheckForIntersection(glm::vec3 rayOrigin, glm::vec3 rayDirection)
         }
     }
 
+    // Check point lights
+    for (auto& light : this->GetPointLightObjects())
+    {
+        float distanceToHit = 0;
+        light->GetBoundingBox();
+        if (TestRayOBBIntersection(rayOrigin, 
+                rayDirection, 
+                light->GetBoundingBox()->getMin(), 
+                light->GetBoundingBox()->getMax(), 
+                light->GetModelMatrix(), 
+                glm::vec3{light->GetScale(), 1.0f} * light->GetScaleScalar(),
+                distanceToHit))
+        {
+            if (distanceToHit < closest)
+            {
+                closest = distanceToHit;
+                object = static_cast<void*>(light);
+                type = SceneType::P_LIGHT;
+                hit = true;
+            }
+        }
+    }
+
     // If we get a hit, apply which object is selected
     if (hit)
         sceneSelectedObject->Select(object, type);

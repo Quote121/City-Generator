@@ -196,6 +196,12 @@ void InputHandler::process(GLFWwindow *window, double deltaTime)
                     scene->sceneSelectedObject->Deselect();
                     break;
                 }
+                case(SceneType::P_LIGHT):
+                {
+                    scene->removePointLight(*static_cast<PointLightObject*>(scene->sceneSelectedObject->GetObject()));
+                    scene->sceneSelectedObject->Deselect();
+                    break;
+                }
                 default:{break;}
             }
         }

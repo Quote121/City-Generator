@@ -80,6 +80,10 @@ public:
         {
             static_cast<SpriteObject*>(object)->DrawBoundingBox(WHITE);
         }
+        else if (type == SceneType::P_LIGHT)
+        {
+            static_cast<PointLightObject*>(object)->DrawBoundingBox(WHITE);
+        }
     }
 };
 
