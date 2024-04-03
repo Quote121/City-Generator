@@ -47,12 +47,12 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
 {
+    // Hacky fix for alpha layer, if we deep it to be transparent we will not apply colour
     if (texture(material.diffuse, TexCoord).a < 0.5)
     {
         FragColor = vec4(0.0);
         return;
     }
-
 
     // properties
     vec3 norm = normalize(Normal);

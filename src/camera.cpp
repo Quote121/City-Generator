@@ -1,4 +1,5 @@
 #include <camera.hpp>
+#include <config.hpp>
 
 // Defined static member variable
 Camera* Camera::pinstance_{nullptr};
@@ -106,7 +107,7 @@ void Camera::ProcessMouseMovement(float xoffset, float yoffset, GLboolean constr
 {
     xoffset *= MouseSensitivity;
     yoffset *= MouseSensitivity;
-
+    
     Yaw += xoffset;
     Pitch += yoffset;
 
@@ -130,6 +131,14 @@ void Camera::ProcessMouseScroll(float yoffset)
         Zoom = 1.0f;
     if (Zoom > 45.0f)
         Zoom = 45.0f;
+    
+    // dy = 44.0; (45-1)
+    // dx = 0.4 (0.5-0.1)
+    // c = -10
+    // m = 110
+    // rearange for x
+    float newSense = (Zoom + 10) / 110;
+    MouseSensitivity = newSense;
 }
 
 glm::vec3& Camera::GetPositionHandle(void)
