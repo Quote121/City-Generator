@@ -316,9 +316,25 @@ void Menues::display(float deltaTime)
         static long menu_seed = 0;
         ImGui::Text("Seed: %ld", menu_seed);
         
+        bool removeModels = ImGui::Button("Remove all models");
+        if (removeModels) { scene->removeAllModels(); }
+
         bool removeRoads = ImGui::Button("Remove all roads.");
         if (removeRoads) { scene->removeAllRoads(); }
 
+        bool removeSprites = ImGui::Button("Remove all sprites");
+        if (removeSprites) { scene->removeAllSprites(); } 
+
+        bool removeEverything = ImGui::Button("Remove everything");
+        if (removeEverything)
+        {
+            scene->removeAllModels();
+            scene->removeAllRoads();
+            scene->removeAllSprites();
+            scene->removeAllPointLights();
+        }
+        
+        ImGui::NewLine();
         bool generateRoads = ImGui::Button("Clear and Generate.");
         if (generateRoads)
         {
@@ -337,7 +353,7 @@ void Menues::display(float deltaTime)
         ImGui::Text("Sprite instance renderers [%ld]", scene->GetSpriteInstanceRenderers().size());
 
         static char textBuffer[20] = "";
-        bool simulateRandomGen = ImGui::Button("Random generator.");
+        bool simulateRandomGen = ImGui::Button("Generate.");
         if (simulateRandomGen)
         {
             if (std::strcmp(textBuffer, ""))
@@ -351,17 +367,6 @@ void Menues::display(float deltaTime)
         }
         ImGui::Text("Seed:");
         ImGui::InputText("##seedInput", textBuffer, 20);
-
-
-
-        ImGui::Text("Building generator settings");
-
-        bool removeZoneCollisions = ImGui::Button("Clear zone collisions");
-        if (removeZoneCollisions) { generator::ClearZoneCollisions(); }
-
-        bool removeModels = ImGui::Button("Remove all models");
-        if (removeModels)
-        { scene->removeAllModels(); }
 
         ImGui::TreePop();
     }
@@ -540,7 +545,6 @@ void Menues::display(float deltaTime)
             bool spawnSprite = ImGui::Button("Spawn##sprite");
             if (spawnSprite)
             {
-                LOG(STATUS, "Spawn sprite")
                 SpriteObject* addedSprite = scene->addSprite(textures.at(item_current_idx)->fileName, nullptr, instanceRender);
                 
                 addedSprite->SetLightingEnabled(lighting);
