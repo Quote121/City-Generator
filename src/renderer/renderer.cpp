@@ -22,7 +22,7 @@ void checkGLError(const std::string& functionName) {
 //
 //#########################
 
-// template class InstanceRenderer<SpriteObject*>;
+template class InstanceRenderer<SpriteObject*>;
 template class InstanceRenderer<ModelObject*>;
 // template class InstanceRenderer<LineObject*>;
 

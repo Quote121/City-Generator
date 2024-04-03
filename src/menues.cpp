@@ -204,7 +204,10 @@ void Menues::display(float deltaTime)
                 ImGui::SliderFloat3("Position", &sprite->GetPositionImGui().x, -200, 200);
                 ImGui::SliderFloat3("Rotation", &sprite->GetRotationImGui().x, -M_PI, M_PI);
                 ImGui::SliderFloat2("Scale", &sprite->GetScaleImGui().x, 0.1, 10.0);
-                ImGui::Checkbox("Billboard", &sprite->GetIsBillboardImGui());
+                
+                if (!sprite->GetIsInstanceRendered())
+                    ImGui::Checkbox("Billboard", &sprite->GetIsBillboardImGui());
+                
                 ImGui::Checkbox("Set origin center bottom: ", &centerBottom);
 
                 bool deleteSprite = ImGui::Button("Delete");
@@ -226,6 +229,11 @@ void Menues::display(float deltaTime)
                     }
                     else {
                         sprite->SetModelOriginCenter();
+                    }
+
+                    if (sprite->GetIsInstanceRendered())
+                    {
+                        scene->GetSpriteInstanceRenderer(sprite)->Update(sprite);
                     }
                 }
 
@@ -324,6 +332,7 @@ void Menues::display(float deltaTime)
         ImGui::Text("Roads [%ld]", scene->GetRoadObjects().size());
         ImGui::Text("Sprites [%ld]", scene->GetSpriteObjects().size());
         ImGui::Text("Model instance renderers [%ld]", scene->GetModelInstanceRenderers().size());
+        ImGui::Text("Sprite instance renderers [%ld]", scene->GetSpriteInstanceRenderers().size());
 
         static char textBuffer[20] = "";
         bool simulateRandomGen = ImGui::Button("Random generator.");
@@ -396,7 +405,9 @@ void Menues::display(float deltaTime)
         ImGui::TreePop();
     }
 
-
+    //###############################
+    // Spawn menu
+    //###############################
     if(ImGui::TreeNode("Spawning"))
     {
         {
@@ -417,7 +428,7 @@ void Menues::display(float deltaTime)
             static unsigned int item_current_idx = 0; // Here we store our selection data as an index.
             const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
 
-            ImGui::Text("Spawn models: ");
+            ImGui::SeparatorText("Spawn models: ");
             if (ImGui::BeginCombo("## combo 1", combo_preview_value))
             {
                 for (unsigned int n = 0; n < models.size(); n++)
@@ -449,8 +460,11 @@ void Menues::display(float deltaTime)
                         scene->GetModelInstanceRenderer(addedModel)->Update(addedModel);
                 }
             }
+        }    
 
-            ImGui::Text("Point light spawning.");
+        
+        {
+            ImGui::SeparatorText("Point light spawning.");
             // Lighting spawn
             bool spawnLight = ImGui::Button("Spawn point light##light");
             
@@ -467,9 +481,9 @@ void Menues::display(float deltaTime)
                 
                 if (spawnLightOnMe)
                     addedLight->SetPosition(Camera::getInstance()->Position);
-
             }
         }
+
 
         {
             // Get loaded models from asset loader
@@ -488,7 +502,7 @@ void Menues::display(float deltaTime)
             static unsigned int item_current_idx = 0; // Here we store our selection data as an index.
             const char* combo_preview_value = items[item_current_idx];  // Pass in the preview value visible before opening the combo (it could be anything)
 
-            ImGui::Text("Spawn sprites: ");
+            ImGui::SeparatorText("Spawn sprites: ");
             if (ImGui::BeginCombo("## combo 2", combo_preview_value))
             {
                 for (unsigned int n = 0; n < textures.size(); n++)
@@ -503,13 +517,30 @@ void Menues::display(float deltaTime)
                 }
                 ImGui::EndCombo();
             }
+            
+            static bool spawnOnMe = false;
+            static bool instanceRender = false;
+            
+            ImGui::Checkbox("Spawn at my position##SpirteSpawn", &spawnOnMe);
+            ImGui::Checkbox("Instance renderer.", &instanceRender);
+
             // If button pressed then we check the item_current_idx and act accordingly
             bool spawnSprite = ImGui::Button("Spawn##sprite");
             if (spawnSprite)
             {
                 LOG(STATUS, "Spawn sprite")
-                scene->addSprite(textures.at(item_current_idx)->fileName, nullptr);
-                
+                SpriteObject* addedSprite = scene->addSprite(textures.at(item_current_idx)->fileName, nullptr, instanceRender);
+        
+                if (spawnOnMe)
+                {
+                    addedSprite->SetPosition(Camera::getInstance()->Position);
+                    if (instanceRender)
+                    {
+                        // Update it in the instance renderer
+                        scene->GetSpriteInstanceRenderer(addedSprite)->Update(addedSprite);   
+                    }
+                }
+
                 // Add other builders here
 
             }
@@ -520,7 +551,9 @@ void Menues::display(float deltaTime)
     }
 
 
-
+    //##################################
+    // Object list
+    //##################################
     if(ImGui::TreeNode("Objects"))
     {
         if(ImGui::TreeNode("Lights"))

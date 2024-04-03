@@ -131,15 +131,14 @@ private:
 
     // Instance renderers
     std::vector<InstanceRenderer<ModelObject*>*> modelInstanceRenderers;
-    // std::vector<InstanceRenderer<const SpriteObject*>*> spriteInstanceRenderers;
+    std::vector<InstanceRenderer<SpriteObject*>*> spriteInstanceRenderers;
  
 
     // Methods to add objects to instance renderers
     void addModelToInstanceRenderer(ModelObject* modelObject_in,
                                     const std::string& modelPath_in);
-    void addSpriteToInstanceRenderer(SpriteObject const* SpriteObject_in,
-                                     const std::string& spriteTexture_in,
-                                     const ShaderPath* shader_in);
+    void addSpriteToInstanceRenderer(SpriteObject* spriteObject_in,
+                                     const std::string& spritePath_in);
 
     template<class T, class U>
     static bool SortByDistanceInv(BaseObject<T>* a, BaseObject<U>* b);
@@ -192,10 +191,12 @@ public:
     // @brief sometimes we need to reload all the matrix data of all objects
     void ForceReloadInstanceRendererData(void) const;
     inline auto const& GetModelInstanceRenderers(void) const;
+    inline auto const& GetSpriteInstanceRenderers(void) const;
 
     // @brief will update models if its instanced or not
     void UpdateModelInstanced(ModelObject* const object) const;
     InstanceRenderer<ModelObject*>* GetModelInstanceRenderer(ModelObject* object) const;
+    InstanceRenderer<SpriteObject*>* GetSpriteInstanceRenderer(SpriteObject* object) const;
     
     // Skybox methods
     void SetSkybox(const int index);
@@ -254,6 +255,11 @@ public:
 auto const& Scene::GetModelInstanceRenderers(void) const
 {
     return modelInstanceRenderers;
+}
+
+auto const& Scene::GetSpriteInstanceRenderers(void) const
+{
+    return spriteInstanceRenderers;
 }
 
 std::vector<SkyBox*> const& Scene::GetSkyBoxes()

@@ -16,7 +16,10 @@ private:
     bool isBillboard = false;                   // Billboard sprite always looking at player
     glm::vec2 scale = {1.0f, 1.0f};             // only scaled in X-axis and Y-axis 
     SpriteRenderer* spriteRenderer;
+    
+    bool isInstanceRenderered = false;
 
+    std::string spritePath;
     std::string spriteName;
 
 public:
@@ -26,6 +29,7 @@ public:
     ~SpriteObject();
 
     void Draw(glm::mat4 view, glm::mat4 projection) override;
+    void DrawInstances(glm::mat4 view, glm::mat4 projection, std::vector<float>* matrices);
     void DrawBoundingBox(glm::vec3 colour);
 
     glm::mat4 GetModelMatrix(void);
@@ -38,10 +42,21 @@ public:
     SpriteObject* SetModelOriginCenterBottom();
     SpriteObject* SetModelOriginCenter();
     std::string const& GetSpriteName();
-
+    std::string const& GetSpritePath();
+    
     glm::vec2 GetScale(void) const
     {
         return scale;
+    }
+
+    bool GetIsInstanceRendered(void) const
+    {
+        return isInstanceRenderered;
+    }
+
+    void SetIsInstanceRendered(bool toggle)
+    {
+        this->isInstanceRenderered = toggle;
     }
 
     // ImGui Definitions

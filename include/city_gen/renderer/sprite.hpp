@@ -25,6 +25,7 @@ private:
     VertexArray* VAO;
     VertexBuffer* VBO;
     IndexBuffer* EBO;
+    unsigned int matrixBuffer;
 
     Shader* spriteShader = nullptr;
     BoundingBox* spriteBoundingBox;
@@ -60,4 +61,5 @@ public:
 
     // Draw call for sprite
     void Draw();
+    void DrawInstance(std::vector<float>* matrices);
 };

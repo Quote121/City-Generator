@@ -36,7 +36,7 @@ private:
     // Render data
     unsigned int VAO, VBO, EBO;
 
-    // temp
+    // Buffer for matrix data in instancing
     unsigned int matrixBuffer;
 
     void setupMesh();

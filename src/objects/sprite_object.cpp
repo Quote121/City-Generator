@@ -10,6 +10,7 @@ SpriteObject::SpriteObject(const std::string& spriteTexture_in,
             Shader *shader_in) : 
             BaseObject()
 {
+    spritePath = spriteTexture_in;
     // Get spriteName
     spriteName = spriteTexture_in.substr(spriteTexture_in.find_last_of('/')+1, spriteTexture_in.size()-1);
 
@@ -33,7 +34,7 @@ void SpriteObject::Draw(glm::mat4 view, glm::mat4 projection)
 
         if (objectShader == nullptr)
         {
-            std::cerr << "NO SHADER LOADED TO OBJECT CLASS" << std::endl;
+            LOG(WARN, "No shader loaded for sprite Draw()");
         }
         else
         {
@@ -43,11 +44,31 @@ void SpriteObject::Draw(glm::mat4 view, glm::mat4 projection)
             objectShader->setMat4("view", view);
             objectShader->setMat4("projection", projection);
             objectShader->setMat4("model", result);
-            objectShader->setVec3("localCenterPos", objectOriginPosition);
 
             spriteRenderer->SpriteRenderer::Draw();
         }
     }
+}
+
+void SpriteObject::DrawInstances(glm::mat4 view, glm::mat4 projection, std::vector<float>* matrices)
+{
+    Shader* objectShader = spriteRenderer->GetSpriteShader();
+
+    if (objectShader == nullptr)
+    {
+        LOG(WARN, "No shader loaded for sprite DrawInstances()");
+    }
+    else
+    {
+        // Apply all position and scaling before drawing
+        // Shader stuff should be moved to the render class
+        objectShader->use();
+        objectShader->setMat4("view", view);
+        objectShader->setMat4("projection", projection);
+
+        spriteRenderer->SpriteRenderer::DrawInstance(matrices);
+    }
+
 }
 
 void SpriteObject::DrawBoundingBox(glm::vec3 colour)
@@ -136,6 +157,10 @@ std::string const& SpriteObject::GetSpriteName()
     return spriteName;
 }
 
+std::string const& SpriteObject::GetSpritePath()
+{
+    return spritePath;
+}
 // ImGui Definitions
 
 bool& SpriteObject::GetIsBillboardImGui()

@@ -94,6 +94,31 @@ void Scene::addModelToInstanceRenderer(ModelObject* modelObject_in,
     }
 }
 
+void Scene::addSpriteToInstanceRenderer(SpriteObject* spriteObject_in,
+                                        const std::string& spritePath_in)
+{
+    // We do not allow billboarded sprites to be instance rendered
+    assert(spriteObject_in->GetIsBillboardImGui() == false);
+    
+    bool added = false;
+    // Check all of the instance renderers for the same object
+    for (auto& ir : spriteInstanceRenderers)
+    {
+        // We find the model
+        if (ir->GetInstanceType()->GetSpritePath() == spritePath_in)
+        {
+            added = true;
+            ir->Append(spriteObject_in);
+        }
+    }
+    if (!added)
+    {
+        InstanceRenderer<SpriteObject*>* IR = new InstanceRenderer<SpriteObject*>();
+        IR->Append(spriteObject_in);
+        spriteInstanceRenderers.push_back(IR);
+    }
+}
+
 
 void Scene::ForceReloadInstanceRendererData(void) const
 {
@@ -109,6 +134,17 @@ InstanceRenderer<ModelObject*>* Scene::GetModelInstanceRenderer(ModelObject* obj
     for (auto& ir : modelInstanceRenderers)
     {
         if (ir->GetInstanceType()->GetModelPath() == object->GetModelPath())
+        {
+            return ir;
+        }
+    }
+    return nullptr;
+}
+InstanceRenderer<SpriteObject*>* Scene::GetSpriteInstanceRenderer(SpriteObject* object) const
+{
+    for (auto& ir : spriteInstanceRenderers)
+    {
+        if (ir->GetInstanceType()->GetSpritePath() == object->GetSpritePath())
         {
             return ir;
         }
@@ -185,7 +221,13 @@ SpriteObject* Scene::addSprite(const std::string& spriteTexture_in,
         spriteTexture_in, shader
     );
     scene_sprite_objects.push_back(sprite);
-    
+   
+    sprite->SetIsInstanceRendered(instanced);
+    if (instanced)
+    {
+        this->addSpriteToInstanceRenderer(sprite, spriteTexture_in);
+    }
+
     spriteCount++;
 
     std::string name = "Sprite_" + std::to_string(spriteCount);
@@ -484,6 +526,10 @@ void Scene::DrawScene()
     {
         renderer->Draw();
     }
+    for (auto& renderer : spriteInstanceRenderers)
+    {
+        renderer->Draw();
+    }
     
     // Then draw all objects that are not instanced
     for (auto& object : scene_model_objects)
@@ -510,7 +556,8 @@ void Scene::DrawScene()
 
     for (auto& sprite : sprites)
     {
-        sprite->Draw(view, projection);
+        if (!sprite->GetIsInstanceRendered())
+            sprite->Draw(view, projection);
     }
 }
 

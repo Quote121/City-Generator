@@ -19,6 +19,7 @@ namespace paths
 {
 extern const char* sprite_defaultVertShaderPath;
 extern const char* sprite_defaultFragShaderPath;
+extern const char* sprite_defaultInstancedVertShaderPath;
 
 // Object default shaders
 extern const char* object_defaultVertShaderPath;

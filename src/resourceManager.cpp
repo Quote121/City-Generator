@@ -304,7 +304,7 @@ Shader* ResourceManager::LoadSpriteShader(const ShaderPath* shader_in, const boo
     // Default instance shader
     if (shader_in == nullptr && instanced)
     {
-        return this->LoadShader(paths::sprite_defaultVertShaderPath, paths::sprite_defaultFragShaderPath);
+        return this->LoadShader(paths::sprite_defaultInstancedVertShaderPath, paths::sprite_defaultFragShaderPath);
     }
     // Default shader
     else if (shader_in == nullptr) 

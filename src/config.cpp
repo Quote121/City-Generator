@@ -3,6 +3,7 @@
 // Sprite default shader
 const char* paths::sprite_defaultVertShaderPath = "../assets/shaders/default/sprite/sprite_shader.vert";
 const char* paths::sprite_defaultFragShaderPath = "../assets/shaders/default/sprite/sprite_shader.frag";
+const char* paths::sprite_defaultInstancedVertShaderPath = "../assets/shaders/default/sprite/sprite_shader_instanced.vert";
 
 // Object default shaders
 const char* paths::object_defaultVertShaderPath = "../assets/shaders/default/object/object_shader.vert";
