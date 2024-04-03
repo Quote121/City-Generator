@@ -89,7 +89,8 @@ void Menues::display(float deltaTime)
                     ImGui::Checkbox("Show OBB", &object->GetShowBoundingBoxImGui());
                 }
                 ImGui::Checkbox("Set origin center bottom: ", &centerBottom);
-                
+                ImGui::Checkbox("Enable lighting##modelSelect", &object->GetShowLightingImGui());
+
                 bool deleteModel = ImGui::Button("Delete");
                 if (deleteModel)
                 {
@@ -209,6 +210,7 @@ void Menues::display(float deltaTime)
                     ImGui::Checkbox("Billboard", &sprite->GetIsBillboardImGui());
                 
                 ImGui::Checkbox("Set origin center bottom: ", &centerBottom);
+                ImGui::Checkbox("Enable lighting: ", &sprite->GetLightingEnabledImGui());
 
                 bool deleteSprite = ImGui::Button("Delete");
                 if (deleteSprite)
@@ -446,12 +448,20 @@ void Menues::display(float deltaTime)
             // If button pressed then we check the item_current_idx and act accordingly
             bool spawn = ImGui::Button("Spawn##model");
 
-            static bool spawnOnMe = false; static bool instanceRender = false;
+            static bool spawnOnMe = false; 
+            static bool instanceRender = false;
+            static bool lighting = false;
             ImGui::Checkbox("Spawn at my position##Model", &spawnOnMe);
-            ImGui::Checkbox("Instance renderer", &instanceRender); 
+            ImGui::Checkbox("Instance renderer", &instanceRender);
+            ImGui::Checkbox("Enable lighting##model spawn", &lighting);
             if (spawn)
             {
                 ModelObject* addedModel = scene->addModel(models.at(item_current_idx)->GetModelPath(), nullptr, instanceRender);
+                if (!instanceRender && lighting)
+                {
+                    addedModel->SetLightingEnabled(lighting);
+                }
+
                 if (spawnOnMe)
                 {
                     addedModel->SetPosition(Camera::getInstance()->Position);
@@ -520,9 +530,11 @@ void Menues::display(float deltaTime)
             
             static bool spawnOnMe = false;
             static bool instanceRender = false;
+            static bool lighting = false;
             
             ImGui::Checkbox("Spawn at my position##SpirteSpawn", &spawnOnMe);
-            ImGui::Checkbox("Instance renderer.", &instanceRender);
+            ImGui::Checkbox("Instance renderer##SpriteSpawn", &instanceRender);
+            ImGui::Checkbox("Enable lighting##SpriteSpawn", &lighting);
 
             // If button pressed then we check the item_current_idx and act accordingly
             bool spawnSprite = ImGui::Button("Spawn##sprite");
@@ -530,7 +542,9 @@ void Menues::display(float deltaTime)
             {
                 LOG(STATUS, "Spawn sprite")
                 SpriteObject* addedSprite = scene->addSprite(textures.at(item_current_idx)->fileName, nullptr, instanceRender);
-        
+                
+                addedSprite->SetLightingEnabled(lighting);
+
                 if (spawnOnMe)
                 {
                     addedSprite->SetPosition(Camera::getInstance()->Position);
@@ -542,7 +556,6 @@ void Menues::display(float deltaTime)
                 }
 
                 // Add other builders here
-
             }
         }
 

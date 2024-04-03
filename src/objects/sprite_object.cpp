@@ -5,6 +5,7 @@
 #include <sprite.hpp>
 #include <camera.hpp>
 #include <bounding_box.hpp>
+#include <scene.hpp>
 
 SpriteObject::SpriteObject(const std::string& spriteTexture_in,
             Shader *shader_in) : 
@@ -44,7 +45,13 @@ void SpriteObject::Draw(glm::mat4 view, glm::mat4 projection)
             objectShader->setMat4("view", view);
             objectShader->setMat4("projection", projection);
             objectShader->setMat4("model", result);
-
+            
+            objectShader->setBool("ShowLighting", lightingEnable);
+            if (lightingEnable)
+            {
+                Scene::getInstance()->SetShaderLights(objectShader); 
+            }
+            
             spriteRenderer->SpriteRenderer::Draw();
         }
     }
@@ -152,6 +159,12 @@ SpriteObject* SpriteObject::SetModelOriginCenter()
     return this;
 }
 
+SpriteObject* SpriteObject::SetLightingEnabled(bool toggle)
+{
+    this->lightingEnable = toggle;
+    return this;
+}
+
 std::string const& SpriteObject::GetSpriteName()
 {
     return spriteName;
@@ -177,3 +190,9 @@ float& SpriteObject::GetScaleScalarImGui()
 {
     return scaleScalar;
 }
+
+bool& SpriteObject::GetLightingEnabledImGui()
+{
+    return lightingEnable;
+}
+

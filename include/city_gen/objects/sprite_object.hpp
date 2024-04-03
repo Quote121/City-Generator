@@ -18,6 +18,7 @@ private:
     SpriteRenderer* spriteRenderer;
     
     bool isInstanceRenderered = false;
+    bool lightingEnable = false;
 
     std::string spritePath;
     std::string spriteName;
@@ -41,6 +42,7 @@ public:
     SpriteObject* SetSpawnOffset(glm::vec3 vec3);
     SpriteObject* SetModelOriginCenterBottom();
     SpriteObject* SetModelOriginCenter();
+    SpriteObject* SetLightingEnabled(bool toggle);
     std::string const& GetSpriteName();
     std::string const& GetSpritePath();
     
@@ -63,4 +65,5 @@ public:
     bool& GetIsBillboardImGui();
     glm::vec2& GetScaleImGui();
     float& GetScaleScalarImGui();
+    bool& GetLightingEnabledImGui();
 };

@@ -1,14 +1,116 @@
 #version 460 core
-
 out vec4 FragColor;
 
-in vec2 TexCoord;
+struct Material {
+    sampler2D diffuse;
+    sampler2D specular;
+    float shininess;
+};
 
-uniform sampler2D texture_diffuse1;
+struct DirLight {
+    vec3 direction;
+	
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+struct PointLight {
+    vec3 position;
+
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
+};
+
+#define MAX_NR_POINT_LIGHTS 50 // Max number we can have
+
+in vec2 TexCoord;
+in vec3 FragPos;
+in vec3 Normal;
+
+// Camera position
+uniform vec3 viewPos;
+uniform DirLight dirLight;
+uniform PointLight pointLights[MAX_NR_POINT_LIGHTS];
+uniform Material material;
+uniform int NumValidPointLights; // Max number there are
+uniform bool ShowLighting;
+
+// function prototypes
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
 void main()
 {
-    FragColor = texture(texture_diffuse1, TexCoord);
-    // FragColor = vec4(1,0,0, 1.0); // red
-    // FragColor = vec4(0.627,0.627,0.627, 1.0); // Grey
+    // properties
+    vec3 norm = normalize(Normal);
+    vec3 viewDir = normalize(viewPos - FragPos);
+    
+    // == =====================================================
+    // Our lighting is set up in 3 phases: directional, point lights and an optional flashlight
+    // For each phase, a calculate function is defined that calculates the corresponding color
+    // per lamp. In the main() function we take all the calculated colors and sum them up for
+    // this fragment's final color.
+    // == =====================================================
+    // phase 1: directional lighting
+
+    vec3 result = CalcDirLight(dirLight, norm, viewDir);
+    // phase 2: point lights
+
+    for(int i = 0; i < NumValidPointLights && i < MAX_NR_POINT_LIGHTS; i++)
+        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir); 
+
+    // Hacky fix
+    // If there are no lighting effects applied then we show the modells default diffuse
+    if (ShowLighting)
+    {
+        FragColor = vec4(result, 1.0);
+    }
+    else
+    {
+        FragColor = texture(material.diffuse, TexCoord);
+    }
+}
+
+// calculates the color when using a directional light.
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
+{
+    vec3 lightDir = normalize(-light.direction);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    // combine results
+    vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoord));
+    vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoord));
+    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoord));
+    return (ambient + diffuse + specular);
+}
+
+// calculates the color when using a point light.
+vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
+{
+    vec3 lightDir = normalize(light.position - fragPos);
+    // diffuse shading
+    float diff = max(dot(normal, lightDir), 0.0);
+    // specular shading
+    vec3 reflectDir = reflect(-lightDir, normal);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+    // attenuation
+    float distance = length(light.position - fragPos);
+    float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));    
+    // combine results
+    vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoord));
+    vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoord));
+    vec3 specular = light.specular * spec * vec3(texture(material.specular, TexCoord));
+    ambient *= attenuation;
+    diffuse *= attenuation;
+    specular *= attenuation;
+    return (ambient + diffuse + specular);
 }

@@ -345,6 +345,21 @@ void Scene::removeSprite(SpriteObject& obj)
     auto it = std::find(scene_sprite_objects.begin(), scene_sprite_objects.end(), &obj);
     if (it != scene_sprite_objects.end())
     {
+        SpriteObject* sobj = *it; 
+        if (sobj->GetIsInstanceRendered())
+        {
+            InstanceRenderer<SpriteObject*>* ir = this->GetSpriteInstanceRenderer(sobj);
+            ir->Remove(sobj);
+
+            if (ir->size() == 0)
+            {
+                for (size_t i = 0; i < spriteInstanceRenderers.size(); i++)
+                {
+                    if (spriteInstanceRenderers[i] == ir)
+                        spriteInstanceRenderers.erase(spriteInstanceRenderers.begin() + i);
+                }
+            }
+        }
         scene_sprite_objects.erase(it);
     }    
 }
@@ -602,7 +617,7 @@ void Scene::SetShaderLights(const Shader* shader)
 {
     // TEMP we go through all point lights and assign the values form it here
     shader->setVec3("viewPos", Camera::getInstance()->Position);
-    shader->setFloat("material.shininess", 5.0f);
+    shader->setFloat("material.shininess", 10.0f);
     
     size_t pointLightSize = Scene::getInstance()->GetPointLightObjects().size();
     

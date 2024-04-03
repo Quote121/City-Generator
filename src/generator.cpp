@@ -314,7 +314,8 @@ int generator::GenerateCity(unsigned int seed_in)
                         ->SetIsVisible(true)
                         ->SetIsBillboard(true)
                         ->SetScale(0.4f)
-                        ->SetPosition(area.position);
+                        ->SetPosition(area.position)
+                        ->SetLightingEnabled(true);
                 }
             }
             for (auto& area : *sceneRoad->GetZoneB()->GetPlacementAreas())
@@ -325,7 +326,8 @@ int generator::GenerateCity(unsigned int seed_in)
                         ->SetIsVisible(true)
                         ->SetIsBillboard(true)
                         ->SetScale(0.4f)
-                        ->SetPosition(area.position);
+                        ->SetPosition(area.position)
+                        ->SetLightingEnabled(true);
                 }
             }
         }
@@ -756,7 +758,8 @@ void generator::GenerateBuildings(float densityFactor)
                 ->SetPosition(areas[i].position)
                 ->ShowBoundingBox(false)
                 ->SetRotation(glm::vec3{0, areas[i].angle, 0})
-                ->SetScale({1, 0.5 + (static_cast<float>(areas[i].deepness)/10.0f)*1.2, 1});
+                ->SetScale({1, 0.5 + (static_cast<float>(areas[i].deepness)/10.0f)*1.2, 1})
+                ->SetLightingEnabled(true);
         }
         else {
             intersectingBuildings++;

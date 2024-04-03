@@ -18,7 +18,7 @@ private:
     // Will draw the outline of the bounding box on the model
     bool showBoundingBox = false;
 
-    bool lightingEnable = true;
+    bool lightingEnable = false;
 
     bool instanceRender = false;
 
