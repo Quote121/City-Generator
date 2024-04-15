@@ -1,14 +1,18 @@
 // Please write the file path relative to City-Generator/assets/
 // Place the paths below either sprites (.jpg, .png) or models (.obj)
+//
+// Path to system images
+// ../../../Pictures/
+//
 // Do not modify #Models or #Sprites
 
 #Models
 models/Backpack/backpack.obj
 models/Box/cubeWithTextures.obj
 models/de_dust2/de_dust2.obj
-  
+
+
 #Sprites  
 textures/gordon_gosling.png
 textures/missing.jpg
 textures/grass.png
-

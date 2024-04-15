@@ -142,6 +142,7 @@ SpriteObject* SpriteObject::SetIsBillboard(bool toggle)
 SpriteObject* SpriteObject::SetSpawnOffset(glm::vec3 vec3)
 {
     objectOriginPosition = vec3;
+    this->isCenterBottom = false;
     return this;
 }
 
@@ -150,12 +151,14 @@ SpriteObject* SpriteObject::SetModelOriginCenterBottom()
     glm::vec3 center = spriteRenderer->GetBoundingBox()->getCenter();
     center.y = spriteRenderer->GetBoundingBox()->getMin().y;
     objectOriginPosition = center;
+    this->isCenterBottom = true;
     return this;
 }
 
 SpriteObject* SpriteObject::SetModelOriginCenter()
 {
     objectOriginPosition = spriteRenderer->GetBoundingBox()->getCenter();
+    this->isCenterBottom = false;
     return this;
 }
 

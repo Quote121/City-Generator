@@ -19,6 +19,7 @@ private:
     
     bool isInstanceRenderered = false;
     bool lightingEnable = false;
+    bool isCenterBottom = false;
 
     std::string spritePath;
     std::string spriteName;
@@ -49,6 +50,11 @@ public:
     glm::vec2 GetScale(void) const
     {
         return scale;
+    }
+
+    bool GetIsCenterBottom(void) const
+    {
+        return isCenterBottom;
     }
 
     bool GetIsInstanceRendered(void) const

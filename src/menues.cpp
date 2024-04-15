@@ -199,8 +199,8 @@ void Menues::display(float deltaTime)
                 static glm::vec3 position_before = sprite->GetPosition();
                 static glm::vec3 rotation_before = sprite->GetRotation();
                 static glm::vec2 scale_before = sprite->GetScale();
-                static bool centerBottom_before = false;
-                static bool centerBottom = false;
+                static bool centerBottom_before = sprite->GetIsCenterBottom();
+                bool centerBottom = sprite->GetIsCenterBottom();
 
                 ImGui::SliderFloat3("Position", &sprite->GetPositionImGui().x, -200, 200);
                 ImGui::SliderFloat3("Rotation", &sprite->GetRotationImGui().x, -M_PI, M_PI);
