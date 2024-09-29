@@ -1,6 +1,11 @@
 # City-Generator
 Procedural city generator written from scratch in OpenGL and C++.
 
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3a062a9e-b4c4-4a8e-99c8-e9e4b71f3a3f"/width=900>
+</p>
+
+
 ## Running
 In the project directory you need to create a build directory to build the solution in.
 ```bash
