@@ -306,6 +306,25 @@ void Menues::display(float deltaTime)
     ImGui::Text("Pitch | Yaw: %.3f %.3f", cam->Pitch, cam->Yaw);
     ImGui::Text("[x,y,z] : %.3f, %.3f, %.3f",cam->Position.x, cam->Position.y, cam->Position.z);
     ImGui::NewLine();
+
+    // static float totalFPS = 0;
+    // static float frameCount = 0;
+    //
+    // const int sampleCountMS = 300;
+    // static int i = 0;
+    // 
+    // totalFPS += 1/deltaTime;
+    // frameCount++;
+    // 
+    // if (i >= sampleCountMS)
+    // {
+    //     // LOG(STATUS, "MENU: Frame number: " << frameCount);
+    //     std::cout << totalFPS / frameCount << std::endl;
+    //     frameCount = 0; totalFPS = 0;
+    //     i = 0;
+    // }
+    // i += (deltaTime*1000);
+    // // LOG(STATUS, "Delta time: " << deltaTime)
     
     ImGui::SeparatorText("City Generator menu");
     if(ImGui::TreeNode("Generator settings"))

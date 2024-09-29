@@ -9,7 +9,9 @@
 #Models
 models/Backpack/backpack.obj
 models/Box/cubeWithTextures.obj
-models/de_dust2/de_dust2.obj
+// models/de_dust2/de_dust2.obj
+
+../../../Downloads/assets/plane/privPlane/11805_airplane_v2_L2.obj
 
 
 #Sprites  

@@ -96,7 +96,7 @@ int main() {
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     // Framerate cap disable
-    // glfwSwapInterval(0);
+    glfwSwapInterval(0);
 
     // Hide cursor and capture its input
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -166,6 +166,64 @@ int main() {
     scene->addDirectionalLight()
         ->SetDirection(glm::vec3(0, -6, -5));
 
+    //
+    // // PERFORMANCE Testing
+    //
+    // // Set camera position
+    // Camera::getInstance()->Position = glm::vec3{400, 200, 400};
+    // scene->GetShowTerrainImGui() = false;
+    // scene->GetShowSceneAxisImGui() = false;
+    // scene->GetShowSkyBoxImGui() = false;
+    //
+    // // Buildings
+    // std::array<std::string, 9> buildingModelPaths = {
+    //     "../assets/models/Buildings/LowPoly/low_buildingA.obj",
+    //     "../assets/models/Buildings/LowPoly/low_buildingB.obj",
+    //     "../assets/models/Buildings/LowPoly/low_buildingC.obj",
+    //     "../assets/models/Buildings/LowPoly/low_buildingD.obj",
+    //     "../assets/models/Buildings/LowPoly/low_buildingE.obj",
+    //     "../assets/models/Buildings/LowPoly/low_buildingF.obj",
+    //     "../assets/models/Buildings/LowPoly/low_buildingG.obj",
+    //     "../assets/models/Buildings/LowPoly/low_buildingH.obj",
+    //     "../assets/models/Buildings/LowPoly/low_buildingI.obj"
+    // };
+    //
+    // ShaderPath buildingShaderInstanced = {paths::building_defaultInstancedVertShaderPath, paths::building_defaultFragShaderPath}; 
+    // ShaderPath buildingShader = {paths::building_defaultVertShaderPath, paths::building_defaultFragShaderPath};
+    //
+    // // const int numberOfBuildings = 100;
+    // // for (int i = 0; i < numberOfBuildings; i++)
+    // // {
+    // //     for (int j = 0; j < 100; j++)
+    // //     {
+    // //         glm::vec3 position = {-200 + i*2, 0, -200 + j*2};
+    // //
+    // //         scene->addModel(buildingModelPaths[i%9], &buildingShader, false)
+    // //             ->SetOriginFrontLeft()
+    // //             ->SetPosition(position)
+    // //             ->ShowBoundingBox(false)
+    // //             ->SetLightingEnabled(true);
+    // //     }
+    // // }
+    // // scene->ForceReloadInstanceRendererData();
+    // // 
+    // 
+    // const int numberOfRoads = 1000;
+    // for (int i = 0; i < numberOfRoads; i++)
+    // {
+    //     for (int j = 0; j < 400; j++)
+    //     {
+    //     glm::vec3 posA = {-200 + i*2, 0, -200+ j*2};
+    //     glm::vec3 posB = {-200 + i*2 - 1, 0, -200 + j*2 -1};
+    //
+    //     scene->addRoad(posA, posB)
+    //         ->SetWidth(0.5f);
+    //     }
+    //
+    // }
+    //
+    //
+    //
     // IMGUI test
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -178,9 +236,6 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 460");
 
-
-    scene->addRoad({-3, 0, -3}, {2, 3, 1});
-    scene->addRoad({2, 3.01, 1}, {5, 2, 1});
 
         
     // =============== POST-PROCESSING ===================
@@ -267,7 +322,7 @@ int main() {
         //////////////////////////////////////////////////////
 
 
-        ImGui::ShowDemoWindow();
+        // ImGui::ShowDemoWindow();
 
         ImGui::Render();
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
